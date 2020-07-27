@@ -1,29 +1,28 @@
 import React from 'react';
 import fetch from 'isomorphic-fetch';
-import { Post, Posts, PropsPosts } from '../collection/Post';
+import { User } from '../collection/User';
 import { ButtonNext } from '../customize/Button';
 import { Layout, Header, Footer } from '../customize/Layout';
 import { Meta } from '../components/Meta'
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
 
 
-export const getStaticProps: GetStaticProps = async (context: any) => {
+export const getStaticProps: GetStaticProps = async () => {
   let res;
-  let posts: Posts;
+  let user: User;
   try {
-    res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    res = await fetch('https://jsonplaceholder.typicode.com/users/1');
     try {
-      posts = await res.json();
+      user = await res.json();
     } catch (err) {
       throw err;
     }
   } catch (error) {
-    posts = [];
+    user = {};
   }
-  console.log({ context })
 
   return {
-    props: { posts: posts }
+    props: { user: user }
   };
 };
 
@@ -34,7 +33,7 @@ export const getStaticProps: GetStaticProps = async (context: any) => {
 // }
 
 
-export default ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
+export default ({ user }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <Layout>
     <Header>
       <Meta>
@@ -44,20 +43,7 @@ export default ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
       </Meta>
     </Header>
     <div className="container">
-      {posts.map((post: any, count: number) => {
-
-        return (
-          <div key={count}>
-            <div>
-              <p>{post.title}</p>
-            </div>
-            <div>
-              <p>{post.body}</p>
-            </div>
-            <ButtonNext>Siguiente</ButtonNext>
-          </div>
-        );
-      })}
+      <p>Username: {user.username}</p>
     </div>
     <Footer>
     </Footer>
