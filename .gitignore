@@ -28,3 +28,11 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+
+# prod env files
+.env
+
+# service workers local
+/public/sw.js
+/public/sw.js.map
+/public/workbox-*

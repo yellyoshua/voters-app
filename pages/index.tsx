@@ -1,51 +1,65 @@
-import React from 'react';
-import fetch from 'isomorphic-fetch';
-import { User } from '../collection/User';
-import { ButtonNext } from '../customize/Button';
-import { Layout, Header, Footer } from '../customize/Layout';
-import { Meta } from '../components/Meta'
+
+import { useRouter } from "next/router";
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import useIsomorphicLayoutEffect from "../utils/isomorphicLayoutEffect";
+import getQueries, { getQueriesProps } from '../lib/api/getQueries';
+import { sessionStoreValueProps } from '../lib/collection/Store';
+import { HomePageProps } from '../lib/collection/Page';
+import { API_URL } from '../lib/constants';
+import { LayoutStore } from '../lib/store';
+import Client from "../components/Client";
 
+export const getStaticProps: GetStaticProps<{
+  session: {
+    response: sessionStoreValueProps
+  };
+  homepage: HomePageProps;
+}> = async (req) => {
+  console.log({ req });
+  const token = "noclient";
+  let request: any[any] = [];
 
-export const getStaticProps: GetStaticProps = async () => {
-  let res;
-  let user: User;
-  try {
-    res = await fetch('https://jsonplaceholder.typicode.com/users/1');
-    try {
-      user = await res.json();
-    } catch (err) {
-      throw err;
+  const query: getQueriesProps = [
+    {
+      url: `${API_URL}/api/session`,
+      header: { Authorization: `Bearer ${token}` }
+    },
+    {
+      url: `${API_URL}/home-page`,
+      header: { Authorization: "" }
     }
+  ];
+
+  try {
+    request = await getQueries(query);
   } catch (error) {
-    user = {};
+    request = []
   }
 
+  const [session = {}, homepage = {}] = request;
+
   return {
-    props: { user: user }
+    props: { session, homepage }
   };
 };
 
 // export const getStaticPaths: GetStaticPaths = async (data: any) => {
-//   console.log({ data })
 //   // return {};
 //   // ...
 // }
 
+export default (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+  const router = useRouter()
+  const session = props.session;
+  const homepage = props.homepage;
 
-export default ({ user }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  return <Layout>
-    <Header>
-      <Meta>
-        <link rel='manifest' href='/manifest.json' />
-        <link rel="icon" href="/favicon.ico" />
-        <title>GONZU</title>
-      </Meta>
-    </Header>
-    <div className="container">
-      <p>Username: {user.username}</p>
-    </div>
-    <Footer>
-    </Footer>
-  </Layout>
+  useIsomorphicLayoutEffect(() => {
+    if (session.response.user && router.pathname === "/") {
+      router.replace("/dashboard");
+    }
+  });
+
+  return <LayoutStore variant="homepage" value={{ page: { homepage } }}>
+    <Client />
+  </LayoutStore>
 }

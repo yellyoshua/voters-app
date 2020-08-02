@@ -1,6 +1,6 @@
-import { forwardRef, FunctionComponent, FunctionComponentElement } from 'react';
+import { forwardRef, FunctionComponent, FunctionComponentElement, ReactNode } from 'react';
 import Link, { LinkProps } from 'next/link';
-import { User } from '../collection/User';
+import { User } from '../lib/collection/User';
 import { Avatar, Typography, Drawer, Divider, List, ListItem, colors, Button } from "@material-ui/core";
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import PeopleIcon from '@material-ui/icons/People';
@@ -38,7 +38,7 @@ const drawerlistStyles = makeStyles((theme: Theme) => (createStyles({
 type DrawerProps = {
   user: User;
 }
-export default ({ user }): FunctionComponent<{ user: User; }> => {
+export default ({ user }: DrawerProps): FunctionComponentElement<ReactNode> => {
 
   const classes = drawerlistStyles();
 
@@ -93,9 +93,11 @@ const profileStyles = makeStyles((theme: Theme) => ({
 }));
 
 const AdapterLink = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => (
-  <Link innerRef={ref as any} {...props} />
+  <Link {...props} href={props.href}>
+    <a>{props.children}</a>
+  </Link>
 ));
-const Profile: FunctionComponent<{ user: User; }> = ({ user }) => {
+const Profile: FunctionComponent<{ user: User; }> = ({ user }): FunctionComponentElement<ReactNode> => {
 
   const classes = profileStyles();
 
@@ -103,11 +105,7 @@ const Profile: FunctionComponent<{ user: User; }> = ({ user }) => {
     className={classes.root}
   >
     <Avatar
-      alt="Person"
-      className={classes.avatar}
-      component={AdapterLink}
       src={user.avatar}
-      to="/settings"
     />
     <Typography
       className={classes.name}
@@ -115,6 +113,6 @@ const Profile: FunctionComponent<{ user: User; }> = ({ user }) => {
     >
       {user.name}
     </Typography>
-    <Typography variant="body2">{user.account}</Typography>
+    <Typography variant="body2">{user.email}</Typography>
   </div>
 }

@@ -1,35 +1,29 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import Drawer from '../hooks/useDrawer';
+import fetch from 'isomorphic-fetch';
+import { sessionStoreProps } from '../lib/collection/Store';
+import { API_URL } from '../lib/constants';
+import useDrawer from '../hooks/useDrawer';
+import styled from "@emotion/styled";
 
+export const ButtonNext = styled.button`
+  border:none;
+  color:black;
+  border-radius:10px;
+  padding:10px;
+`;
+export const ButtonConfirm = styled.button``;
+export const ButtonDecline = styled.button``;
 
-export const getStaticProps: GetStaticProps = async () => {
+// export const getStaticProps: GetStaticProps = () => {
+//   return {
+//     props: {}
+//   };
+// };
 
-  return {
-    props: { posts: [] }
-  };
-};
+export default (props: InferGetStaticPropsType<{}>) => {
 
-// export const getStaticPaths: GetStaticPaths = async (data: any) => {
-//   console.log({ data })
-//   // return {};
-//   // ...
-// }
-
-
-export default ({ posts }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  const user = {
-    name: "Yoshua",
-    avatar: "",
-    account: "Administrador",
-    username: "yellyoshua",
-    email: "yoshualopez1529@gmail.com",
-    provider: "Btoa",
-    password: "atob",
-    resetPasswordToken: "aaa",
-    confirmed: true,
-    blocked: false
-  }
-  return <div>
-    <Drawer user={user}/>
+  return <div className="container">
+    <p>Dashboard</p>
   </div>
 }
+

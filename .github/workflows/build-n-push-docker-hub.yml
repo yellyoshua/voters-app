@@ -22,13 +22,13 @@ jobs:
           tag_with_sha: false
           tags: ${{ github.sha }}
 
-      - name: Running and Deploying with SSH to Production
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          script: |
-            docker login -u ${{ secrets.DkrHub_USERNAME }} -p ${{ secrets.DkrHub_PASSWORD }}
-            docker rm -f gonzu-web
-            docker run -d --rm -p 3000:3000 --name gonzu-web ${{ github.repository }}:${{ github.sha }}
+      # - name: Running and Deploying with SSH to Production
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USERNAME }}
+      #     password: ${{ secrets.SSH_PASSWORD }}
+      #     script: |
+      #       docker login -u ${{ secrets.DkrHub_USERNAME }} -p ${{ secrets.DkrHub_PASSWORD }}
+      #       docker rm -f gonzu-web
+      #       docker run -d --rm -p 3000:3000 --name gonzu-web ${{ github.repository }}:${{ github.sha }}
