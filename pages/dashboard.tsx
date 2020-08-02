@@ -1,8 +1,3 @@
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import fetch from 'isomorphic-fetch';
-import { sessionStoreProps } from '../lib/collection/Store';
-import { API_URL } from '../lib/constants';
-import useDrawer from '../hooks/useDrawer';
 import styled from "@emotion/styled";
 
 export const ButtonNext = styled.button`
@@ -20,7 +15,7 @@ export const ButtonDecline = styled.button``;
 //   };
 // };
 
-export default (props: InferGetStaticPropsType<{}>) => {
+export default () => {
 
   return <div className="container">
     <p>Dashboard</p>

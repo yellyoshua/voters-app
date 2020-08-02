@@ -1,10 +1,6 @@
-import { forwardRef, FunctionComponent, FunctionComponentElement, ReactNode } from 'react';
-import Link, { LinkProps } from 'next/link';
+import { FunctionComponent, FunctionComponentElement, ReactNode } from 'react';
 import { User } from '../lib/collection/User';
-import { Avatar, Typography, Drawer, Divider, List, ListItem, colors, Button } from "@material-ui/core";
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import PeopleIcon from '@material-ui/icons/People';
-import BookOutlinedIcon from '@material-ui/icons/BookOutlined';
+import { Avatar, Typography, Drawer } from "@material-ui/core";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 
@@ -42,27 +38,6 @@ export default ({ user }: DrawerProps): FunctionComponentElement<ReactNode> => {
 
   const classes = drawerlistStyles();
 
-  const pages = [
-    {
-      title: "Tablero",
-      private: false,
-      href: "/dashboard",
-      icon: <DashboardIcon />
-    },
-    {
-      title: "Usuarios",
-      private: true,
-      href: "/users",
-      icon: <PeopleIcon />
-    },
-    {
-      title: "Publicaciones",
-      private: true,
-      href: "/posts",
-      icon: <BookOutlinedIcon />
-    }
-  ];
-
   return (
     <Drawer
       anchor="left"
@@ -92,11 +67,6 @@ const profileStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const AdapterLink = forwardRef<HTMLAnchorElement, LinkProps>((props, ref) => (
-  <Link {...props} href={props.href}>
-    <a>{props.children}</a>
-  </Link>
-));
 const Profile: FunctionComponent<{ user: User; }> = ({ user }): FunctionComponentElement<ReactNode> => {
 
   const classes = profileStyles();

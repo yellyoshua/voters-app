@@ -2,11 +2,11 @@ FROM node:12.18-alpine
 
 COPY . .
 
-ENV NODE_ENV=production
 
-RUN npm install
+RUN npm install --save
 RUN npm run build
 
+ENV NODE_ENV=production
 EXPOSE 3000
 
 CMD [ "npm", "start" ]

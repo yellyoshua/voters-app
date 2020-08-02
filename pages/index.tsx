@@ -1,6 +1,6 @@
 
 import { useRouter } from "next/router";
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import useIsomorphicLayoutEffect from "../utils/isomorphicLayoutEffect";
 import getQueries, { getQueriesProps } from '../lib/api/getQueries';
 import { sessionStoreValueProps } from '../lib/collection/Store';
@@ -9,13 +9,13 @@ import { API_URL } from '../lib/constants';
 import { LayoutStore } from '../lib/store';
 import Client from "../components/Client";
 
-export const getStaticProps: GetStaticProps<{
+export const getServerSideProps: GetServerSideProps<{
   session: {
     response: sessionStoreValueProps
   };
   homepage: HomePageProps;
-}> = async (req) => {
-  console.log({ req });
+}> = async () => {
+
   const token = "noclient";
   let request: any[any] = [];
 
@@ -43,12 +43,7 @@ export const getStaticProps: GetStaticProps<{
   };
 };
 
-// export const getStaticPaths: GetStaticPaths = async (data: any) => {
-//   // return {};
-//   // ...
-// }
-
-export default (props: InferGetStaticPropsType<typeof getStaticProps>) => {
+export default (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
   const session = props.session;
   const homepage = props.homepage;
@@ -57,7 +52,7 @@ export default (props: InferGetStaticPropsType<typeof getStaticProps>) => {
     if (session.response.user && router.pathname === "/") {
       router.replace("/dashboard");
     }
-  });
+  }, []);
 
   return <LayoutStore variant="homepage" value={{ page: { homepage } }}>
     <Client />
