@@ -7,21 +7,22 @@ const TopNav = styled.div`
   justify-content: space-between;
   background: #212F7A;
   font-weight: 300;
-  ul, a{
+  ul {
     display: flex;
-    color: white;
     list-style-type: none;
     margin: 0;
     padding: 0;
-  }
-  ul li {
-    padding: 5px 5px;
+    li {
+      padding: 5px 5px;
+      a {
+        color: white;
+      }
+    }
   }
   @media (max-width: 600px) {
     justify-content: center;
     ul:nth-of-type(1){
       display: none;
-
     }
   }
 `;
@@ -59,14 +60,10 @@ export default (): ReactElement => {
       </ul>
       <ul>
         <li>
-          <Link href="/idukay">
-            <a>Idukay</a>
-          </Link>
+          <a href="https://idukay.net" target="_blank" rel="noopener noreferrer">Idukay</a>
         </li>
         <li>
-          <Link href="/tienda">
-            <a>Tienda</a>
-          </Link>
+          <a href="https://tienda.iamyell.team" target="_blank" rel="noopener noreferrer">Tienda</a>
         </li>
         <li>
           <Link href="/eventos">
@@ -74,8 +71,8 @@ export default (): ReactElement => {
           </Link>
         </li>
         <li>
-          <Link href="/Blog">
-            <a>Idukay</a>
+          <Link href="/blog">
+            <a>Blog</a>
           </Link>
         </li>
         <li>

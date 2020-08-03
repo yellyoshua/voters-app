@@ -30,6 +30,7 @@ export type layoutStorePagesProps = {
 };
 export type layoutStoreProps = {
   children: ReactNode;
+  session: boolean;
   value: {
     page: layoutStorePagesProps;
   };

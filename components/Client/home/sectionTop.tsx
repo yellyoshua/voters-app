@@ -83,6 +83,13 @@ const Container = styled.div`
   
   @media (max-width: 340px) {
     padding: 10px 0px;
+
+    ${FirstStepsView} {
+      padding: 5px;
+      ${ButtonInscription} {
+        text-align: center;
+      }
+    }
     
     ${ImageView} {
       min-width: 200px;
@@ -116,19 +123,19 @@ export default (): ReactElement => {
         <ul>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/tour-nuestras-instalaciones">
+            <Link href="/p/[id]" as="/p/tour-nuestras-instalaciones">
               <a>Dar un tour por nuestras instituciones</a>
             </Link>
           </ItemLinkStyle>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/nuestro-talento-humano">
+            <Link href="/p/[id]" as="/p/nuestro-talento-humano">
               <a>Conoce nuestro talento humano</a>
             </Link>
           </ItemLinkStyle>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/reda-q">
+            <Link href="/p/[id]" as="/p/reda-q">
               <a>Reda-Q</a>
             </Link>
           </ItemLinkStyle>

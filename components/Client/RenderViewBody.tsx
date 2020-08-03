@@ -12,5 +12,4 @@ export default (props: renderViewBodyProps): ReactElement => {
     default:
       return <NotFount />;
   }
-
 }

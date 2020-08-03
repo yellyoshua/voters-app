@@ -50,8 +50,8 @@ export default (props: NavBarProps): ReactElement => {
   const router = useRouter()
 
   const links = [
-    { name: "Servicios para estudiantes", href: "/servicios-estudiantes" },
-    { name: "Nuestra instituci&oacute;n", href: "/nuestra-institucion" },
+    { name: "Servicios para estudiantes", href: "/p/servicios-estudiantes" },
+    { name: "Nuestra instituci&oacute;n", href: "/p/nuestra-institucion" },
     { name: "Pastoral", href: "/pastoral" },
     { name: "Noticias", href: "/noticias" },
     { name: "Eventos", href: "/eventos" }

@@ -2,7 +2,7 @@ const withPWA = require('next-pwa');
 
 console.log({ ENV: process.env.NODE_ENV });
 
-module.exports = withPWA({
+const productionConfs = withPWA({
   exportTrailingSlash: true,
   poweredByHeader: false,
   // other next config
@@ -19,3 +19,7 @@ module.exports = withPWA({
     ignoreBuildErrors: true
   }
 });
+const developmentConfs = {
+  trailingSlash: true
+};
+module.exports = process.env.NODE_ENV === 'production' ? productionConfs : developmentConfs;

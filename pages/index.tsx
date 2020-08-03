@@ -1,7 +1,5 @@
 
-import { useRouter } from "next/router";
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import useIsomorphicLayoutEffect from "../utils/isomorphicLayoutEffect";
 import getQueries, { getQueriesProps } from '../lib/api/getQueries';
 import { sessionStoreValueProps } from '../lib/collection/Store';
 import { HomePageProps } from '../lib/collection/Page';
@@ -25,7 +23,7 @@ export const getServerSideProps: GetServerSideProps<{
       header: { Authorization: `Bearer ${token}` }
     },
     {
-      url: `${API_URL}/home-page`,
+      url: `${API_URL}/api/home-page`,
       header: { Authorization: "" }
     }
   ];
@@ -44,17 +42,10 @@ export const getServerSideProps: GetServerSideProps<{
 };
 
 export default (props: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const router = useRouter()
   const session = props.session;
   const homepage = props.homepage;
 
-  useIsomorphicLayoutEffect(() => {
-    if (session.response.user && router.pathname === "/") {
-      router.replace("/dashboard");
-    }
-  }, []);
-
-  return <LayoutStore variant="homepage" value={{ page: { homepage } }}>
+  return <LayoutStore session={!!session.response.user} variant="homepage" value={{ page: { homepage } }}>
     <Client />
   </LayoutStore>
 }
