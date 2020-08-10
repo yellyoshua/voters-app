@@ -123,19 +123,19 @@ export default (): ReactElement => {
         <ul>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/p/[id]" as="/p/tour-nuestras-instalaciones">
+            <Link href="/[id]" as="/tour-nuestras-instalaciones">
               <a>Dar un tour por nuestras instituciones</a>
             </Link>
           </ItemLinkStyle>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/p/[id]" as="/p/nuestro-talento-humano">
+            <Link href="/[id]" as="/nuestro-talento-humano">
               <a>Conoce nuestro talento humano</a>
             </Link>
           </ItemLinkStyle>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/p/[id]" as="/p/reda-q">
+            <Link href="/[id]" as="/reda-q">
               <a>Reda-Q</a>
             </Link>
           </ItemLinkStyle>

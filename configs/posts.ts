@@ -1,0 +1,1 @@
+export const POSTS_CONTENT_API_KEY: string = "fde90510424dcaa47e29817209";

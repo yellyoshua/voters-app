@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import styled from "@emotion/styled";
 
 const Container = styled.div`
@@ -6,8 +6,8 @@ const Container = styled.div`
   justify-content: center;
 `;
 
-export default (): ReactElement => {
+export default (props: { children?: ReactNode }): ReactElement => {
   return <Container>
-    Not Found
+    {props.children}
   </Container>;
 }

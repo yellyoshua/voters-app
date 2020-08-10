@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, ReactNode } from "react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import Header from "./Header";
@@ -10,17 +10,17 @@ const Container = styled.div`
   height: auto;
 `;
 
-export default (): ReactElement => {
+export default (props: { pathname: string; children?: ReactNode }): ReactElement => {
   const router = useRouter();
-  const pathname = router.pathname;
+  const pathname = props.pathname;
 
-  const handleClick = (href: string): void => {
+  const goTo = (href: string): void => {
     router.push(href);
   }
 
   return <Container>
-    <Header />
-    <NavBar changeRoute={handleClick} />
-    <RenderViewBody page={pathname} />
+    <Header changeRoute={goTo} />
+    <NavBar changeRoute={goTo} />
+    <RenderViewBody page={pathname} children={props.children} />
   </Container>
 }

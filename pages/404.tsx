@@ -4,6 +4,8 @@ import styled from "@emotion/styled";
 import Typography from "@material-ui/core/Typography";
 import UndoIcon from '@material-ui/icons/Undo';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
+import { Layout } from '../lib/store';
+import Client from "../components/Client";
 
 const UndoIconStyled = styled(UndoIcon)` color: white; `;
 const HomeIconStyled = styled(HomeRoundedIcon)` color: white; `;
@@ -45,14 +47,6 @@ const FlexView = styled.div`
   justify-content: center;
 `;
 
-const Centered = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100vh;
-`;
-
 const Container = styled.div``;
 
 export default function Custom404() {
@@ -66,27 +60,31 @@ export default function Custom404() {
     router.push("/");
   }
 
-  return <Centered>
+  return <>
     <Head>
       <title>404 - No encontrado</title>
     </Head>
-    <Container>
-      <Typography style={{ textAlign: "center" }} variant="h1" component="h2">
-        404
+    <Layout title="GONZU">
+      <Client pathname="not-found">
+        <Container>
+          <Typography style={{ textAlign: "center" }} variant="h1" component="h2">
+            404
       </Typography>
-      <Typography style={{ textAlign: "center" }} variant="h5" component="h2">
-        P&aacute;gina no encontrada
+          <Typography style={{ textAlign: "center" }} variant="h5" component="h2">
+            P&aacute;gina no encontrada
       </Typography>
-      <FlexView>
-        <Button onClick={goBack}>
-          <UndoIconStyled />
-          <p>Regresar</p>
-        </Button>
-        <Button onClick={goHome}>
-          <HomeIconStyled />
-          <p>Ir a Inicio</p>
-        </Button>
-      </FlexView>
-    </Container>
-  </Centered>
+          <FlexView>
+            <Button onClick={goBack}>
+              <UndoIconStyled />
+              <p>Regresar</p>
+            </Button>
+            <Button onClick={goHome}>
+              <HomeIconStyled />
+              <p>Ir a Inicio</p>
+            </Button>
+          </FlexView>
+        </Container>
+      </Client>
+    </Layout>
+  </>
 }

@@ -15,7 +15,7 @@ const Container = styled.div`
     justify-content: space-around;
     text-decoration-line: none;
     color: black;
-    font-size: 16px;
+    font-size: 1.2rem;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -29,7 +29,7 @@ const Container = styled.div`
   @media (max-width: 600px) {
     padding: 0px 0px;
     a {
-      font-size: 15px;
+      font-size: 1rem;
     }
     justify-content: center;
     ul li:nth-of-type(1){
@@ -46,19 +46,21 @@ type NavBarProps = {
 
 export default (props: NavBarProps): ReactElement => {
   const changeRoute = props.changeRoute;
-  const [pathName, setPathName] = useState("/");
+  const [pathName, setPathName] = useState<string | null>(null);
   const router = useRouter()
 
   const links = [
-    { name: "Servicios para estudiantes", href: "/p/servicios-estudiantes" },
-    { name: "Nuestra instituci&oacute;n", href: "/p/nuestra-institucion" },
+    { name: "Servicios para estudiantes", href: "/servicios-estudiantes" },
+    { name: "Nuestra instituci&oacute;n", href: "/nuestra-institucion" },
     { name: "Pastoral", href: "/pastoral" },
     { name: "Noticias", href: "/noticias" },
     { name: "Eventos", href: "/eventos" }
   ];
 
   useEffect(() => {
-    changeRoute(pathName);
+    if (pathName) {
+      changeRoute(pathName);
+    }
   }, [pathName])
 
   const handleClick = (e: FormEvent<HTMLAnchorElement>, href: string): void => {

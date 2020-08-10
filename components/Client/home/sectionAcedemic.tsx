@@ -151,7 +151,7 @@ export default (): ReactElement => {
             Preparatoria y educaci&oacute;n b&aacute;sica elemental.
           </p>
         </div>
-        <Button url="/p/preparatoria-basica-elemental" color="#212F7A" />
+        <Button url="/preparatoria-basica-elemental" color="#212F7A" />
       </Column>
       <Column>
         <div>
@@ -162,7 +162,7 @@ export default (): ReactElement => {
             Educaci&oacute;n B&aacute;sica media y Educaci&oacute;n B&aacute;sica Superior.
           </p>
         </div>
-        <Button url="/p/basica-media-y-educacion-basica-superior" color="#006AA8" />
+        <Button url="/basica-media-y-educacion-basica-superior" color="#006AA8" />
       </Column>
       <Column>
         <div>
@@ -173,7 +173,7 @@ export default (): ReactElement => {
             Bachillerato General Unificado.
           </p>
         </div>
-        <Button url="/p/bachillerato-general-unificado" color="#69217A" />
+        <Button url="/bachillerato-general-unificado" color="#69217A" />
       </Column>
     </Grid>
   </Container>;

@@ -131,7 +131,7 @@ export default (): ReactElement => {
           <ul>
             <ItemLinkStyle>
               <span></span>
-              <Link href="/p/[id]" as="/p/conoce-nuestra-historia">
+              <Link href="/[id]" as="/conoce-nuestra-historia">
                 <a>Conoce nuestra historia</a>
               </Link>
             </ItemLinkStyle>

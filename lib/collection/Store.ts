@@ -1,39 +1,19 @@
 import { ReactNode } from "react";
 import { User } from "./User";
-import { HomePageProps, BlogPageProps, ContactPageProps } from "./Page"
+import { CREATE_POST, CREATE_SESSION, REMOVE_SESSION } from "../constants";
 
-export type sessionStoreDispatch = void;
-export type layoutStoreDispatch = void;
-
-export type sessionStoreValueProps = {
-  sessionToken: string;
-  session: {
-    profiles: [{
-      name: string;
-      show: string;
-      can: string;
-    }?];
-  };
-  user: User | null;
-  content: {};
+export type storeState = {
+  session: User | null;
+  userCanView: string[];
 }
-export type sessionStoreProps = {
+
+export type storeDispatchActions = {
+  type: typeof CREATE_POST | typeof CREATE_SESSION | typeof REMOVE_SESSION;
+  value: {};
+}
+
+export type storeComponentProps = {
   children: ReactNode;
-  value: sessionStoreValueProps;
+  session: User | null;
+  title?: string;
 }
-
-export type layoutStorePagesProps = {
-  homepage?: HomePageProps;
-  blogpage?: BlogPageProps;
-  contactpage?: ContactPageProps;
-  private?: { title: string; };
-};
-export type layoutStoreProps = {
-  children: ReactNode;
-  session: boolean;
-  value: {
-    page: layoutStorePagesProps;
-  };
-  variant: "private" | "homepage" | "blogpage" | "contactpage";
-}
-export type useContextLayoutStoreProps = [{ page: layoutStorePagesProps }, void]

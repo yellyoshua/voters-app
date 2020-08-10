@@ -3,14 +3,16 @@ import styled from "@emotion/styled";
 import SectionTop from "./sectionTop";
 import SectionAcedemic from "./sectionAcedemic";
 import SectionAbout from "./sectionAbout";
+import SectionNews from "./sectionsNews";
 
-const Container = styled.div``;
+const Home = styled.div``;
 
 export default (): ReactElement => {
 
-  return <Container>
+  return <Home>
     <SectionTop />
     <SectionAcedemic />
     <SectionAbout />
-  </Container>;
+    <SectionNews />
+  </Home>;
 }

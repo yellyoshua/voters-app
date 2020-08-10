@@ -1,5 +1,4 @@
 import { FunctionComponent, FunctionComponentElement, ReactNode } from 'react';
-import { User } from '../lib/collection/User';
 import { Avatar, Typography, Drawer } from "@material-ui/core";
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
@@ -32,7 +31,7 @@ const drawerlistStyles = makeStyles((theme: Theme) => (createStyles({
 );
 
 type DrawerProps = {
-  user: User;
+  user: any;
 }
 export default ({ user }: DrawerProps): FunctionComponentElement<ReactNode> => {
 
@@ -67,7 +66,7 @@ const profileStyles = makeStyles((theme: Theme) => ({
   }
 }));
 
-const Profile: FunctionComponent<{ user: User; }> = ({ user }): FunctionComponentElement<ReactNode> => {
+const Profile: FunctionComponent<{ user: any; }> = ({ user }): FunctionComponentElement<ReactNode> => {
 
   const classes = profileStyles();
 

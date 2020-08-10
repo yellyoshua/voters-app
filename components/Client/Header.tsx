@@ -1,6 +1,7 @@
-import { ReactElement } from "react";
-import Link from "next/link";
+import { ReactElement, FormEvent } from "react";
 import styled from "@emotion/styled";
+import { User } from "../../lib/collection/User";
+import { useMe } from "../../hooks/useSWR";
 
 const TopNav = styled.div`
   display: flex;
@@ -37,6 +38,9 @@ const ContainerBanner = styled.div`
     width: auto;
     height: 100%;
   }
+  img:hover {
+    cursor: pointer;
+  }
 `;
 const Container = styled.div`
   @media (max-width: 600px) {
@@ -47,8 +51,18 @@ const Container = styled.div`
   }
 `;
 
-export default (): ReactElement => {
+export default (props: { changeRoute: (href: string) => any; }): ReactElement => {
+  const changeRoute = props.changeRoute;
+  const { data, error } = useMe().fetch;
+  const user: User = data;
+
+  const link = (event: FormEvent<HTMLAnchorElement>, path: string) => {
+    event.preventDefault();
+    changeRoute(path);
+  }
+
   return <Container>
+    {!!user && <div>{user.email}</div>}
     <TopNav>
       <ul>
         <li>
@@ -66,24 +80,18 @@ export default (): ReactElement => {
           <a href="https://tienda.iamyell.team" target="_blank" rel="noopener noreferrer">Tienda</a>
         </li>
         <li>
-          <Link href="/eventos">
-            <a>Eventos</a>
-          </Link>
+          <a onClick={(e) => link(e, "/eventos")} href="/eventos" >Eventos</a>
         </li>
         <li>
-          <Link href="/blog">
-            <a>Blog</a>
-          </Link>
+          <a onClick={(e) => link(e, "/blog")} href="/blog">Blog</a>
         </li>
         <li>
-          <Link href="/ayuda">
-            <a>Ayuda</a>
-          </Link>
+          <a onClick={(e) => link(e, "/ayuda")} href="/ayuda">Ayuda</a>
         </li>
       </ul>
     </TopNav>
     <ContainerBanner>
-      <img src="/assets/gonzu-header-banner.jpg" alt="gonzu-header-banner" />
+      <img onClick={() => changeRoute("/")} src="/assets/gonzu-header-banner.jpg" alt="gonzu-header-banner" />
     </ContainerBanner>
   </Container>
 }
