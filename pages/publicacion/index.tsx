@@ -4,14 +4,14 @@ import { AuthWithFetch } from '../../hooks/useAuth';
 import { User } from '../../lib/collection/User';
 import { PrivateLayout } from '../../lib/store';
 
-import Private from "../../components/Private";
+import Page from "../../components/Page";
 
 export default function Publicacion(props: { session: User; beUser: boolean }) {
   const user = props.session;
   return <PrivateLayout session={user} title="Publicaciones">
-    <Private>
+    <Page isPriv={false} pageName="publicaciones">
       Publicacion: {props.session.email}
-    </Private>
+    </Page>
   </PrivateLayout>
 }
 

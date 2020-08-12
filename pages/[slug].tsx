@@ -1,7 +1,7 @@
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { getAllPost, getPostBySlug } from "../lib/api/post";
 import { LayoutPost } from '../lib/store';
-import Client from "../components/Client";
+import Page from "../components/Page";
 import { Reader } from "../components/Reader";
 
 export async function getStaticPaths() {
@@ -47,8 +47,8 @@ export default function Post(props: InferGetStaticPropsType<typeof getStaticProp
   const post = props.post;
 
   return <LayoutPost post={post} >
-    <Client pathname="post-view">
+    <Page isPriv={false} pageName="post-view" >
       <Reader post={post} />
-    </Client>
+    </Page>
   </LayoutPost>;
 }

@@ -116,7 +116,7 @@ export default (): ReactElement => {
       <p>Acerca de</p>
     </TitleSection>
     <Grid>
-      <Column>
+      <Column style={{ alignSelf: "center" }}>
         <SubTitleSection>
           <p>Acerca la instituci&oacute;n</p>
         </SubTitleSection>
@@ -131,16 +131,16 @@ export default (): ReactElement => {
           <ul>
             <ItemLinkStyle>
               <span></span>
-              <Link href="/[id]" as="/conoce-nuestra-historia">
+              <Link href="/[slug]" as="/conoce-nuestra-historia">
                 <a>Conoce nuestra historia</a>
               </Link>
             </ItemLinkStyle>
           </ul>
         </QuickLinks>
       </Column>
-      <Column>
+      <Column style={{ alignSelf: "center" }}>
         <ImageView>
-          <img src="/assets/entrada-principal-insitucion.jpg" alt="entrada-principal-insitucion" />
+          <img loading="lazy" src="/assets/entrada-principal-insitucion-min.jpg" alt="entrada-principal-insitucion" />
         </ImageView>
       </Column>
     </Grid>

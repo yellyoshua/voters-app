@@ -1,13 +1,13 @@
-import { ReactElement, FormEvent } from "react";
+import { ReactElement } from "react";
 import styled from "@emotion/styled";
-import { User } from "../../lib/collection/User";
-import { useMe } from "../../hooks/useSWR";
+import Link from "next/link";
 
 const TopNav = styled.div`
   display: flex;
   justify-content: space-between;
   background: #212F7A;
   font-weight: 300;
+  padding: 10px 10px;
   ul {
     display: flex;
     list-style-type: none;
@@ -46,30 +46,30 @@ const Container = styled.div`
   @media (max-width: 600px) {
     ${ContainerBanner} {
       padding: 25px 0px;
+      height: 87px;
+    }
+    ${TopNav} {
+      padding: 5px 10px;
+    }
+  }
+  @media (max-width: 350px) {
+    ${ContainerBanner} {
+      padding: 25px 0px;
       height: 70px;
     }
   }
 `;
 
-export default (props: { changeRoute: (href: string) => any; }): ReactElement => {
-  const changeRoute = props.changeRoute;
-  const { data, error } = useMe().fetch;
-  const user: User = data;
-
-  const link = (event: FormEvent<HTMLAnchorElement>, path: string) => {
-    event.preventDefault();
-    changeRoute(path);
-  }
+export default (): ReactElement => {
 
   return <Container>
-    {!!user && <div>{user.email}</div>}
     <TopNav>
       <ul>
         <li>
-          <a href="tel:02222333">(222-333)</a>
+          <a style={{ textDecoration: "none" }} href="tel:02601590">(02-601-590)</a>
         </li>
         <li>
-          <a href="mailto:contacto@gonzu.edu.ec">contacto@gonzu.edu.ec</a>
+          <a style={{ textDecoration: "none" }} href="mailto:17h00687@gmail.com">17h00687@gmail.com</a>
         </li>
       </ul>
       <ul>
@@ -80,18 +80,23 @@ export default (props: { changeRoute: (href: string) => any; }): ReactElement =>
           <a href="https://tienda.iamyell.team" target="_blank" rel="noopener noreferrer">Tienda</a>
         </li>
         <li>
-          <a onClick={(e) => link(e, "/eventos")} href="/eventos" >Eventos</a>
+          <Link href="/eventos">
+            <a>Eventos</a>
+          </Link>
         </li>
         <li>
-          <a onClick={(e) => link(e, "/blog")} href="/blog">Blog</a>
-        </li>
-        <li>
-          <a onClick={(e) => link(e, "/ayuda")} href="/ayuda">Ayuda</a>
+          <Link href="/[slug]" as="/preguntas-frecuentes">
+            <a>Ayuda</a>
+          </Link>
         </li>
       </ul>
     </TopNav>
     <ContainerBanner>
-      <img onClick={() => changeRoute("/")} src="/assets/gonzu-header-banner.jpg" alt="gonzu-header-banner" />
+      <Link href="/">
+        <a style={{ textDecoration: "none" }}>
+          <img loading="lazy" src="/assets/gonzu-header-banner.jpg" alt="gonzu-header-banner" />
+        </a>
+      </Link>
     </ContainerBanner>
   </Container>
 }

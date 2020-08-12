@@ -4,5 +4,5 @@ import styled from "@emotion/styled";
 const Container = styled.div``;
 
 export default (): ReactElement => {
-  return <Container></Container>
+  return <Container>Dashboard</Container>
 }

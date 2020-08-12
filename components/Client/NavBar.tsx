@@ -1,6 +1,8 @@
-import { useEffect, useState, FormEvent, ReactElement } from "react";
+import { useState, FormEvent, ReactElement } from "react";
+import useIsomorphicLayoutEffect from "../../hooks/useIsomorphicLayoutEffect";
 import styled from "@emotion/styled";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const UnderLine = styled.div`
   width: 100%;
@@ -29,7 +31,7 @@ const Container = styled.div`
   @media (max-width: 600px) {
     padding: 0px 0px;
     a {
-      font-size: 1rem;
+      font-size: 1.2rem;
     }
     justify-content: center;
     ul li:nth-of-type(1){
@@ -57,23 +59,24 @@ export default (props: NavBarProps): ReactElement => {
     { name: "Eventos", href: "/eventos" }
   ];
 
-  useEffect(() => {
-    if (pathName) {
-      changeRoute(pathName);
-    }
-  }, [pathName])
+  useIsomorphicLayoutEffect(() => {
+    setPathName(router.pathname);
+  });
 
-  const handleClick = (e: FormEvent<HTMLAnchorElement>, href: string): void => {
-    e.preventDefault();
-    setPathName(href);
-  }
+  console.log({ pathName });
 
   return <Container>
     <ul>
       {links.map((link, key) => (
         <li key={key}>
-          <a href={link.href} onClick={(e) => handleClick(e, link.href)} dangerouslySetInnerHTML={{ __html: link.name }} />
-          <UnderLine style={router.pathname == link.href ? { background: "#A80000;" } : { background: "white" }} />
+          <Link href={link.href}>
+            <a dangerouslySetInnerHTML={{ __html: link.name }} />
+          </Link>
+          {link.href == pathName ? (
+            <UnderLine style={{ background: "#A80000" }} />
+          ) : (
+              <UnderLine style={{ background: "white" }} />
+            )}
         </li>
       ))}
     </ul>

@@ -4,7 +4,7 @@ import Router from "next/router";
 import { MetaPages, MetaPosts } from "../utils/metaBuilder";
 import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import storeActions from "./actions";
-import { DOMAIN_NAME } from "../configs";
+import { DOMAIN_NAME, IS_DEV } from "../configs";
 import { StoreContext } from "../hooks/useStore";
 import { storeComponentProps } from "./collection/Store";
 import { User } from "./collection/User";
@@ -57,9 +57,13 @@ export const PrivateLayout = (props: storeComponentProps): ReactElement => {
 
   return <div>
     <Head>
-      <MetaPages />
+      <MetaPages domain={DOMAIN_NAME} />
       <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;600;700&display=swap" rel="stylesheet" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
       <link rel='manifest' href='/manifest.json' />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="icon" href="/favicon.ico" />
       <title>{title}</title>
     </Head>
@@ -82,11 +86,30 @@ export const LayoutPost = (props: { post: Post; children: ReactNode }) => {
 
   return <div>
     <Head>
+      {
+        !IS_DEV && (
+          <>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-175200262-1" />
+            <script dangerouslySetInnerHTML={{
+              __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+  
+              gtag('config', 'UA-175200262-1');
+              `
+            }} />
+          </>
+        )
+      }
       <link rel="stylesheet" href="/assets/estile.css" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
       <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;600;700&display=swap" rel="stylesheet" />
       <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
       <link rel='manifest' href='/manifest.json' />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="icon" href="/favicon.ico" />
       <MetaPosts post={props.post} domain={domainName} />
       <title>{props.post.title}</title>
@@ -109,11 +132,32 @@ export const Layout = (props: { children: ReactNode; title?: string; }): ReactEl
 
   return <div>
     <Head>
-      <MetaPages />
+      {
+        !IS_DEV && (
+          <>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-175200262-1" />
+            <script dangerouslySetInnerHTML={{
+              __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+  
+              gtag('config', 'UA-175200262-1');
+              `
+            }} />
+          </>
+        )
+      }
+      <link rel="stylesheet" href="/assets/estile.css" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
       <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;600;700&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet" />
       <link rel='manifest' href='/manifest.json' />
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
       <link rel="icon" href="/favicon.ico" />
+      <MetaPages domain={DOMAIN_NAME} />
       <title> {title} </title>
     </Head>
     {props.children}

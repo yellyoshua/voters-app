@@ -36,7 +36,7 @@ export default (props: { post: Post }): ReactElement => {
                   props.post.authors && props.post.authors.map((author, key) => (
                     <li key={author.id} className="author-list-item">
                       <a href={`/autor/${author.slug}`} className="author-avatar">
-                        <img className="author-profile-image" src={`${author.profile_image}`} alt={`${author.name}`} />
+                        <img loading="lazy" className="author-profile-image" src={`${author.profile_image}`} alt={`${author.name}`} />
                       </a>
                     </li>
                   ))
@@ -75,7 +75,7 @@ export default (props: { post: Post }): ReactElement => {
         </header>
 
         <figure className="post-full-image">
-          <img srcSet={`${props.post.feature_image} 300w,${props.post.feature_image} 600w,${props.post.feature_image} 1000w,${props.post.feature_image} 2000w`}
+          <img loading="lazy" srcSet={`${props.post.feature_image} 300w,${props.post.feature_image} 600w,${props.post.feature_image} 1000w,${props.post.feature_image} 2000w`}
             sizes="(max-width: 800px) 400px,(max-width: 1170px) 1170px, 2000px" src={props.post.feature_image}
             alt={`${props.post.title}`} />
         </figure>

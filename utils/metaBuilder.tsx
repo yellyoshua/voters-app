@@ -2,18 +2,33 @@ import { ReactElement } from "react";
 import { Post } from "../lib/collection/Post";
 
 const defaultMetaProps = {
-  title: "Unidad Educativa Cardenal Gonzalez Zumarraga",
+  title: "UE Cardenal Gonzalez Zumarraga",
+  description: "Bienvenidos a la página oficial de la Unidad Educativa Cardenal Gonzalez Zumarraga. Exelencia académica siempre. Aqui recibiran informacion referente a nuestra institución.",
+  image: "/assets/vista-frontal-edificio-patio-principal-min.jpg"
 };
 
-export type MetaPagesProps = {};
+export type MetaPagesProps = { domain: string; };
 export const MetaPages = (props: MetaPagesProps): ReactElement => {
   return <>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <meta name="title" content={`${defaultMetaProps.title}`} />
+    <meta name="description" content={`${defaultMetaProps.description}`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://${props.domain}`} />
+    <meta property="og:title" content={`${defaultMetaProps.title}`} />
+    <meta property="og:description" content={`${defaultMetaProps.description}`} />
+    <meta property="og:image" content={`https://${props.domain}${defaultMetaProps.image}`} />
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={`https://${props.domain}`} />
+    <meta property="twitter:title" content={`${defaultMetaProps.title}`} />
+    <meta property="twitter:description" content={`${defaultMetaProps.description}`} />
+    <meta property="twitter:image" content={`https://${props.domain}${defaultMetaProps.image}`} />
   </>;
 }
 
-export type MetaPostProps = Post;
-export const MetaPosts = (props: { domain: string; post: MetaPostProps }): ReactElement => {
+export type MetaPostProps = { domain: string; post: Post };
+export const MetaPosts = (props: MetaPostProps): ReactElement => {
   let keywords: string = "";
   if (props.post.tags) {
     for (let i = 0; props.post.tags?.length > i; i++) {
@@ -39,7 +54,7 @@ export const MetaPosts = (props: { domain: string; post: MetaPostProps }): React
     <meta property="article:tag" content={`${keywords}`} />
 
     <meta property="article:publisher" content="https://www.facebook.com/gonzuofficial" />
-    <meta property="article:author" content="https://www.facebook.com/ghost" />
+    <meta property="article:author" content="https://www.facebook.com/gonzuofficial" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${props.post.twitter_title || props.post.title}`} />
     <meta name="twitter:description" content={`${props.post.twitter_description || props.post.excerpt}`} />
@@ -59,7 +74,7 @@ export const MetaPosts = (props: { domain: string; post: MetaPostProps }): React
             "url": `https://www.${props.domain}`,
             "logo": {
               "@type": "ImageObject",
-              "url": `https://www.${props.domain}/assets/gonzu-logo.jpg`
+              "url": `https://www.${props.domain}/favicon-32x32.png`
             }
           },
           "author": {

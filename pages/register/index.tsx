@@ -3,11 +3,11 @@ import { NextPageContext } from 'next';
 import { AuthWithFetch } from '../../hooks/useAuth';
 import { User } from '../../lib/collection/User';
 import { Layout } from '../../lib/store';
-import Client from "../../components/Client";
+import Page from "../../components/Page";
 
 export default function RegisterPage(_props: { session: User; beUser: boolean }) {
   return <Layout title="Signup">
-    <Client pathname="register" />
+    <Page isPriv={false} pageName="register" />
   </Layout>
 }
 

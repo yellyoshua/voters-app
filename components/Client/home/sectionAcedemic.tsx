@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import PalleteIcon from "@material-ui/icons/PaletteOutlined";
@@ -45,10 +46,14 @@ const Button = (props: { url: string; color: string }) => {
   `;
 
   return <div style={{ padding: "0px 10px", display: "flex", justifyContent: "center" }}>
-    <ButtonStyled onClick={goTo} color={props.color}>
-      Conocer m&aacute;s
-      <ArrowIcon theme={{ color: props.color }} />
-    </ButtonStyled>
+    <Link href="/[slug]" as={`${props.url}`}>
+      <a style={{ textDecoration: "none", color: props.color }}>
+        <ButtonStyled color={props.color}>
+          Conocer m&aacute;s
+          <ArrowIcon theme={{ color: props.color }} />
+        </ButtonStyled>
+      </a>
+    </Link>
   </div>
 }
 

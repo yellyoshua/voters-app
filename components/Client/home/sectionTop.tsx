@@ -18,6 +18,7 @@ const ImageView = styled.div`
 `;
 
 const FirstStepsView = styled.div`
+  align-self: center;
   padding-left: 20px;
   div:nth-of-type(1) p {
     font-weight: bold;
@@ -60,17 +61,20 @@ const ItemLinkStyle = styled.li`
 
 const ButtonInscription = styled.div`
   padding: 20px 0px;
-  button {
-    background: #A80000;
-    border: 5px solid #A80000;
-    padding: 8px;
-    font-size: 18px;
-    font-weight: 800;
-    color: white;
-    &:hover {
-      cursor: pointer;
-      background: white;
-      color: #A80000;
+  a {
+    text-decoration: none;
+    button {
+      background: #A80000;
+      border: 5px solid #A80000;
+      padding: 8px;
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      &:hover {
+        cursor: pointer;
+        background: white;
+        color: #A80000;
+      }
     }
   }
 `;
@@ -110,7 +114,7 @@ const Container = styled.div`
 export default (): ReactElement => {
   return <Container>
     <ImageView>
-      <img src="/assets/vista-frontal-edificio-patio-principal.jpg" alt="vista-frontal-edificio-patio-principal" />
+      <img loading="lazy" src="/assets/vista-frontal-edificio-patio-principal-min.jpg" alt="vista-frontal-edificio-patio-principal" />
     </ImageView>
     <FirstStepsView>
       <div>
@@ -123,26 +127,30 @@ export default (): ReactElement => {
         <ul>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/[id]" as="/tour-nuestras-instalaciones">
+            <Link href="/[slug]" as="/tour-nuestras-instalaciones">
               <a>Dar un tour por nuestras instituciones</a>
             </Link>
           </ItemLinkStyle>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/[id]" as="/nuestro-talento-humano">
+            <Link href="/[slug]" as="/nuestro-talento-humano">
               <a>Conoce nuestro talento humano</a>
             </Link>
           </ItemLinkStyle>
           <ItemLinkStyle>
             <span></span>
-            <Link href="/[id]" as="/reda-q">
+            <Link href="/[slug]" as="/reda-q">
               <a>Reda-Q</a>
             </Link>
           </ItemLinkStyle>
         </ul>
       </div>
       <ButtonInscription>
-        <button type="submit">Proceso de inscripci&oacute;n</button>
+        <Link href="/[slug]" as="/proceso-de-inscripcion">
+          <a>
+            <button type="submit">Proceso de inscripci&oacute;n</button>
+          </a>
+        </Link>
       </ButtonInscription>
     </FirstStepsView>
   </Container>;

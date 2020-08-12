@@ -31,7 +31,7 @@ const Login = styled.div`
 export default (): ReactElement => {
   return <Login>
     <ImageSection>
-      <img src="/assets/undraw_online_connection_6778.svg" alt="" />
+      <img loading="lazy" src="/assets/undraw_online_connection_6778.svg" alt="login" />
     </ImageSection>
     <FormStyled />
   </Login>

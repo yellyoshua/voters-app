@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import UndoIcon from '@material-ui/icons/Undo';
 import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import { Layout } from '../lib/store';
-import Client from "../components/Client";
+import Page from "../components/Page";
 
 const UndoIconStyled = styled(UndoIcon)` color: white; `;
 const HomeIconStyled = styled(HomeRoundedIcon)` color: white; `;
@@ -65,7 +65,7 @@ export default function Custom404() {
       <title>404 - No encontrado</title>
     </Head>
     <Layout title="GONZU">
-      <Client pathname="not-found">
+      <Page isPriv={false} pageName="not-found">
         <Container>
           <Typography style={{ textAlign: "center" }} variant="h1" component="h2">
             404
@@ -84,7 +84,7 @@ export default function Custom404() {
             </Button>
           </FlexView>
         </Container>
-      </Client>
+      </Page>
     </Layout>
   </>
 }
