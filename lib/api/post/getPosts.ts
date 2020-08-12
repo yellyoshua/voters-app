@@ -6,7 +6,7 @@ export const getAllPost = async (page?: number) => {
   try {
     let posts;
 
-    if (page) {
+    if (!!Number(page)) {
       posts = await apiPost.posts.browse({ page, include: ["tags", "authors"] });
     }
 
@@ -39,7 +39,7 @@ export const getEvents = async (page?: number) => {
   try {
     let events;
 
-    if (page) {
+    if (!!Number(page)) {
       events = await apiPost.posts.browse({ page, filter: "tag:eventos+tag:events", include: ["tags", "authors"] });
     }
 
