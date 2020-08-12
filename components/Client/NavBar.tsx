@@ -52,11 +52,11 @@ export default (props: NavBarProps): ReactElement => {
   const router = useRouter()
 
   const links = [
-    { name: "Servicios para estudiantes", href: "/servicios-estudiantes" },
-    { name: "Nuestra instituci&oacute;n", href: "/nuestra-institucion" },
-    { name: "Pastoral", href: "/pastoral" },
-    { name: "Noticias", href: "/noticias" },
-    { name: "Eventos", href: "/eventos" }
+    { name: "Servicios para estudiantes", href: "/servicios-estudiantes", dynamic: true },
+    { name: "Nuestra instituci&oacute;n", href: "/nuestra-institucion", dynamic: true },
+    { name: "Pastoral", href: "/pastoral", dynamic: false },
+    { name: "Noticias", href: "/noticias", dynamic: false },
+    { name: "Eventos", href: "/eventos", dynamic: false }
   ];
 
   useIsomorphicLayoutEffect(() => {
@@ -69,9 +69,15 @@ export default (props: NavBarProps): ReactElement => {
     <ul>
       {links.map((link, key) => (
         <li key={key}>
-          <Link href={link.href}>
-            <a dangerouslySetInnerHTML={{ __html: link.name }} />
-          </Link>
+          {link.dynamic ? (
+            <Link href="/[slug]" as={link.href}>
+              <a dangerouslySetInnerHTML={{ __html: link.name }} />
+            </Link>
+          ) : (
+              <Link href={link.href}>
+                <a dangerouslySetInnerHTML={{ __html: link.name }} />
+              </Link>
+            )}
           {link.href == pathName ? (
             <UnderLine style={{ background: "#A80000" }} />
           ) : (

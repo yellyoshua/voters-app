@@ -10,12 +10,6 @@ import ArrowRightAltIcon from '@material-ui/icons/ArrowRightAlt';
 
 const Button = (props: { url: string; color: string }) => {
 
-  const router = useRouter();
-
-  const goTo = () => {
-    router.push(props.url);
-  };
-
   const ArrowIcon = styled(ArrowRightAltIcon)`
     padding: 0px 5px;
     color: ${(props: { theme: { color: string } }) => props.theme.color};

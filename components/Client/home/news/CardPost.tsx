@@ -171,9 +171,11 @@ export default (props: { post: Post; children?: ReactNode }): ReactElement => {
     return <Link href="/[slug]" as={`/${post.slug}`}>
       <a style={{ textDecoration: "none", padding: "none" }}>
         <CardPosts>
-          <CardImage>
-            <img loading="lazy" src={props.post.feature_image} alt={`${props.post.slug}`} />
-          </CardImage>
+          {!!post.feature_image && (
+            <CardImage>
+              <img loading="lazy" src={post.feature_image} alt={`${post.slug}`} />
+            </CardImage>
+          )}
           {!!post.tags?.length && (
             <CardTag>{post.tags[0]?.name}</CardTag>
           )}
@@ -184,13 +186,18 @@ export default (props: { post: Post; children?: ReactNode }): ReactElement => {
           <CardAuthors>
             <ul>
               {
-                post.authors && post.authors.map((author, key) => (
-                  <li key={key}>
-                    <div>
-                      <img loading="lazy" src={`${author.profile_image}`} alt={`${author.name}`} />
-                    </div>
-                  </li>
-                ))
+                post.authors && post.authors.map((author, key) => {
+                  if (!!author.profile_image) {
+                    return (
+                      <li key={key}>
+                        <div>
+                          <img loading="lazy" src={`${author.profile_image}`} alt={`${author.name}`} />
+                        </div>
+                      </li>
+                    )
+                  }
+                  return null;
+                })
               }
             </ul>
             <section>

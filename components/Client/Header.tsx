@@ -69,7 +69,7 @@ export default (): ReactElement => {
           <a style={{ textDecoration: "none" }} href="tel:02601590">(02-601-590)</a>
         </li>
         <li>
-          <a style={{ textDecoration: "none" }} href="mailto:17h00687@gmail.com">17h00687@gmail.com</a>
+          <a style={{ textDecoration: "none" }} href="mailto:gonzu2015@gmail.com">gonzu2015@gmail.com</a>
         </li>
       </ul>
       <ul>

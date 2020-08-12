@@ -1,5 +1,12 @@
 import { ReactElement } from "react";
+import styled from "@emotion/styled";
 import { Post } from "../../lib/collection/Post";
+
+const LineDivider = styled.div`
+  margin: 20px auto;
+  max-width: 600px;
+  border: 1px solid #a80000;
+`;
 
 export default (props: { post: Post }): ReactElement => {
   const sliceFirstWord = (words: string) => {
@@ -9,6 +16,8 @@ export default (props: { post: Post }): ReactElement => {
   }
 
   return <main id="site-main" className="site-main outer">
+    <LineDivider />
+
     <div className="inner">
 
       <article className="post-full post tag-getting-started ">
@@ -23,9 +32,17 @@ export default (props: { post: Post }): ReactElement => {
             }
           </section>
 
-          <h1 className="post-full-title">{props.post.title}</h1>
+          {props.post.title ? (
+            <h1 className="post-full-title">{props.post.title}</h1>
+          ) : (
+              <h1 style={{ textAlign: "center" }} className="post-full-title">Publicaci&oacute;n no encontrada</h1>
+            )}
 
-          <p className="post-full-custom-excerpt">{props.post.excerpt}</p>
+          {!!props.post.excerpt ? (
+            <p className="post-full-custom-excerpt">{props.post.excerpt}</p>
+          ) : (
+              <p style={{ textAlign: "center" }} className="post-full-custom-excerpt">-- Sin descripci&oacute;n --</p>
+            )}
 
           <div className="post-full-byline">
 
@@ -36,7 +53,9 @@ export default (props: { post: Post }): ReactElement => {
                   props.post.authors && props.post.authors.map((author, key) => (
                     <li key={author.id} className="author-list-item">
                       <a href={`/autor/${author.slug}`} className="author-avatar">
-                        <img loading="lazy" className="author-profile-image" src={`${author.profile_image}`} alt={`${author.name}`} />
+                        {!!author.profile_image && (
+                          <img loading="lazy" className="author-profile-image" src={`${author.profile_image}`} alt={`${author.name}`} />
+                        )}
                       </a>
                     </li>
                   ))
@@ -68,21 +87,31 @@ export default (props: { post: Post }): ReactElement => {
             </section>
 
             <section className="section-reading-time">
-              <h3>Lectura {props.post.reading_time}min</h3>
+              <h3>Lectura {props.post.reading_time || "0"} min</h3>
             </section>
 
           </div>
         </header>
+        {!!props.post.feature_image && (
+          <figure className="post-full-image">
+            <img loading="lazy" srcSet={`${props.post.feature_image} 300w,${props.post.feature_image} 600w,${props.post.feature_image} 1000w,${props.post.feature_image} 2000w`}
+              sizes="(max-width: 800px) 400px,(max-width: 1170px) 1170px, 2000px" src={props.post.feature_image}
+              alt={`${props.post.title}`} />
+          </figure>
+        )}
 
-        <figure className="post-full-image">
-          <img loading="lazy" srcSet={`${props.post.feature_image} 300w,${props.post.feature_image} 600w,${props.post.feature_image} 1000w,${props.post.feature_image} 2000w`}
-            sizes="(max-width: 800px) 400px,(max-width: 1170px) 1170px, 2000px" src={props.post.feature_image}
-            alt={`${props.post.title}`} />
-        </figure>
+        {props.post.html ? (
+          <section className="post-full-content">
+            <div className="post-content" dangerouslySetInnerHTML={{ __html: props.post.html }} />
+          </section>
+        ) : (
+            <section className="post-full-content">
+              <div className="post-content">
+                <h4 style={{ textAlign: "center" }}>No hay texto</h4>
+              </div>
+            </section>
+          )}
 
-        <section className="post-full-content">
-          <div className="post-content" dangerouslySetInnerHTML={{ __html: props.post.html }} />
-        </section>
       </article>
     </div>
   </main>

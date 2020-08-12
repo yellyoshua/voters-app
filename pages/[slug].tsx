@@ -1,6 +1,6 @@
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
 import { getAllPost, getPostBySlug } from "../lib/api/post";
-import { LayoutPost } from '../lib/store';
+import { LayoutPost, Layout } from '../lib/store';
 import Page from "../components/Page";
 import { Reader } from "../components/Reader";
 
@@ -35,7 +35,7 @@ export const getStaticProps: GetStaticProps<{
   catch (error) {
     post = {};
   }
-
+  console.log({ post })
   return {
     props: {
       post
@@ -45,10 +45,21 @@ export const getStaticProps: GetStaticProps<{
 
 export default function Post(props: InferGetStaticPropsType<typeof getStaticProps>) {
   const post = props.post;
+  const bePost = !!Object.keys(post).length;
 
-  return <LayoutPost post={post} >
-    <Page isPriv={false} pageName="post-view" >
+  if (bePost) {
+    return <LayoutPost post={post} >
+      <Page isPriv={false} pageName="post-view" >
+        {bePost ? (<Reader post={post} />) : (
+          <div>Hola</div>
+        )}
+      </Page>
+    </LayoutPost>;
+  }
+
+  return <Layout title="Unidad Educativa Cardenal Gonzalez Zumarraga">
+    <Page isPriv={false} pageName="not-found">
       <Reader post={post} />
     </Page>
-  </LayoutPost>;
+  </Layout>
 }
