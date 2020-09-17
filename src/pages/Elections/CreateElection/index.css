@@ -1,0 +1,25 @@
+.container-election-name {
+  padding: 0px 10px;
+  margin-bottom: 10px;
+}
+.container-election-name input {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 5px;
+}
+.step-title {
+  padding: 20px 5px;
+}
+.step-title h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: rgb(1 182 245);
+  text-align: center;
+}
+.step-instruction {
+  text-align: center;
+  padding: 5px 5px;
+}
+.step-instruction p {
+  color: rgb(119 119 119);
+}

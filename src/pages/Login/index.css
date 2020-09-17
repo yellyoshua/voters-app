@@ -1,0 +1,22 @@
+.login-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.login-form {
+  display: block;
+  text-align: center;
+}
+.login-form input {
+  font-size: 1.2rem;
+  display: block;
+  margin: 10px auto;
+  border-radius: 10px;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+.login-form button {
+  font-size: 1.2rem;
+}

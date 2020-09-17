@@ -1,38 +1,105 @@
-.App {
-  text-align: center;
+.react-rainbow-admin-app_sidebar-container {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: calc(100vh - 68px);
+  margin-top: 68px;
+  background-color: #fff;
+  z-index: 99999;
+  padding-bottom: 14px;
+  padding-top: 14px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.react-rainbow-admin-app_sidebar {
+  width: 88px;
+  height: 100%;
+  border-right: 1px solid #f4f6f9;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.react-rainbow-admin-app_router-container {
+  padding-top: 68px;
+  padding-left: 88px;
+  background-color: #f4f6f9;
+  min-height: 100vh;
+}
+
+.react-rainbow-admin-app_sidebar-item {
+  margin-bottom: 16px;
+}
+
+.react-rainbow-admin-app_sidebar-back-button-container {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .react-rainbow-admin-app_sidebar-container {
+    height: 100vh;
+    margin-top: 0;
+    transform: translateX(0%);
+    transition: transform 230ms linear, opacity 230ms linear;
+  }
+
+  .react-rainbow-admin-app_router-container {
+    padding-top: 116px;
+    padding-left: 0;
+  }
+
+  .react-rainbow-admin-app_sidebar-container--sidebar-hidden {
+    transform: translateX(-100%);
+    transition: transform 250ms linear, opacity 250ms linear;
+  }
+
+  .react-rainbow-admin-app_sidebar-back-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-grow: 2;
+    align-items: flex-end;
+    padding-top: 12px;
+  }
+
+  .react-rainbow-admin-app_sidebar-back-button-icon {
+    color: #000;
+  }
+
+  .react-rainbow-admin-app_backdrop {
+    display: unset;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(82, 95, 127, 0.4);
+    position: fixed;
+    z-index: 99999;
+    top: 0;
+    left: 0;
   }
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Custom css */
+.breadcrumbs-with-button {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+.breadcrumbs-with-button .btn-right-breadcrumb {
+  margin-right: 10px;
+  border: 0;
+  border-radius: 5px;
+  background: rgb(1 182 245);
+  padding: 5px 10px;
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.breadcrumbs-with-button .btn-right-breadcrumb:hover {
+  background: rgb(1 182 245 / 77%);
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.breadcrumbs-with-button .btn-right-breadcrumb:active {
+  background: rgb(3 156 210);
+}
+.breadcrumbs-with-button .btn-right-breadcrumb svg {
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  fill: white;
 }
