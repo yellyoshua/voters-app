@@ -47,7 +47,7 @@ type PropsStepAddIntegrants = {
 
 export function StepAddIntegrants(props: PropsStepAddIntegrants) {
   const [integrants, setIntegrants] = useState<TypeProspect[]>(props.integrants);
-  const defaultIntegrant = { name: "", position: "presidente", surname: "" };
+  const defaultIntegrant = { names: "", surnames: "", position: "presidente", };
   const removeIntegrant = (index: number) => {
     const newIntegrants = integrants.filter((_integrant, key) => key !== index);
     setIntegrants(newIntegrants);
@@ -82,19 +82,19 @@ export function StepAddIntegrants(props: PropsStepAddIntegrants) {
                 label="Nombres"
                 className="section-create-integrants-input"
                 onChange={({ target: { value } }) => {
-                  return updateIntegrant({ ...integrant, name: value }, index);
+                  return updateIntegrant({ ...integrant, names: value }, index);
                 }}
                 placeholder="Nombres"
-                value={integrant.name}
+                value={integrant.names}
               />
               <Input
                 label="Apellidos"
                 className="section-create-integrants-input"
                 onChange={({ target: { value } }) => {
-                  return updateIntegrant({ ...integrant, surname: value }, index);
+                  return updateIntegrant({ ...integrant, surnames: value }, index);
                 }}
                 placeholder="Apellidos"
-                value={integrant.surname}
+                value={integrant.surnames}
               />
               <Select
                 label="Cargo"

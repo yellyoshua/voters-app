@@ -1,17 +1,16 @@
 import React, { useCallback } from "react";
+import userGet from "api/private/userGet";
 import UserContext from "context/UserContext";
 import useLocalStorage from "hooks/useLocalStorage";
 import { TypeUser } from "types/userTypes";
 
 export default function useUser() {
   const { setUser, user, jwt, setJWT } = React.useContext(UserContext)!;
-  const [, setUserLocalStorage] = useLocalStorage("user-context");
+  const { fetchGetMe } = userGet(jwt);
+  const [userLocalStorage, setUserLocalStorage] = useLocalStorage("user-context");
   const [isThereUser, setIsThereUser] = React.useState<boolean>(false);
 
-  const checkUserTokenWithCallback = useCallback((jwt: string | null, isThereUser: (val: boolean) => void) => {
-    // Here check token
-    return isThereUser(true);
-  }, []);
+  const checkUserSession = fetchGetMe;
 
   React.useEffect(function () {
     let mounted: boolean = true;
@@ -19,8 +18,6 @@ export default function useUser() {
     if (mounted) {
       if (Boolean(user) && Boolean(jwt)) {
         setIsThereUser(true);
-        checkUserTokenWithCallback(jwt, setIsThereUser);
-
       } else {
         setIsThereUser(false);
       }
@@ -29,7 +26,7 @@ export default function useUser() {
     return () => {
       mounted = false;
     };
-  }, [user, checkUserTokenWithCallback, setIsThereUser, jwt]);
+  }, [user, setIsThereUser, jwt]);
 
 
   const removeSession = () => {
@@ -38,11 +35,15 @@ export default function useUser() {
     return setUserLocalStorage(null);
   };
 
+  const getSessionToken = useCallback(() => {
+    return userLocalStorage ? (userLocalStorage.jwt || null) : null;
+  }, [userLocalStorage])
+
   const createSession = useCallback(({ jwt, user }: { jwt: string; user: TypeUser; }) => {
     setUser(user);
     setJWT(jwt);
     setUserLocalStorage({ jwt, user });
   }, [setJWT, setUser, setUserLocalStorage]);
 
-  return { createSession, isThereUser, removeSession };
+  return { createSession, getSessionToken, checkUserSession, isThereUser, removeSession };
 }

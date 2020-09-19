@@ -4,8 +4,8 @@ export type TypeElection = {
 }
 
 export type TypeProspect = {
-  name: string;
-  surname: string;
+  names: string;
+  surnames: string;
   position: string;
 };
 
@@ -13,5 +13,4 @@ export type TypeCampaign = {
   name: string;
   integrants: TypeProspect[];
   commitments: string;
-  description: string;
 }

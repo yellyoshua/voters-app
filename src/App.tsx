@@ -1,5 +1,6 @@
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import useSWR from "swr";
 import useUser from "hooks/useUser";
 import ClientRouterComponent from "routes/ClientRoutesComponent";
 import VisitRouterComponent from "routes/VisitRoutesComponent";
@@ -22,7 +23,8 @@ const resolveCurrentUrl = (pathname: string): string => {
 }
 
 function App(props: PropsApp) {
-  const { isThereUser } = useUser();
+  const { checkUserSession, getSessionToken, isThereUser, createSession, removeSession } = useUser();
+  const { data, error } = useSWR(["/users/me", getSessionToken()], checkUserSession, { refreshInterval: 3000 });
 
   const [isSidebarHidden, setSidebarState] = useState<boolean>(true);
   const [selectedItem, selectItem] = useState<string>(resolveCurrentUrl.bind(null, props.history.location.pathname));
@@ -39,11 +41,25 @@ function App(props: PropsApp) {
   }, [props.history]);
 
   useEffect(function () {
+    let mounted = true;
     document.body.style.overflow = 'auto';
     if (!isSidebarHidden) {
       document.body.style.overflow = 'hidden';
     }
-  }, [isSidebarHidden]);
+
+    if (mounted) {
+      if (data && !error) {
+        createSession({ jwt: data.jwt, user: data.user });
+      } else if (!data && error) {
+        removeSession();
+        redirectTo("/");
+      }
+    }
+
+    return () => {
+      mounted = false;
+    }
+  }, [isSidebarHidden, data, createSession, removeSession, error]);
 
   if (isThereUser) {
     return (

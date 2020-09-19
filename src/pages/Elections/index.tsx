@@ -1,6 +1,7 @@
 import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
+import ListElection from "pages/Elections/ListElections";
 import AddIcon from "icons/AddIcon";
 
 type PropsElections = RouteComponentProps & { goTo: (pathname: string) => void; };
@@ -25,6 +26,8 @@ export default function Elections(props: PropsElections) {
           <AddIcon />Nueva elecci&oacute;n
         </button>
       </div>
+
+      <ListElection />
 
     </div>
   )

@@ -13,7 +13,7 @@ type PropsAddProspects = {
 export default function AddCampaign(props: PropsAddProspects) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isCurrentStepValid, setCurrentStepValid] = useState<boolean>(false);
-  const [campaign, setCampaign] = useState<TypeCampaign>({ name: "", integrants: [], commitments: "", description: "" });
+  const [campaign, setCampaign] = useState<TypeCampaign>({ name: "", integrants: [], commitments: "" });
 
   const stepsValidator = (step: number, validation?: number) => {
     if (validation) {
