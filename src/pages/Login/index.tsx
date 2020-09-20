@@ -2,13 +2,13 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import axios from "axios";
-import useUser from "hooks/useUser";
+import useAuth from "hooks/useAuth";
 import "./index.css";
 
 type PropsLogin = RouteComponentProps;
 
 export default function Login(_props: PropsLogin) {
-  const { createSession } = useUser();
+  const { createSession } = useAuth();
 
   const sendLoginRequest = async (values: {}, { setFieldError }: { setFieldError: (field: string, message: string) => void }) => {
     try {

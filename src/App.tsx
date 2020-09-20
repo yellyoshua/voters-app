@@ -1,7 +1,6 @@
 import React, { Suspense, useState, useEffect, useCallback } from 'react';
 import { RouteComponentProps, withRouter } from "react-router-dom";
-import useSWR from "swr";
-import useUser from "hooks/useUser";
+import useAuth from "hooks/useAuth";
 import ClientRouterComponent from "routes/ClientRoutesComponent";
 import VisitRouterComponent from "routes/VisitRoutesComponent";
 import Application from 'react-rainbow-components/components/Application';
@@ -23,9 +22,8 @@ const resolveCurrentUrl = (pathname: string): string => {
 }
 
 function App(props: PropsApp) {
-  const { checkUserSession, getSessionToken, isThereUser, createSession, removeSession } = useUser();
-  const { data, error } = useSWR(["/users/me", getSessionToken()], checkUserSession, { refreshInterval: 3000 });
-
+  const { isThereUser, isLoggedOut, isCheckAuth} = useAuth();
+  
   const [isSidebarHidden, setSidebarState] = useState<boolean>(true);
   const [selectedItem, selectItem] = useState<string>(resolveCurrentUrl.bind(null, props.history.location.pathname));
 
@@ -48,18 +46,19 @@ function App(props: PropsApp) {
     }
 
     if (mounted) {
-      if (data && !error) {
-        createSession({ jwt: data.jwt, user: data.user });
-      } else if (!data && error) {
-        removeSession();
-        redirectTo("/");
+      if (isLoggedOut) {
+        props.history.replace("/");
       }
     }
 
     return () => {
       mounted = false;
     }
-  }, [isSidebarHidden, data, createSession, removeSession, error]);
+  }, [isSidebarHidden, isThereUser, props.history, isLoggedOut]);
+
+  if(isCheckAuth) {
+    return <p>Cargando</p>;
+  }
 
   if (isThereUser) {
     return (

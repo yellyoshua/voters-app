@@ -5,7 +5,7 @@ import ButtonMenu from "react-rainbow-components/components/ButtonMenu";
 import ButtonIcon from 'react-rainbow-components/components/ButtonIcon';
 import MenuItem from 'react-rainbow-components/components/MenuItem';
 import MenuDivider from 'react-rainbow-components/components/MenuDivider';
-import useUser from "hooks/useUser";
+import useAuth from "hooks/useAuth";
 import UserContext from "context/UserContext";
 import "./index.css";
 
@@ -14,7 +14,7 @@ type PropsAppBar = {
 }
 
 export default function AppBar(props: PropsAppBar) {
-  const { removeSession } = useUser();
+  const { removeSession } = useAuth();
   const { user } = React.useContext(UserContext)!;
 
   return (
