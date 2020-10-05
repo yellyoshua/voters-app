@@ -1,47 +1,45 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useState, memo } from "react";
 import Tab from "react-rainbow-components/components/Tab";
 import Tabset from "react-rainbow-components/components/Tabset";
+import "./index.css";
 
 type PropsTabs = {
-  children: ReactNode;
+  children?: ReactNode;
   tabs: {
     id: string;
     name: string;
-    icon: ReactNode;
+    icon?: ReactNode;
   }[];
-  onSelectTab: (val: string) => void;
+  initialTab?: number;
+  onSelectTab: (tab: number) => void;
 };
 
-export default function Tabs(props: PropsTabs) {
-  const [currentTab, setCurrentTab] = useState<string>(`${props.tabs[0] && props.tabs[0].id}`);
+export default memo(function Tabs(props: PropsTabs) {
+  const initialTab = props.initialTab || 0;
+  const [currentTab, setCurrentTab] = useState<number>(initialTab);
 
-  const navigateTab = (_e: React.MouseEvent<HTMLElement, MouseEvent>, tabName: string) => {
-    props.onSelectTab(tabName);
-    return setCurrentTab(tabName);
-  }
+  const navigateTab = (_e: React.MouseEvent<HTMLElement, MouseEvent>, tabId: string) => {
+    const tabIndex = props.tabs.findIndex(tab => tab.id === tabId);
+    props.onSelectTab(tabIndex);
+    return setCurrentTab(tabIndex);
+  };
 
   return (
     <>
-      <Tabset
-        fullWidth
-        onSelect={navigateTab}
-        activeTabName={currentTab}
-        className="rainbow-p-horizontal_x-large"
-      >
-        {
-          props.tabs.map((tab, index) => (
-            <Tab
-              key={index}
-              name={tab.id}
-              label={
-                <span>
-                  {tab.icon} {tab.name.toLocaleUpperCase()}
-                </span>
-              }
-            />
-          ))
-        }
+      <Tabset onSelect={navigateTab} activeTabName={props.tabs[currentTab].id} className='rainbow-p-horizontal_x-large'>
+        {props.tabs.map((tab, index) => (
+          <Tab
+            key={index}
+            name={tab.id}
+            label={
+              <span>
+                {tab.icon} {tab.name.toLocaleUpperCase()}
+              </span>
+            }
+          />
+        ))}
       </Tabset>
+      <section className='tab-content'>{props.children}</section>
     </>
-  )
-}
+  );
+});

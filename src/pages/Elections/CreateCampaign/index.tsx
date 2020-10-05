@@ -1,19 +1,27 @@
 import React, { useState } from "react";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import ProgressSteps from "components/ProgressSteps";
-import { StepCampaignName, StepAddIntegrants, StepCommitments, FinalPreviewSteps } from "pages/Elections/CreateCampaign/StepsCreateCampaign";
-import { TypeProspect, TypeCampaign } from "types/appTypes";
+import { StepCampaignName, StepAddCandidate, StepCommitments, FinalPreviewSteps } from "pages/Elections/CreateCampaign/StepsCreateCampaign";
 import "./index.css";
 
+// Hacer que frontend maneje datos
+// tipo objeto y los guarde como array's.
+
 type PropsAddProspects = {
-  success: (campaign: TypeCampaign) => void;
+  election: { [key: string]: any };
+  success: (newElection: { [key: string]: any }) => void;
   cancel: () => void;
 };
 
 export default function AddCampaign(props: PropsAddProspects) {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [isCurrentStepValid, setCurrentStepValid] = useState<boolean>(false);
-  const [campaign, setCampaign] = useState<TypeCampaign>({ name: "", integrants: [], commitments: "" });
+  const [campaign, setCampaign] = useState<{ [key: string]: any }>({
+    name: "",
+    commitments_file: "/fileStorage.jpg",
+    commitments_text: ""
+  });
+  const [candidates, setCandidate] = useState<{ [key: string]: any }[]>([]);
 
   const stepsValidator = (step: number, validation?: number) => {
     if (validation) {
@@ -26,32 +34,32 @@ export default function AddCampaign(props: PropsAddProspects) {
       }
     }
     if (step === 1) {
-      return setCurrentStepValid(campaign.name.length > 4);
+      return setCurrentStepValid(campaign.name.length > 4); // campaign.name.length
     } else if (step === 2) {
-      return setCurrentStepValid(campaign.integrants.length === 4);
+      return setCurrentStepValid(candidates.length === 4); // campaign.name.length
     } else {
       return null;
     }
-  }
+  };
 
-  const onChangeIntegrant = (integrants: TypeProspect[]) => {
-    setCampaign({ ...campaign, integrants: integrants });
-    return stepsValidator(2, integrants.length);
+  const onChangeIntegrant = (candidate: { [key: string]: any }[]) => {
+    setCandidate([...candidates, candidate]);
+    return stepsValidator(2, candidates.length);
   };
 
   const onChangeCommitments = (val: string) => {
-    return setCampaign({ ...campaign, commitments: val });
-  }
+    return setCampaign({ ...campaign, commitments_text: val });
+  };
 
   const onChangeName = (name: string) => {
     setCampaign({ ...campaign, name });
     return stepsValidator(1, name.length);
-  }
+  };
 
   const createCampaign = () => {
-    props.success(campaign);
+    props.success({ ...props.election, campaigns: [...props.election.campaigns, campaign] });
     return props.cancel();
-  }
+  };
 
   const getCurrentStep = (step: number) => {
     stepsValidator(step);
@@ -59,40 +67,27 @@ export default function AddCampaign(props: PropsAddProspects) {
   };
 
   return (
-    <div className="elections-tabs-view-section">
+    <div className='elections-tabs-view-section'>
       <ProgressSteps
         cancelSteps={() => props.cancel()}
         getCurrentStep={getCurrentStep}
         onPass={createCampaign}
-        stepNames={['name', 'integrants', 'commitments', 'review']}
-        isTheStepValid={isCurrentStepValid}
-      >
+        stepNames={["name", "candidates", "commitments", "review"]}
+        isTheStepValid={isCurrentStepValid}>
         <RenderIf isTrue={currentStep === 1}>
-          <StepCampaignName
-            onChangeName={onChangeName}
-            name={campaign.name}
-          />
+          <StepCampaignName onChangeName={onChangeName} name={campaign.name} />
         </RenderIf>
         <RenderIf isTrue={currentStep === 2}>
-          <StepAddIntegrants
-            onChange={onChangeIntegrant}
-            integrants={campaign.integrants}
-          />
+          <StepAddCandidate onChange={onChangeIntegrant} candidates={candidates} />
         </RenderIf>
         <RenderIf isTrue={currentStep === 3}>
-          <StepCommitments
-            campaignName={campaign.name}
-            commitments={campaign.commitments}
-            onChange={onChangeCommitments}
-          />
+          <StepCommitments campaignName={campaign.name} commitments={campaign.commitments} onChange={onChangeCommitments} />
         </RenderIf>
         <RenderIf isTrue={currentStep === 4}>
-          <FinalPreviewSteps
-            campaign={campaign}
-          />
+          //@ts-ignore
+          <FinalPreviewSteps campaign={campaign} />
         </RenderIf>
       </ProgressSteps>
     </div>
   );
-};
-
+}

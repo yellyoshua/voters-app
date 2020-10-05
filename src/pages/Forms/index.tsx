@@ -2,7 +2,7 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 
-type PropsForms = RouteComponentProps & { goTo: (pathname: string) => void; };
+type PropsForms = RouteComponentProps & {};
 
 export default function Forms(props: PropsForms) {
 
@@ -12,7 +12,7 @@ export default function Forms(props: PropsForms) {
 
   return (
     <div>
-      <Breadcrumbs breadcrumbs={breadcrumbs} goTo={props.goTo} />
+      <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
       Forms Page
     </div>
   )

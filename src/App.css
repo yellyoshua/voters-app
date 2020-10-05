@@ -103,3 +103,28 @@
   margin-right: 5px;
   fill: white;
 }
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.display-content-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 30px;
+}
+.display-content-screen-cover {
+  max-width: 400px;
+  height: auto;
+}
+.display-content-screen-title {
+  padding: 10px 0px;
+  font-size: 1.3rem;
+}

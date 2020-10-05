@@ -6,7 +6,7 @@ type PropsElectionsContent = {};
 export default function ElectionsContent(props: PropsElectionsContent) {
   return <ContentLoader
     // viewBox="0 0 auto 500"
-    height={500}
+    height={300}
     color="red"
     width="100%"
     speed={2}

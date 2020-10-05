@@ -15,10 +15,11 @@
     "react": "^16.13.1",
     "react-content-loader": "^5.1.1",
     "react-dom": "^16.13.1",
+    "react-papaparse": "^3.8.0",
     "react-rainbow-components": "^1.17.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "react-uuid": "^1.0.2",
+    "react-use": "^15.3.4",
     "swr": "^0.3.2",
     "typescript": "~3.7.2"
   },

@@ -1,19 +1,15 @@
-import React from 'react';
-import { Switch, Route } from "react-router-dom";
-
+import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
 import LoginPage from "pages/Login";
 import NotFoundPage from "pages/Error/NotFound";
 
-type PropsVisitRoutes = {
-  redirectTo?: (pathname: string) => void;
-  goTo?: (pathname: string) => void;
-};
+type PropsVisitRoutes = {};
 
 export default function VisitRoutes(_props: PropsVisitRoutes) {
-
   return (
     <Switch>
-      <Route exact path="/" render={(props) => <LoginPage {...props} />} />
+      <Redirect exact from='/dashboard' to='/' />
+      <Route exact path='/' component={LoginPage} />
       <Route component={NotFoundPage} />
     </Switch>
   );

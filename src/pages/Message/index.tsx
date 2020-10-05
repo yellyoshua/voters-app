@@ -2,7 +2,7 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 
-type PropsMessage = RouteComponentProps & { goTo: (pathname: string) => void; };
+type PropsMessage = RouteComponentProps & {};
 
 export default function Message(props: PropsMessage) {
 
@@ -12,7 +12,7 @@ export default function Message(props: PropsMessage) {
 
   return (
     <div>
-      <Breadcrumbs breadcrumbs={breadcrumbs} goTo={props.goTo} />
+      <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
       Message Page
     </div>
   )

@@ -9,12 +9,12 @@ import App from './App';
 
 axios.defaults.baseURL = "https://4000-e86ba1c6-afb0-4af4-ab67-4a8ff33a5cf2.ws-us02.gitpod.io";
 
-const { fetchWithToken } = useFetch();
+const { fetchGetWithToken } = useFetch();
 
 ReactDOM.render(
   <React.StrictMode>
     <UserContextProvider>
-      <SWRConfig value={{fetcher: fetchWithToken}}>
+      <SWRConfig value={{fetcher: fetchGetWithToken}}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

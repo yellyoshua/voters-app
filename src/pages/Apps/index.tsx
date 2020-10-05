@@ -2,7 +2,7 @@ import React from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 
-type PropsApps = RouteComponentProps & { goTo: (pathname: string) => void; };
+type PropsApps = RouteComponentProps & {};
 
 export default function Apps(props: PropsApps) {
 
@@ -12,7 +12,7 @@ export default function Apps(props: PropsApps) {
 
   return (
     <div>
-      <Breadcrumbs breadcrumbs={breadcrumbs} goTo={props.goTo} />
+      <Breadcrumbs {...props} breadcrumbs={breadcrumbs}/>
       Apps Page
     </div>
   )
