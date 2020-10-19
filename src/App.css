@@ -77,6 +77,15 @@
   }
 }
 /* Custom css */
+.button-icon-little-danger {
+  border: 0;
+  border-radius: 50%;
+  background: red;
+  color: white;
+  width: 25px;
+  height: 25px;
+  margin-left: 10px;
+}
 .breadcrumbs-with-button {
   display: flex;
   flex-direction: row;
@@ -127,4 +136,9 @@
 .display-content-screen-title {
   padding: 10px 0px;
   font-size: 1.3rem;
+}
+.container-file-selector {
+  max-width: 250px;
+  margin: 10px auto;
+  min-width: 130px;
 }

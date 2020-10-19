@@ -1,4 +1,4 @@
-import {useEffect, useState, Dispatch, useCallback} from "react";
+import { useEffect, useState, Dispatch, useCallback } from "react";
 
 export default function useStickyState(defaultValue: any, key: string): [any, Dispatch<any>] {
   const [value, setValue] = useState(() => {
@@ -15,7 +15,7 @@ export default function useStickyState(defaultValue: any, key: string): [any, Di
     if (event.key === key && event.newValue !== JSON.stringify(value)) {
       setValue(JSON.parse(event.newValue || "null") || defaultValue);
     }
-  },[defaultValue, key, value]);
+  }, [defaultValue, key, value]);
 
   useEffect(() => {
     window.addEventListener('storage', handleStorage);

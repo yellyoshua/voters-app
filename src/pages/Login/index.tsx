@@ -1,4 +1,5 @@
 import React from "react";
+import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import useAuth from "hooks/useAuth";
@@ -8,6 +9,8 @@ import "./index.css";
 type PropsLogin = RouteComponentProps;
 
 export default function Login(_props: PropsLogin) {
+  useTitle("Pantalla de ingreso");
+
   const { createSession } = useAuth();
   const { fetchPostWithoutToken } = useFetch();
 

@@ -1,128 +1,164 @@
-import React, { useState, memo, useMemo } from "react";
+import React, { useState, memo, useMemo, useCallback } from "react";
+import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
-import { CSVReader } from "react-papaparse";
 import Breadcrumbs from "components/Breadcrums";
 import Tabs from "components/Tabs";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Button from "react-rainbow-components/components/Button";
-import Card from "components/Card";
 import CreateCampaign from "pages/Elections/CreateCampaign";
-import InputFetch from "components/InputFetch";
 import ContentLoader from "components/ContentLoader";
-import AddIcon from "icons/AddIcon";
-import useElection from "hooks/useElection";
+import TabSettings from "pages/Elections/EditElection/TabSettings";
+import TabVoters from "pages/Elections/EditElection/TabVoters";
+import TabCandidates from "pages/Elections/EditElection/TabCandidates";
+import TabCampaigns from "pages/Elections/EditElection/TabCampaigns";
+import TabGeneral from "pages/Elections/EditElection/TabGeneral";
+import useElection, { PropsUseElection } from "hooks/useElection";
 // import { TypeElection } from "types/appTypes";
 import "./index.css";
 
 const tabs = [
+  { id: "general", name: "General" },
   { id: "campaigns", name: "Partidos" },
   { id: "votantes", name: "Votantes" },
-  { id: "tags", name: "Etiquetas" },
-  { id: "candidates", name: "Candidatos" }
+  { id: "candidates", name: "Candidatos" },
+  { id: "configs", name: "Configuraciones" }
 ];
+
+const confApi = (id: string): PropsUseElection => {
+  return {
+    dataType: "object",
+    dataUrl: `/elections/${id}`,
+    createUrl: `/elections/${id}`,
+    removeUrl: `/elections/${id}`,
+    updateUrl: `/elections/${id}`
+  }
+}
 
 type PropsEditElection = RouteComponentProps<{ id: string }> & {};
 
 export default memo(function EditElection(props: PropsEditElection) {
   const currentElectionId = useMemo(() => props.match.params.id, [props.match]);
-  const { getParsedObj, election, api, isFetching, isFetchError, removeElection, updateElection } = useElection(currentElectionId);
+  const {
+    getParsedObj,
+    getValuesField,
+    apiRemove,
+    apiUpdate,
+    isFetching,
+    isFetchError,
+    data: election,
+    api,
+  } = useElection(confApi(currentElectionId));
+
+  useTitle(election ? election.name : "...");
 
   const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [isOpenCreateCampaign, setIsOpenCreateCampaign] = useState<boolean>(false);
+  const [isOpenCreateCampaign, createCampaign] = useState<{ [key: string]: any } | null>(null);
 
   const breadcrumbs = useMemo(
     () => [
       { name: "Elecciones", pathname: "/elections" },
-      { name: election ? election.name : "...", pathname: `/elections/${election ? election.name : ""}` }
+      { name: election ? election.name : "...", pathname: `/elections/${currentElectionId}` }
     ],
-    [election]
+    [election, currentElectionId]
   );
 
+  const updateElection = useCallback(async (data: { [key: string]: any }) => {
+    return await apiUpdate({ ...election, ...data });
+  }, [apiUpdate, election]);
+
+  const deleteElection = useCallback(async () => {
+    if (election ? election.status === "active" : false) {
+      return props.history.push("/elections");
+    }
+    return await apiRemove(null, () => props.history.push("/elections"));
+  }, [apiRemove, election, props.history]);
+
   const campaigns = useMemo(() => getParsedObj("campaigns"), [getParsedObj]);
-  // const candidates = useMemo(() => getParsedObj("candidates"), [getParsedObj]);
-  // const voters = useMemo(() => getParsedObj("voters"), [getParsedObj]);
-  // const tags = useMemo(() => getParsedObj("tags"), [getParsedObj]);
-  console.log({ election, campaigns });
+  const candidates = useMemo(() => getParsedObj("candidates"), [getParsedObj]);
+  const voters = useMemo(() => getParsedObj("voters"), [getParsedObj]);
+  const tags = useMemo(() => getParsedObj("tags"), [getParsedObj]);
+
+  const campaignsSlugs = useMemo(() => getValuesField("campaigns", "slug"), [getValuesField]);
+  const campaignsNames = useMemo(() => getValuesField("campaigns", "name"), [getValuesField]);
+
+  const isActiveElection = useMemo(() => election ? election.status === "active" : false, [election])
 
   return (
     <>
       <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
-      <RenderIf isTrue={isOpenCreateCampaign}>
-        {election && (
+      <RenderIf isTrue={Boolean(isOpenCreateCampaign)}>
+        {campaigns && (
           <CreateCampaign
-            election={election}
-            success={async val => {
-              await updateElection(val);
-              return setIsOpenCreateCampaign(false);
+            campaigns={campaigns}
+            campaign={isOpenCreateCampaign as { [key: string]: any }}
+            createOrUpdate={async val => {
+              await apiUpdate(Object.assign(election, val));
+              return createCampaign(null);
             }}
-            cancel={() => setIsOpenCreateCampaign(false)}
+            cancel={() => createCampaign(null)}
           />
         )}
       </RenderIf>
-      <RenderIf isTrue={!isOpenCreateCampaign}>
-        <ContentLoader isFetching={isFetching} isError={isFetchError} isNoData={isFetching} contentScreen='elections' messageNoData='No existe'>
-          <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
-            <RenderIf isTrue={selectedTab === 0}>
-              {election && campaigns && (
-                <>
-                  <div className='container-election-name breadcrumbs-with-button'>
-                    <InputFetch
-                      initialValue={election.name}
-                      beforeChange={async data => {
-                        return await api.mutate(data, false);
-                      }}
-                      onChange={updateElection}
-                      resolveData={val => ({ ...election, name: val })}
-                    />
-                    <button onClick={() => setIsOpenCreateCampaign(true)} className='btn-right-breadcrumb'>
-                      <AddIcon />
-                      Agregar partido
-                    </button>
-                  </div>
-                  <div className='elections-tabs-view-section'>
-                    {campaigns.map((campaign, index) => {
-                      return (
-                        <Card
-                          key={index}
-                          id={index}
-                          title={campaign.name}
-                          content={campaign.commitments_text}
-                          onClick={() => {}}
-                          onDelete={async id => {
-                            return await updateElection({ ...election, campaigns: election.campaigns.filter(campaign => campaign[0] !== id) }); // campaign.id
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-            </RenderIf>
-            <RenderIf isTrue={selectedTab === 1}>
-              <div className='breadcrumbs-with-button'>
-                <button onClick={() => setIsOpenCreateCampaign(true)} className='btn-right-breadcrumb'>
-                  <AddIcon />
-                  Agregar Etiquetas
-                </button>
-                <CSVReader
-                  noDrag
-                  addRemoveButton
-                  onDrop={data => {
-                    return data.map(({ data }: { data: any[] }) => ({
-                      name: data[0] || "",
-                      email: data[1] || ""
-                    }));
-                  }}>
-                  <span>Subir lista estudiantes.</span>
-                </CSVReader>
-              </div>
-              <div className='elections-tabs-view-section'>
-                <p>Votantes</p>
-              </div>
-            </RenderIf>
-          </Tabs>
+      <RenderIf isTrue={!Boolean(isOpenCreateCampaign)}>
+        <ContentLoader
+          messageNoData='No existe'
+          contentScreen='elections'
+          isError={isFetchError}
+          isFetching={isFetching}
+          isNoData={election && Boolean(Object.keys(election).length <= 0)}
+        >
+          {election && (
+            <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
+              <RenderIf isTrue={selectedTab === 0}>
+                <TabGeneral
+                  tags={tags}
+                  voters={voters}
+                  campaigns={campaigns}
+                  candidates={candidates}
+                  apiMutate={api.mutate}
+                  nameElection={election.name}
+                  updateElection={updateElection}
+                />
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 1 && !isActiveElection}>
+                <TabCampaigns
+                  election={election}
+                  campaigns={campaigns}
+                  candidates={candidates}
+                  apiMutate={api.mutate}
+                  removeElection={deleteElection}
+                  updateElection={updateElection}
+                  screenCampaign={createCampaign}
+                />
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 2 && !isActiveElection}>
+                <TabVoters
+                  tags={tags}
+                  voters={voters}
+                  election={election}
+                  apiMutate={api.mutate}
+                  updateElection={updateElection}
+                />
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 3 && !isActiveElection}>
+                <TabCandidates
+                  campaignsSlugs={campaignsSlugs}
+                  campaignsNames={campaignsNames}
+                />
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 4}>
+                <TabSettings
+                  election={election}
+                  updateElection={updateElection}
+                />
+              </RenderIf>
+              <RenderIf isTrue={selectedTab !== 4 && selectedTab !== 0 && isActiveElection}>
+                <p>Desactivado durante las elecciones</p>
+              </RenderIf>
+            </Tabs>
+          )}
           <div className='rainbow-m-top_xx-large rainbow-align-content_center rainbow-flex_wrap'>
-            <Button label='Borrar Elección' onClick={() => removeElection(path => props.history.push(path))} variant='destructive' className='rainbow-m-horizontal_medium' />
+            <Button label='Borrar Elección' onClick={() => apiRemove(null, () => props.history.push("/elections"))} variant='destructive' className='rainbow-m-horizontal_medium' />
           </div>
         </ContentLoader>
       </RenderIf>

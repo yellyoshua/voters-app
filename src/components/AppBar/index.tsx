@@ -6,7 +6,7 @@ import ButtonIcon from "react-rainbow-components/components/ButtonIcon";
 import MenuItem from "react-rainbow-components/components/MenuItem";
 import MenuDivider from "react-rainbow-components/components/MenuDivider";
 import useAuth from "hooks/useAuth";
-import UserContext from "context/UserContext";
+import { UserContext } from "context/UserContext";
 import "./index.css";
 
 type PropsAppBar = {
@@ -15,7 +15,7 @@ type PropsAppBar = {
 
 export default React.memo(function AppBar(props: PropsAppBar) {
   const { removeSession } = useAuth();
-  const { user } = React.useContext(UserContext)!;
+  const user = React.useContext(UserContext);
 
   return (
     <header className='react-rainbow-admin_header rainbow-position_fixed rainbow-flex rainbow-align_center rainbow-p-horizontal_large rainbow-background-color_white'>

@@ -1,0 +1,1 @@
+export const REACT_API_URL = String(process.env.NODE_ENV).toUpperCase() === "PRODUCTION" ? "https://api.gonzu.edu.ec" : "http://iamyell.team:4000";

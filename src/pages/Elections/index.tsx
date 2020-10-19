@@ -1,47 +1,44 @@
-import React, { useState, useContext } from "react";
-import useSWR from "swr";
+import React, { useState } from "react";
+import useTitle from "react-use/lib/useTitle";
 import { Formik, Form, Field } from "formik";
 import { RouteComponentProps } from "react-router-dom";
 import Modal from "react-rainbow-components/components/Modal";
 import Button from "react-rainbow-components/components/Button";
 import Breadcrumbs from "components/Breadcrums";
 import AddIcon from "icons/AddIcon";
-import useFetch from "hooks/useFetch";
-import UserContext from "context/UserContext";
-import { TypeElection } from "types/appTypes";
+import useElection, { PropsUseElection } from "hooks/useElection";
 import ContentLoader from "components/ContentLoader";
-import Card from "components/Card";
+import CardElection from "components/Card/CardElection";
+import { uuidv4 } from "utils/createUID";
+import { defaultElection } from "models/election";
+import { TypeElection } from "types/appTypes";
 import "./index.css";
-
-const defaultElection: TypeElection = {
-  name: "",
-  voters: [
-    ["name", "second_name", "surname", "second_surname", "ci", "enrollmentcode" ,"tag", "has_blocked"]
-  ],
-  tags: [
-    ["name", "has_blocked", "can_vote"]
-  ],
-  candidates: [
-    ["names", "surnames", "position", "course", "campaign"]
-  ],
-  campaigns: [
-    ["name", "commitments_text", "commitments_file"]
-  ],
-};
 
 const breadcrumbs = [{ name: "Elecciones", pathname: "/elections" }];
 
 type PropsElections = RouteComponentProps & {};
 
+const confApi: PropsUseElection = {
+  dataType: "object",
+  dataUrl: "/elections",
+  createUrl: "/elections",
+  removeUrl: "/elections",
+  updateUrl: "/elections"
+};
+
 export default function Elections(props: PropsElections) {
-  const { jwt } = useContext(UserContext)!;
-  const { fetchPostWithToken, fetchDelWithToken } = useFetch();
+  useTitle("Elecciones");
+  const {
+    api,
+    data,
+    isFetching,
+    isFetchError,
+    apiCreate,
+    apiRemove,
+    getParsedObj,
+  } = useElection(confApi);
 
-  const electionsFetch = useSWR(["/elections", jwt], { initialData: null });
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-
-  const data = electionsFetch.data;
-  const error = electionsFetch.error;
 
   const elections: TypeElection[] = Array.isArray(data) ? data : [];
   const haveElections: boolean = elections ? elections.length === 0 : false;
@@ -52,21 +49,22 @@ export default function Elections(props: PropsElections) {
 
   const createElection = async (val: TypeElection) => {
     try {
-      await fetchPostWithToken("/elections", jwt, val);
-      await electionsFetch.revalidate();
+      await apiCreate(val);
+      await api.revalidate();
       return setIsOpenModal(false);
     } catch (error) {
-      await electionsFetch.revalidate();
+      await api.revalidate();
       return setIsOpenModal(false);
     }
   };
 
   const deleteElection = async (id: any) => {
     try {
-      await fetchDelWithToken(`/elections/${id}`, jwt);
-      return await electionsFetch.mutate(null, true);
+      return await apiRemove(`/elections/${id}`, () => {
+        return api.mutate(null, true);
+      });
     } catch (error) {
-      return await electionsFetch.mutate(null, true);
+      return await api.mutate(null, true);
     }
   };
 
@@ -80,19 +78,31 @@ export default function Elections(props: PropsElections) {
         </button>
       </div>
       <ContentLoader
-        isFetching={!error && !data}
-        isError={error}
+        isFetching={isFetching}
+        isError={isFetchError}
         isNoData={haveElections}
         contentScreen='elections'
         messageNoData='Para crear una nueva, ve al botón [Nueva Elección]'>
-        <div className='flex-start'>
+        <div>
           {elections.map((election, index) => (
-            <Card key={index} id={election.id} onClick={handleEditElection} onDelete={deleteElection} title={election.name} content={election.id} />
+            <CardElection
+              key={index}
+              election={election}
+              onDelete={deleteElection}
+              getParsedObj={getParsedObj}
+              onClick={handleEditElection}
+            />
           ))}
         </div>
       </ContentLoader>
       <Modal title='Nombre de la nueva elección' size='small' isOpen={isOpenModal} onRequestClose={() => setIsOpenModal(false)}>
-        <Formik initialValues={defaultElection} onSubmit={createElection}>
+        <Formik
+          initialValues={defaultElection}
+          onSubmit={(values) => {
+            const uid = uuidv4();
+            return createElection({ ...values, uid });
+          }}
+        >
           {function ({ isSubmitting }) {
             return (
               <Form className='login-form'>

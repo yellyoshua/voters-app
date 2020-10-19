@@ -1,0 +1,26 @@
+.campaign-general-stats-container {
+  padding: 20px 0px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+.campaign-general-stats-wrapper {
+  width: 140px;
+  background: rgb(0, 173, 255, 0.79);
+  text-align: center;
+  margin: 10px;
+  border-radius: 10px;
+}
+.campaign-general-stats-wrapper p {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+}
+.campaign-general-stats-wrapper h1 {
+  font-weight: bold;
+  color: white;
+}

@@ -35,7 +35,7 @@ export default memo(function ProgressSteps(props: PropsProgressSteps) {
         ))}
       </ProgressIndicator>
       {props.children}
-      <div className='rainbow-m-top_xx-large rainbow-align-content_center rainbow-flex_wrap'>
+      <div className='rainbow-align-content_center rainbow-flex_wrap'>
         <RenderIf isTrue={currentStep === 1}>
           <Button label='Cancelar' onClick={props.cancelSteps} variant='destructive' className='rainbow-m-horizontal_medium' />
         </RenderIf>

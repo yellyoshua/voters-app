@@ -19,7 +19,7 @@ export default memo(function Card(props: PropsCard) {
         <div className='card-body'>
           <p className='card-body-content'>{props.content}</p>
         </div>
-        <Formik initialValues={{ id: props.id }} onSubmit={values => props.onDelete(values.id)}>
+        <Formik initialValues={{}} onSubmit={_ => props.onDelete(props.id)}>
           {function ({ isSubmitting }) {
             return (
               <Form className='rainbow-align-content_center rainbow-flex_wrap'>

@@ -1,5 +1,11 @@
+
+export type TypeStatusElection = "active" | "closed" | "archived" | "no_active";
+
 export interface TypeElection {
   id?: string | number;
+  uid: string;
+  cover_image?: any;
+  status: TypeStatusElection;
   name: string;
   voters: TypeVoter[];
   tags: TypeTag[];

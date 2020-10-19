@@ -27,6 +27,17 @@ export default function userFetch() {
   const fetchDelWithoutToken = async (url: string) => {
     return await axios.delete(url).then(data => data.data);
   };
+  const fetchUploadFile = async (url: string, token: string | null, data: any, progress: (val: number) => void) => {
+    return await axios.post(url, data, {
+      onUploadProgress: ({ loaded, total }) => {
+        return progress(Math.round(loaded / total * 100));
+      },
+      headers: {
+        ...headersAuth(token ? token : ""),
+        'Content-Type': 'multipart/form-data'
+      }
+    }).then(data => data.data);
+  }
   return {
     fetchGetWithToken,
     fetchGetWithoutToken,
@@ -35,6 +46,7 @@ export default function userFetch() {
     fetchPutWithToken,
     fetchPutWithoutToken,
     fetchDelWithToken,
-    fetchDelWithoutToken
+    fetchDelWithoutToken,
+    fetchUploadFile
   };
 }

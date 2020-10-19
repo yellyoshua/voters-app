@@ -9,17 +9,20 @@ type PropsInputFetch = {
 };
 
 export default memo(function InputFetch(props: PropsInputFetch) {
-  const [inputState, setInputState] = useState<string>(props.initialValue);
+  const [inputState, setInputState] = useState<string | null>(null);
 
   const [, cancelDebounceRequest] = useDebounce(
     async () => {
-      const data = props.resolveData(inputState);
-      try {
-        await props.onChange(data);
-        return props.beforeChange ? props.beforeChange(data) : null;
-      } catch (error) {
-        return props.beforeChange ? props.beforeChange(data) : null;
+      if (inputState) {
+        const data = props.resolveData(inputState);
+        try {
+          await props.onChange(data);
+          return props.beforeChange ? props.beforeChange(data) : null;
+        } catch (error) {
+          return props.beforeChange ? props.beforeChange(data) : null;
+        }
       }
+      return null;
     },
     800,
     [inputState]
@@ -32,5 +35,5 @@ export default memo(function InputFetch(props: PropsInputFetch) {
     [cancelDebounceRequest]
   );
 
-  return <input value={inputState} onChange={({ target: { value } }) => setInputState(value)} type='text' />;
+  return <input value={inputState || props.initialValue} onChange={({ target: { value } }) => setInputState(value)} type='text' />;
 });

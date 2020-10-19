@@ -4,17 +4,18 @@ import { SWRConfig } from "swr";
 import axios from "axios";
 import { BrowserRouter } from "react-router-dom";
 import useFetch from "hooks/useFetch";
-import { UserContextProvider } from "context/UserContext";
+import UserContextProvider from "context/UserContext";
+import { REACT_API_URL } from "configurations/api";
 import App from './App';
 
-axios.defaults.baseURL = "https://4000-e86ba1c6-afb0-4af4-ab67-4a8ff33a5cf2.ws-us02.gitpod.io";
+axios.defaults.baseURL = REACT_API_URL;
 
 const { fetchGetWithToken } = useFetch();
 
 ReactDOM.render(
   <React.StrictMode>
     <UserContextProvider>
-      <SWRConfig value={{fetcher: fetchGetWithToken}}>
+      <SWRConfig value={{ fetcher: fetchGetWithToken }}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

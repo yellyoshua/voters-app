@@ -30,3 +30,37 @@
 .section-create-integrants-add-more button:hover {
   background: rgb(8 220 220);
 }
+.commitments-file-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 10px;
+}
+.commitments-file-wrapper {
+  display: flex;
+  border: 1px solid rgb(1 182 245);
+  padding: 10px;
+  border-radius: 10px;
+  background: white;
+}
+.container-preview-steps {
+  margin: 20px 10px;
+}
+.container-preview-steps-wrapper {
+  padding: 10px 0px;
+  max-width: 300px;
+  text-align: center;
+  margin: 0 auto;
+}
+.container-preview-steps-wrapper h1 {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.container-preview-steps-wrapper p {
+  color: rgb(1 182 245);
+  background: white;
+  padding: 10px 5px;
+  border-radius: 10px;
+  font-size: 1.1rem;
+}

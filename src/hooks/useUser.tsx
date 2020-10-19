@@ -1,9 +1,11 @@
 import { useCallback, useContext } from "react";
-import UserContext from "context/UserContext";
+import { TokenActionContext, UserActionsContext, TokenContext } from "context/UserContext";
 import { TypeUser } from "types/userTypes";
 
 export default function useUser() {
-  const { jwt, setJWT, setUser } = useContext(UserContext)!;
+  const jwt = useContext(TokenContext);
+  const setJWT = useContext(TokenActionContext);
+  const setUser = useContext(UserActionsContext);
 
   const getSessionToken = useCallback(() => {
     return jwt && jwt;
@@ -12,12 +14,12 @@ export default function useUser() {
   const updateJwt = useCallback((jwt: string | null) => {
     setJWT(jwt);
     return jwt;
-  },[setJWT]);
-  
+  }, [setJWT]);
+
   const updateUser = useCallback((newUser: TypeUser | null) => {
     setUser(newUser);
     return newUser;
-  },[setUser]);
+  }, [setUser]);
 
   return { getSessionToken, updateJwt, updateUser };
 }

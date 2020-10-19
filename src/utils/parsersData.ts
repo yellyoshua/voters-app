@@ -1,5 +1,5 @@
 export function parseArrToObjArr(arr: any[]) {
-  return arr
+  return Array.isArray(arr) ? arr
     .map((arrItem: any[], index: number) => {
       let obj: any = {};
       for (let i = 0; i < arr[0].length; ++i) {
@@ -7,11 +7,101 @@ export function parseArrToObjArr(arr: any[]) {
       }
       return { ...obj, id: index - 1 };
     })
-    .splice(1);
+    .splice(1) : [];
+}
+
+export function extractFieldArrValuesOf(arr: any[][], field: string) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  if (arrContainChilds) {
+    var indexField = arr[0].map(String).findIndex(compareInLowerCase(field));
+    return indexField !== -1 ? arr.map(arrItem => {
+      return arrItem[indexField];
+    }).splice(1) : [];
+  }
+  return [];
+}
+
+function compareInLowerCase(matchWith: string) {
+  return (arg1: string) => {
+    return String(arg1).toLowerCase() === String(matchWith).toLowerCase()
+  };
+}
+
+export function addArrChildFromArr(arr: any[][], field: string, newValue: any) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+
+  if (arrContainChilds) {
+    let arrFields = arr[0];
+
+    if (arrFields.findIndex(compareInLowerCase(field)) === -1) {
+      arrFields = [...arr[0], field];
+    }
+
+    var indexField = arrFields.findIndex(compareInLowerCase(field));
+
+    return [
+      arrFields,
+      ...arr.splice(1).map(arrItem => {
+        arrItem[indexField] = newValue;
+        return arrItem;
+      })
+    ];
+  }
+  return [arr];
+}
+
+export function relationObjFieldValue(arg: { [k: string]: any }[], findInTo: { [k: string]: any }[], fieldName: string, extractValueFromField?: string) {
+  return arg.map((argItem) => {
+
+    const value = findInTo.find((into) => {
+      let hasFinded = false;
+      Object.keys(into).forEach((intoKey) => {
+        if (!hasFinded) {
+          return hasFinded = into[intoKey] === argItem[fieldName];
+        }
+      })
+      return hasFinded;
+    });
+
+    if (extractValueFromField) {
+      return { ...argItem, [fieldName]: value ? value[extractValueFromField] : null };
+    }
+
+    return { ...argItem, [fieldName]: value ? value : null }
+  });
+}
+
+export function mapParseValuesArr(arr: string[][]) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  if (arrContainChilds) {
+    return arr.map((itemArr) => {
+      return arr[0].map((arrItem, key) => {
+        if (!itemArr[key]) {
+          itemArr[key] = "";
+        }
+        return itemArr[key];
+      })
+    })
+  }
+  return [arr];
+}
+
+export function rmArrChildFromArr(arr: any[][], field: string, matchValue: string) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+
+  if (arrContainChilds) {
+    var indexField = arr[0].map(String).findIndex(compareInLowerCase(field));
+
+    return indexField !== -1 ? arr.filter(arrItem => {
+      const hasMatchWith = compareInLowerCase(matchValue);
+      return !hasMatchWith(arrItem[indexField]);
+    }) : [arr];
+  }
+  return [arr];
 }
 
 export function parseObjtArrToArr(objs: { [key: string]: any }[], arrKeyValidator: string[]) {
-  let arr = [];
+  let arr = [arrKeyValidator];
 
   const ObjKeyValidator = arrIndexValidator(arrKeyValidator);
 
@@ -19,12 +109,14 @@ export function parseObjtArrToArr(objs: { [key: string]: any }[], arrKeyValidato
     let obj = objs[i];
 
     if (typeof obj === "object") {
+      let arrChild = [];
       for (let index = 0; index < Object.keys(obj).length; index++) {
         let objKey = ObjKeyValidator(Object.keys(obj)[index]);
         if (typeof objKey === "number") {
-          arr[objKey] = obj[Object.keys(obj)[index]];
+          arrChild[objKey] = obj[Object.keys(obj)[index]];
         }
       }
+      arr.push(arrChild);
     } else {
       break;
     }

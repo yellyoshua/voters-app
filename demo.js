@@ -5,7 +5,7 @@ var election = {
     ["Lista B", "lista_b"]
   ],
   candidates: [
-    ["email", "password", "list"],
+    ["email", "password", "list", "tag_slug"],
     ["yoshualopez@gmail.com", "contrasena", "lista_a"],
     ["yoshualopez@gmail.com", "contrasena", "lista_a"]
   ],
@@ -42,7 +42,7 @@ var votar = (voterIndex, campaignIndex, election) => {
 var obj = { code: "001", election: "lista_b", email: "email1", id: 0, name: "name1", password: "password1" };
 
 var objectToArray = function (obj) {
-  if(typeof obj === "object") {
+  if (typeof obj === "object") {
     var arr = [];
     for (let index = 0; index < Object.keys(obj).length; index++) {
       arr.push(obj[Object.keys(obj)[index]]);
@@ -50,9 +50,48 @@ var objectToArray = function (obj) {
     return arr;
   }
 
-  return []
+  return [];
 };
+
+function mapParseValuesArr(arr) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  if (arrContainChilds) {
+    return arr.map(itemArr => {
+      return arr[0].map((arrItem, key) => {
+        if (!itemArr[key]) {
+          itemArr[key] = "";
+        }
+        return itemArr[key];
+      });
+    });
+  }
+  return [arr];
+}
+
+function addArrChildFromArr(arr, field, newValue) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+
+  if (arrContainChilds) {
+    var arrFields = arr[0];
+    var indexFieldFound = arrFields.map(String).findIndex(fields => fields.toLowerCase() === String(field).toLowerCase());
+    var indexField = indexFieldFound !== -1 ? indexFieldFound : arrFields.length;
+    return [
+      arrFields,
+      ...arr.splice(1).map(arrItem => {
+        return arrFields.map((_, key) => {
+          if (key === indexField) {
+            arrItem[key] = newValue;
+          }
+          return arrItem[key];
+        });
+      })
+    ];
+  }
+  return [arr];
+}
+
+var updated = addArrChildFromArr(mapParseValuesArr(election.candidates), "tag_slug", "slug_list_a");
 
 var newElection = votar(0, 1, election);
 
-console.log({ parseVoters,objectToArray: objectToArray(obj) , newElection, newParseVoters });
+console.log({ updated, parseVoters, objectToArray: objectToArray(obj), newElection });
