@@ -5,7 +5,7 @@ import FreelancerCover from "icons/FreelancerCover";
 import { IContentLoaderProps } from "react-content-loader";
 
 type PropsContentLoader = {
-  children: ReactNode;
+  children?: ReactNode;
   isFetching: any;
   isError: Error | null;
   isNoData: boolean;

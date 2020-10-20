@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import ButtonGroupPicker from "components/ButtonGroupPicker";
-import { TypeElection, TypeStatusElection } from "types/appTypes";
+import { TypeStatusElection } from "types/electionTypes";
 import { Formik, Form } from "formik";
+import { useTheElection } from "context/TheElectionContext";
 
 // [x] Button Star/Stop election votes 
 // [] Create/Remove position candidates
 
 type PropsTabSettings = {
-  election: TypeElection;
   updateElection: (data: {
     [key: string]: any;
   }) => Promise<any>
@@ -19,8 +19,10 @@ const pickStatusList: { show: string, value: TypeStatusElection }[] = [
   { show: "Cerrado", value: "closed" }
 ]
 
-export default function TabSettings({ election, updateElection }: PropsTabSettings) {
-  const [statusPicked, pickStatus] = useState<string>(election.status);
+export default function TabSettings({ updateElection }: PropsTabSettings) {
+  const { theElection } = useTheElection();
+
+  const [statusPicked, pickStatus] = useState<string>(theElection.status);
 
   return <div>
 

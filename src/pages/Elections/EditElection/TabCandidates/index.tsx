@@ -1,20 +1,26 @@
 import React from "react";
+import { useTheElection } from "context/TheElectionContext";
+import useParserData from "hooks/useParserData"
 
-type PropsTabCandidates = {
-  campaignsSlugs: string[];
-  campaignsNames: string[];
-};
+type PropsTabCandidates = {};
 
-export default function TabCandidates(props: PropsTabCandidates) {
+const { getValuesFromDoubleArray } = useParserData();
+
+export default function TabCandidates(_: PropsTabCandidates) {
+  const { theElection } = useTheElection();
+
+  const campaignsNames = getValuesFromDoubleArray<string>(theElection.campaigns, "name");
+  const campaignsSlugs = getValuesFromDoubleArray<string>(theElection.campaigns, "slug");
+
   return <div>
     <p>Tab candidates</p>
     <div className='elections-tabs-view-section'>
       <h1>Names</h1>
-      {props.campaignsNames.map((campaignName, key) => {
+      {campaignsNames.map((campaignName, key) => {
         return <p key={key}>{campaignName}</p>
       })}
       <h1>Slugs</h1>
-      {props.campaignsSlugs.map((campaignSlug, key) => {
+      {campaignsSlugs.map((campaignSlug, key) => {
         return <p key={key}>{campaignSlug}</p>
       })}
     </div>

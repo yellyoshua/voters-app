@@ -1,28 +1,27 @@
-import React, { useMemo } from "react";
+import React from "react";
 import Card from "components/Card";
 import AddIcon from "icons/AddIcon";
 import { rmArrChildFromArr } from "utils/parsersData";
+import { useTheElection } from "context/TheElectionContext";
+import useParserData from "hooks/useParserData";
+import { TypeCampaignObj } from "types/electionTypes";
 import "./index.css";
 
 type PropsTabCampaigns = {
-  election: any;
-  candidates: any[];
-  campaigns: any[];
-  removeElection: () => Promise<any>;
   updateElection: (data: { [key: string]: any }) => Promise<any>;
-  screenCampaign: (val: { [key: string]: any }) => void;
-  apiMutate: (data?: any, shouldRevalidate?: boolean | undefined) => Promise<any>;
+  editCampaign: (slug: string | null) => void;
 };
 
-export default function TabCampaigns(props: PropsTabCampaigns) {
-  const election = useMemo(() => props.election, [props]);
-  const campaigns = useMemo(() => props.campaigns, [props]);
+const { convertDoubleArrToObjArr } = useParserData();
 
-  console.log({ campaigns });
+export default function TabCampaigns(props: PropsTabCampaigns) {
+  const { theElection } = useTheElection();
+
+  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
 
   return <div>
     <div className='container-election-name breadcrumbs-with-button'>
-      <button onClick={() => props.screenCampaign({ campaign: null })} className='btn-right-breadcrumb'>
+      <button onClick={() => props.editCampaign(null)} className='btn-right-breadcrumb'>
         <AddIcon />Agregar partido
       </button>
     </div>
@@ -33,18 +32,13 @@ export default function TabCampaigns(props: PropsTabCampaigns) {
             key={index}
             id={campaign.slug}
             title={campaign.name}
-            content={campaign.commitments_text}
-            onClick={(slug) => {
-              return props.screenCampaign({
-                campaign,
-                candidates: props.candidates.filter((cn) => cn.campaign_slug === slug)
-              });
-            }}
+            content=""
+            onClick={props.editCampaign}
             onDelete={async slug => {
               return await props.updateElection(
                 {
-                  campaigns: rmArrChildFromArr(election.campaigns, "slug", slug),
-                  candidates: rmArrChildFromArr(election.candidates, "campaign_slug", slug)
+                  campaigns: rmArrChildFromArr(theElection.campaigns, "slug", slug),
+                  candidates: rmArrChildFromArr(theElection.candidates, "campaign_slug", slug)
                 }
               );
             }}

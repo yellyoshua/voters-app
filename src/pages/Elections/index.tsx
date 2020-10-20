@@ -11,7 +11,7 @@ import ContentLoader from "components/ContentLoader";
 import CardElection from "components/Card/CardElection";
 import { uuidv4 } from "utils/createUID";
 import { defaultElection } from "models/election";
-import { TypeElection } from "types/appTypes";
+import { TypeElection } from "types/electionTypes";
 import "./index.css";
 
 const breadcrumbs = [{ name: "Elecciones", pathname: "/elections" }];

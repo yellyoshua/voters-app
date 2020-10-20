@@ -2,7 +2,6 @@ import React, { useReducer } from "react";
 import Button from "react-rainbow-components/components/Button";
 import ModalVoter from "components/Modals/ModalVoter";
 import RenderIf from "react-rainbow-components/components/RenderIf";
-import { TypeElection } from "types/appTypes";
 
 // [-] Create/Edit Tags
 // [x] Modal upload Voters
@@ -10,7 +9,6 @@ import { TypeElection } from "types/appTypes";
 // [] Generate and download plantilla
 
 type ReducerActionsTypes =
-  { type: "set_voters", payload: any[] } |
   { type: "set_modal_voter", payload: boolean };
 
 type ReducerStateType = { isOpenVoter: boolean };
@@ -31,10 +29,6 @@ const setReducerInitialState = () => {
 }
 
 type PropsTabVoters = {
-  tags: any[];
-  voters: any[];
-  election: TypeElection;
-  apiMutate: (data?: any, shouldRevalidate?: boolean | undefined) => Promise<any>;
   updateElection: (data: { [key: string]: any; }) => Promise<any>;
 };
 

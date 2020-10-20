@@ -2,9 +2,9 @@ import { useState, useCallback, useEffect } from "react";
 
 type StatusOptions = "idle" | "pending" | "success" | "error";
 
-type ExecFunction = (arg?: any) => void;
+type ExecFunction = (...arg: any[]) => void;
 
-type AsyncFunction = (arg?: any) => Promise<any>;
+type AsyncFunction = (...arg: any[]) => Promise<any>;
 
 type ReturnUseAsync<T> = {
   execute: ExecFunction;

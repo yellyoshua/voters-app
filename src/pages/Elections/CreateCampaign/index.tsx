@@ -1,30 +1,34 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer, useContext, useEffect, useMemo } from "react";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Input from "react-rainbow-components/components/Input";
 import ProgressSteps from "components/ProgressSteps";
 import UploadFile from "components/UploadFile";
 import { TokenContext } from "context/UserContext";
-import useFetch from "hooks/useFetch";
-import { parseObjtArrToArr } from "utils/parsersData";
 import { uuidv4 } from "utils/createUID";
 import { REACT_API_URL } from "configurations/api";
 import { campaignsDataModel, defaultCampaign } from "models/election";
+import useAsync from "hooks/useAsync";
+import useParserData from "hooks/useParserData";
+import useFetch from "hooks/useFetch";
+import { useTheElection } from "context/TheElectionContext";
+import { TypeElection, TypeCampaignObj } from "types/electionTypes";
 import "./index.css";
 
-type ReducerActionsTypes = { type: "cmp_commts_text", payload: string } |
-{ type: "cmp_commts_file", payload: any } |
-{ type: "stp_go", payload: { isValid: boolean, val: number } } |
-{ type: "stp_check", payload: boolean } |
-{ type: "cmp_name_slug", payload: { name: string } };
+type ReducerActionsTypes =
+  | { type: "cmp_commts_text"; payload: string }
+  | { type: "cmp_commts_file"; payload: any }
+  | { type: "stp_go"; payload: { isValid: boolean; val: number } }
+  | { type: "stp_check"; payload: boolean }
+  | { type: "cmp_name_slug"; payload: { name: string } };
 
-type ReducerStateType = { campaign: { [key: string]: any }, currentStep: { isValid: boolean, val: number } };
+type ReducerStateType = { campaign: TypeCampaignObj; currentStep: { isValid: boolean; val: number } };
 
 const reducer = (state: ReducerStateType, action: ReducerActionsTypes) => {
   switch (action.type) {
     case "cmp_commts_file":
       return { ...state, campaign: { ...state.campaign, commitments_file: action.payload } };
     case "cmp_name_slug":
-      return { ...state, campaign: { ...state.campaign, ...action.payload } }
+      return { ...state, campaign: { ...state.campaign, ...action.payload } };
     case "stp_go":
       return { ...state, currentStep: { isValid: action.payload.isValid, val: action.payload.val } };
     case "stp_check":
@@ -32,27 +36,31 @@ const reducer = (state: ReducerStateType, action: ReducerActionsTypes) => {
     default:
       return state;
   }
-}
+};
 
 const setReducerInitialState = (currentCampaignVal: any, currentStepValid: boolean) => {
   return {
     campaign: currentCampaignVal,
     currentStep: { isValid: currentStepValid, val: 1 }
-  }
+  };
 };
 
 type PropsAddProspects = {
-  campaigns: any[];
-  campaign?: { [key: string]: any };
-  createOrUpdate: (newElection: { [key: string]: any }) => void;
+  slug: string | null;
+  createOrUpdate: (newElection: TypeElection) => Promise<any>;
   cancel: () => void;
 };
 
-export default function AddCampaign(props: PropsAddProspects) {
-  const token = useContext(TokenContext);
+export default function AddCampaign({ slug, createOrUpdate, cancel }: PropsAddProspects) {
   const { fetchDelWithToken } = useFetch();
-  const currentStepValid = props.campaign ? Boolean(props.campaign.campaign) : false;
-  const currentCampaignVal = props.campaign ? props.campaign.campaign || defaultCampaign : defaultCampaign;
+  const { convertDoubleArrToObjArr, convertObjArrToDoubleArr } = useParserData();
+  const token = useContext(TokenContext);
+  const { theElection } = useTheElection();
+  const asyncCreateOrUpdate = useAsync(createOrUpdate, false);
+  const campaigns = useMemo(() => convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns), [convertDoubleArrToObjArr, theElection.campaigns]);
+
+  const currentStepValid = slug ? true : false;
+  const currentCampaignVal = slug ? campaigns.find(campaign => campaign.slug === slug) : defaultCampaign;
   const [reducerVal, dispatch] = useReducer(reducer, setReducerInitialState(currentCampaignVal, currentStepValid));
 
   const isCurrentStepValid = (step: number, stpVal?: number) => {
@@ -82,14 +90,21 @@ export default function AddCampaign(props: PropsAddProspects) {
     return dispatch({ type: "stp_check", payload: isValid });
   };
 
+  useEffect(() => {
+    if (asyncCreateOrUpdate.status === "success") {
+      return cancel();
+    }
+    return () => {};
+  }, [asyncCreateOrUpdate.status, cancel]);
+
   const createCampaign = () => {
-    let newCampaigns = props.campaigns;
-    const existCampaign = newCampaigns.findIndex(campaign => campaign.id === reducerVal.campaign.id) !== -1;
+    let newCampaigns = campaigns;
+    const existCampaign = newCampaigns.findIndex(campaign => campaign.slug === reducerVal.campaign.slug) !== -1;
 
     if (existCampaign) {
-      newCampaigns = newCampaigns.map((campaign) => {
+      newCampaigns = newCampaigns.map(campaign => {
         let newCampaign = campaign;
-        if (newCampaign.id === reducerVal.campaign.id) {
+        if (newCampaign.slug === reducerVal.campaign.slug) {
           newCampaign = reducerVal.campaign;
         }
         return newCampaign;
@@ -98,10 +113,12 @@ export default function AddCampaign(props: PropsAddProspects) {
       newCampaigns.push({ ...reducerVal.campaign, slug: uuidv4() });
     }
 
-    props.createOrUpdate({
-      campaigns: parseObjtArrToArr(newCampaigns, campaignsDataModel)
+    asyncCreateOrUpdate.execute({
+      ...theElection,
+      campaigns: convertObjArrToDoubleArr(newCampaigns, campaignsDataModel)
     });
-    return props.cancel();
+
+    return cancel();
   };
 
   const getCurrentStep = (step: number) => {
@@ -111,13 +128,7 @@ export default function AddCampaign(props: PropsAddProspects) {
 
   return (
     <div className='elections-tabs-view-section'>
-      <ProgressSteps
-        cancelSteps={() => props.cancel()}
-        getCurrentStep={getCurrentStep}
-        onPass={createCampaign}
-        stepNames={["name", "commitments", "review"]}
-        isTheStepValid={reducerVal.currentStep.isValid}
-      >
+      <ProgressSteps cancelSteps={cancel} getCurrentStep={getCurrentStep} onPass={createCampaign} stepNames={["name", "commitments", "review"]} isTheStepValid={reducerVal.currentStep.isValid}>
         <RenderIf isTrue={reducerVal.currentStep.val === 1}>
           <StepCampaignName onChangeName={onChangeName} name={reducerVal.campaign.name} />
         </RenderIf>
@@ -128,7 +139,7 @@ export default function AddCampaign(props: PropsAddProspects) {
           <FinalPreviewSteps campaign={reducerVal.campaign} />
         </RenderIf>
       </ProgressSteps>
-    </div >
+    </div>
   );
 }
 
@@ -158,7 +169,6 @@ function StepCampaignName(props: PropsStepCampaignName) {
   );
 }
 
-
 type PropsStepCommitments = {
   campaignName: string;
   onChange: (val: any, id?: number) => void;
@@ -172,23 +182,20 @@ function StepCommitments(props: PropsStepCommitments) {
         <h1>Propuestas del partido.</h1>
       </section>
       <section>
-        {props.commitments_file ?
-          (<div className="commitments-file-container">
-            <div className="commitments-file-wrapper">
-              <a href={`${REACT_API_URL + props.commitments_file[0].url}`} target="_blank" rel="noopener noreferrer">
+        {props.commitments_file ? (
+          <div className='commitments-file-container'>
+            <div className='commitments-file-wrapper'>
+              <a href={`${REACT_API_URL + props.commitments_file[0].url}`} target='_blank' rel='noopener noreferrer'>
                 {props.commitments_file[0].name}
               </a>
-              <button className="button-icon-little-danger" onClick={() => props.onChange(null, Number(props.commitments_file[0].id))}>x</button>
+              <button className='button-icon-little-danger' onClick={() => props.onChange(null, Number(props.commitments_file[0].id))}>
+                x
+              </button>
             </div>
-          </div>)
-          :
-          (<UploadFile
-            url="/upload"
-            onError={(err) => console.log({ err })}
-            progress={() => null}
-            success={props.onChange}
-          />)
-        }
+          </div>
+        ) : (
+          <UploadFile url='/upload' onError={err => console.log({ err })} progress={() => null} success={props.onChange} />
+        )}
       </section>
     </>
   );
@@ -204,22 +211,24 @@ function FinalPreviewSteps(props: PropsFinalPreviewSteps) {
       <div className='step-title'>
         <h1>Vista previa</h1>
       </div>
-      <div className="container-preview-steps">
-        <div className="container-preview-steps-wrapper">
+      <div className='container-preview-steps'>
+        <div className='container-preview-steps-wrapper'>
           <h1>Nombre para el partido.</h1>
           <p>{props.campaign.name}</p>
         </div>
-        <div className="container-preview-steps-wrapper">
+        <div className='container-preview-steps-wrapper'>
           <h1>Propuestas del partido.</h1>
           {props.campaign.commitments_file ? (
-            <div className="commitments-file-container">
-              <div className="commitments-file-wrapper">
-                <a href={`${REACT_API_URL + props.campaign.commitments_file[0].url}`} target="_blank" rel="noopener noreferrer">
+            <div className='commitments-file-container'>
+              <div className='commitments-file-wrapper'>
+                <a href={`${REACT_API_URL + props.campaign.commitments_file[0].url}`} target='_blank' rel='noopener noreferrer'>
                   {props.campaign.commitments_file[0].name}
                 </a>
               </div>
             </div>
-          ) : <p>(Vac&iacute;o)</p>}
+          ) : (
+            <p>(Vac&iacute;o)</p>
+          )}
         </div>
       </div>
     </>

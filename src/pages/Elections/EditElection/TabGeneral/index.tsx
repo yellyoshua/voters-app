@@ -1,47 +1,55 @@
 import React from "react";
 import InputFetch from "components/InputFetch";
+import { useTheElection } from "context/TheElectionContext"
+import useParserData from "hooks/useParserData";
+import { TypeCampaignObj, TypeVoterObj, TypeCandidateObj, TypeTagObj } from "types/electionTypes";
 import "./index.css";
 
-// [] Update Election Name
-// [] Show general stats
-// [] Show graph stats election
-// [] Button generate report pdf
+// [x] Update Election Name
+// [x] Show general stats
+// [] Show graph stats election -> moved to path /stats
+// [] Button generate report pdf -> moved to path /stats
 
 type PropsTabGeneral = {
-  nameElection: string;
-  campaigns: any[];
-  candidates: any[];
-  tags: any[];
-  voters: any[];
   updateElection: (data: { [key: string]: any }) => Promise<any>;
-  apiMutate: (data?: any, shouldRevalidate?: boolean | undefined) => Promise<any>;
 };
 
+const { convertDoubleArrToObjArr } = useParserData();
+
 export default function TabGeneral(props: PropsTabGeneral) {
+  const { theElection, mutateTheElectionWith } = useTheElection();
+
+  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
+  const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
+  const tags = convertDoubleArrToObjArr<TypeTagObj>(theElection.tags);
+  const voters = convertDoubleArrToObjArr<TypeVoterObj>(theElection.voters);
+
   return <div className='elections-tabs-view-section'>
     <div>
       <InputFetch
-        initialValue={props.nameElection}
-        beforeChange={null}
+        initialValue={theElection.name}
+        beforeChange={mutateTheElectionWith}
         onChange={props.updateElection}
-        resolveData={val => ({ name: val })}
+        resolveData={name => {
+          return { ...theElection, name }
+        }}
       />
     </div>
     <section className="campaign-general-stats-container">
       <div className="campaign-general-stats-wrapper">
-        <p>{props.voters.length}</p>
+        <p>{voters.length}</p>
         <h1>Votantes</h1>
       </div>
       <div className="campaign-general-stats-wrapper">
-        <p>{props.campaigns.length}</p>
+        <p>{campaigns.length}</p>
         <h1>Partidos</h1>
       </div>
       <div className="campaign-general-stats-wrapper">
-        <p>{props.tags.length}</p>
+        <p>{tags.length}</p>
         <h1>Etiquetas</h1>
       </div>
       <div className="campaign-general-stats-wrapper">
-        <p>{props.candidates.length}</p>
+        <p>{candidates.length}</p>
         <h1>Candidatos</h1>
       </div>
     </section>
