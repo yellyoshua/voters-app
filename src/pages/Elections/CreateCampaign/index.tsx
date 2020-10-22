@@ -4,13 +4,13 @@ import Input from "react-rainbow-components/components/Input";
 import ProgressSteps from "components/ProgressSteps";
 import UploadFile from "components/UploadFile";
 import { TokenContext } from "context/UserContext";
+import { useTheElection } from "context/TheElectionContext";
 import { uuidv4 } from "utils/createUID";
 import { REACT_API_URL } from "configurations/api";
-import { campaignsDataModel, defaultCampaign } from "models/election";
 import useAsync from "hooks/useAsync";
 import useParserData from "hooks/useParserData";
 import useFetch from "hooks/useFetch";
-import { useTheElection } from "context/TheElectionContext";
+import { campaignsDataModel, defaultCampaign } from "models/election";
 import { TypeElection, TypeCampaignObj } from "types/electionTypes";
 import "./index.css";
 
@@ -94,7 +94,7 @@ export default function AddCampaign({ slug, createOrUpdate, cancel }: PropsAddPr
     if (asyncCreateOrUpdate.status === "success") {
       return cancel();
     }
-    return () => {};
+    return () => { };
   }, [asyncCreateOrUpdate.status, cancel]);
 
   const createCampaign = () => {
@@ -194,8 +194,8 @@ function StepCommitments(props: PropsStepCommitments) {
             </div>
           </div>
         ) : (
-          <UploadFile url='/upload' onError={err => console.log({ err })} progress={() => null} success={props.onChange} />
-        )}
+            <UploadFile url='/upload' onError={err => console.log({ err })} progress={() => null} success={props.onChange} />
+          )}
       </section>
     </>
   );
@@ -227,8 +227,8 @@ function FinalPreviewSteps(props: PropsFinalPreviewSteps) {
               </div>
             </div>
           ) : (
-            <p>(Vac&iacute;o)</p>
-          )}
+              <p>(Vac&iacute;o)</p>
+            )}
         </div>
       </div>
     </>

@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrums";
 
 type PropsForms = RouteComponentProps & {};
 
-export default function Forms(props: PropsForms) {
+export default function Forms(_: PropsForms) {
   useTitle("Formularios");
 
   const breadcrumbs = [
@@ -14,7 +14,7 @@ export default function Forms(props: PropsForms) {
 
   return (
     <div>
-      <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       Forms Page
     </div>
   )

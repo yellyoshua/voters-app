@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrums";
 
 type PropsDashboard = RouteComponentProps & {};
 
-export default function Dashboard(props: PropsDashboard) {
+export default function Dashboard(_: PropsDashboard) {
   useTitle("Dashboard");
 
   const breadcrumbs = [
@@ -14,7 +14,7 @@ export default function Dashboard(props: PropsDashboard) {
 
   return (
     <div>
-      <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       Dashboard page
     </div>
   )

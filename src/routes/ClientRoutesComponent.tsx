@@ -7,7 +7,7 @@ import EditElectionPage from "pages/Elections/EditElection";
 import AppsPage from "pages/Apps";
 import MessagePage from "pages/Message";
 import FormsPage from "pages/Forms";
-import NotFoundPage from "pages/Error/NotFound";
+import NotFoundPage from "pages/NotFoundPage";
 
 type PropsClientRoutes = {};
 

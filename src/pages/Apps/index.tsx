@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrums";
 
 type PropsApps = RouteComponentProps & {};
 
-export default function Apps(props: PropsApps) {
+export default function Apps(_: PropsApps) {
   useTitle("Apps");
 
   const breadcrumbs = [
@@ -14,7 +14,7 @@ export default function Apps(props: PropsApps) {
 
   return (
     <div>
-      <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       Apps Page
     </div>
   )

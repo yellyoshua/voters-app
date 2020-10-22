@@ -1,7 +1,8 @@
 import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+
 import LoginPage from "pages/Login";
-import NotFoundPage from "pages/Error/NotFound";
+import NotFoundPage from "pages/NotFoundPage";
 
 type PropsVisitRoutes = {};
 

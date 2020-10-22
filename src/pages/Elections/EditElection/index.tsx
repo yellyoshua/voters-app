@@ -69,7 +69,7 @@ export default memo(function EditElection({ match, staticContext, location, hist
 
   return (
     <TheElectionProvider id={currentElectionId} mutate={api.mutate} value={election}>
-      <Breadcrumbs history={history} match={match} location={location} staticContext={staticContext} breadcrumbs={breadcrumbs} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <RenderIf isTrue={isOpenCreateCampaign}>
         <CreateCampaign
           slug={editableCampaign}

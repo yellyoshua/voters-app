@@ -1,0 +1,52 @@
+.notfound-screen-layout {
+  padding: 10px;
+}
+.notfound-screen-errcode {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  letter-spacing: 5px;
+}
+.notfound-screen-desc {
+  margin: 30px 0px;
+  text-align: right;
+  max-width: 300px;
+  letter-spacing: 0.1px;
+  font-size: 1.1rem;
+}
+.notfound-screen-action-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 10px 0px;
+}
+.notfound-screen-action-buttons-wrapper {
+  padding: 10px;
+}
+.notfound-screen-action-goback {
+  border: 0px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgb(138, 43, 226);
+  color: white;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  outline: none;
+}
+.notfound-screen-action-goback:hover {
+  background: rgb(138, 43, 0.26);
+}
+.notfound-screen-action-gohome {
+  border: 0px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgb(0, 137, 255);
+  color: white;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  outline: none;
+}
+.notfound-screen-action-gohome:hover {
+  background: rgb(0, 137, 0.25);
+}

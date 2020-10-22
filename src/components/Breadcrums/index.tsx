@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import BreadcrumbComponent from "react-rainbow-components/components/Breadcrumb";
 import BreadcrumbsComponent from "react-rainbow-components/components/Breadcrumbs";
 
@@ -10,20 +10,19 @@ type PropsBreadcrumbs = RouteComponentProps & {
   }[];
 };
 
-export default function Breadcrumbs(props: PropsBreadcrumbs) {
+function Breadcrumbs({ history, breadcrumbs }: PropsBreadcrumbs) {
   return (
     <div className='rainbow-p-around_large'>
       <BreadcrumbsComponent>
-        {props.breadcrumbs.map((breadcrumb, index) => {
-          return (
-            <BreadcrumbComponent 
-              key={index} 
-              label={breadcrumb.name} 
-              onClick={() => props.history.push(breadcrumb.pathname)} 
-            />
-          );
-        })}
+        {breadcrumbs.map((breadcrumb, index) => (
+          <BreadcrumbComponent
+            key={index}
+            label={breadcrumb.name}
+            onClick={() => history.push(breadcrumb.pathname)}
+          />
+        ))}
       </BreadcrumbsComponent>
     </div>
   );
 }
+export default withRouter(Breadcrumbs);

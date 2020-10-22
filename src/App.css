@@ -142,3 +142,35 @@
   margin: 10px auto;
   min-width: 130px;
 }
+tr,
+input,
+textarea {
+  background: rgb(245, 246, 247);
+  font-size: 14px;
+  padding: 12px;
+  border-color: rgba(0, 0, 0, 0.07) rgba(0, 0, 0, 0.11) rgba(0, 0, 0, 0.18);
+  border-radius: 4px;
+  border-style: solid;
+  border-width: 1px;
+  bottom: -1px;
+  line-height: 18px;
+  outline: none;
+}
+tr:focus,
+input:focus,
+textarea:focus {
+  border-color: rgba(0, 0, 0, 0.7) rgba(0, 0, 0, 1.1) rgba(0, 0, 0, 1.8);
+}
+.false-link {
+  text-decoration-line: underline;
+  text-decoration-color: coral;
+  color: rgb(255 127 80);
+  cursor: pointer;
+}
+.container-breadcrums-floated {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 20px;
+  margin-top: 10px;
+}

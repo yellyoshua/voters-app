@@ -5,7 +5,7 @@ import Breadcrumbs from "components/Breadcrums";
 
 type PropsMessage = RouteComponentProps & {};
 
-export default function Message(props: PropsMessage) {
+export default function Message(_: PropsMessage) {
   useTitle("Mensajes");
 
   const breadcrumbs = [
@@ -14,7 +14,7 @@ export default function Message(props: PropsMessage) {
 
   return (
     <div>
-      <Breadcrumbs {...props} breadcrumbs={breadcrumbs} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       Message Page
     </div>
   )
