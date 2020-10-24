@@ -41,7 +41,6 @@ export default function UploadFile(props: PropsUploadFile) {
     {
       prgrss === 100 ? (
         <FileSelector
-          variant="inline"
           disabled={isDisablePicker}
           onChange={handlePickFile}
           label="Selector de archivos"

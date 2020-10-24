@@ -1,17 +1,21 @@
-import React, { useState, Suspense, lazy } from "react";
+import React, { useState } from "react";
 import Button from "react-rainbow-components/components/Button";
 import RenderIf from "react-rainbow-components/components/RenderIf";
-import Spinner from "react-rainbow-components/components/Spinner";
+// import Spinner from "react-rainbow-components/components/Spinner";
 import ModalVoter from "components/Modals/ModalVoter";
+import ListTagsWithVoters from "components/Lists/ListTagsWithVoters";
+import deferComponentRender from "components/DeferComponentRender";
 
-const ListTagsWithVoters = lazy(() => import("components/Lists/ListTagsWithVoters"));
+const DeferListTagsWithVoters = deferComponentRender(ListTagsWithVoters);
+
+// const ListTagsWithVoters = lazy(() => import("components/Lists/ListTagsWithVoters"));
 
 // [-] Create/Edit Tags
 // [x] Modal upload Voters
 // [x] "Modal create Tags" -> Voters create tags
 // [] Generate and download plantilla
 
-type PropsTabVoters = {
+export type PropsTabVoters = {
   updateElection: (data: { [key: string]: any; }) => Promise<any>;
 };
 
@@ -39,15 +43,15 @@ export default function TabVoters(props: PropsTabVoters) {
       </div>
       <div className='elections-tabs-view-section'>
         <p>Tab voters</p>
-        <Suspense
+        {/* <Suspense
           fallback={
             <div style={{ textAlign: "center" }}>
               <Spinner size="large" type="arc" variant="brand" />
             </div>
           }
         >
-          <ListTagsWithVoters />
-        </Suspense>
+        </Suspense> */}
+        <DeferListTagsWithVoters />
       </div>
     </RenderIf>
   </div>

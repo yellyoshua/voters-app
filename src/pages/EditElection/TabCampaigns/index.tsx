@@ -3,7 +3,7 @@ import ListCampaigns from "components/Lists/ListCampaigns";
 import AddIcon from "icons/AddIcon";
 import "./index.css";
 
-type PropsTabCampaigns = {
+export type PropsTabCampaigns = {
   updateElection: (data: { [key: string]: any }) => Promise<any>;
   editCampaign: (slug: string | null) => void;
 };
