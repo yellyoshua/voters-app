@@ -10,7 +10,7 @@ type PropsPickFile = {
 
 const fileExtensionMatch = (inputFileExt: string, fileAccept: string | undefined, cb: (hasMatch: boolean) => void) => {
   if (fileAccept) {
-    return cb(fileAccept.toLowerCase().split(',').indexOf(inputFileExt.toLowerCase()) !== -1);
+    return cb(fileAccept.toLowerCase().split(',').includes(inputFileExt.toLowerCase()));
   }
   return cb(true);
 }

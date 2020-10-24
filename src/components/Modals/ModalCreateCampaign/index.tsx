@@ -1,18 +1,20 @@
-import React, { useReducer, useContext, useEffect, useMemo } from "react";
+import React, { useReducer, useContext, useEffect } from "react";
 import RenderIf from "react-rainbow-components/components/RenderIf";
-import Input from "react-rainbow-components/components/Input";
 import ProgressSteps from "components/ProgressSteps";
-import UploadFile from "components/UploadFile";
 import { TokenContext } from "context/UserContext";
 import { useTheElection } from "context/TheElectionContext";
-import { uuidv4 } from "utils/createUID";
-import { REACT_API_URL } from "configurations/api";
 import useAsync from "hooks/useAsync";
 import useParserData from "hooks/useParserData";
 import useFetch from "hooks/useFetch";
+import { uuidv4 } from "utils/createUID";
 import { campaignsDataModel, defaultCampaign } from "models/election";
 import { TypeElection, TypeCampaignObj } from "types/electionTypes";
+
+import StepCampaignName from "components/Modals/ModalCreateCampaign/stepNameCampaign";
+import StepUploadCommitments from "components/Modals/ModalCreateCampaign/stepUploadCommitments";
+import StepFinalPreview from "components/Modals/ModalCreateCampaign/stepFilnalPreview";
 import "./index.css";
+import Modal from "react-rainbow-components/components/Modal";
 
 type ReducerActionsTypes =
   | { type: "cmp_commts_text"; payload: string }
@@ -45,19 +47,21 @@ const setReducerInitialState = (currentCampaignVal: any, currentStepValid: boole
   };
 };
 
-type PropsAddProspects = {
+type PropsModalCreateCampaign = {
   slug: string | null;
+  isOpen: boolean;
   createOrUpdate: (newElection: TypeElection) => Promise<any>;
   cancel: () => void;
 };
+const { fetchDelWithToken } = useFetch();
+const { convertDoubleArrToObjArr, convertObjArrToDoubleArr } = useParserData();
 
-export default function AddCampaign({ slug, createOrUpdate, cancel }: PropsAddProspects) {
-  const { fetchDelWithToken } = useFetch();
-  const { convertDoubleArrToObjArr, convertObjArrToDoubleArr } = useParserData();
+export default function ModalCreateCampaign({ isOpen = false, slug, createOrUpdate, cancel }: PropsModalCreateCampaign) {
+
   const token = useContext(TokenContext);
   const { theElection } = useTheElection();
   const asyncCreateOrUpdate = useAsync(createOrUpdate, false);
-  const campaigns = useMemo(() => convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns), [convertDoubleArrToObjArr, theElection.campaigns]);
+  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
 
   const currentStepValid = slug ? true : false;
   const currentCampaignVal = slug ? campaigns.find(campaign => campaign.slug === slug) : defaultCampaign;
@@ -126,111 +130,19 @@ export default function AddCampaign({ slug, createOrUpdate, cancel }: PropsAddPr
     return dispatch({ type: "stp_go", payload: { isValid: isValid, val: step } });
   };
 
-  return (
+  return <Modal title={theElection.name} size='small' isOpen={isOpen} onRequestClose={cancel}>
     <div className='elections-tabs-view-section'>
       <ProgressSteps cancelSteps={cancel} getCurrentStep={getCurrentStep} onPass={createCampaign} stepNames={["name", "commitments", "review"]} isTheStepValid={reducerVal.currentStep.isValid}>
         <RenderIf isTrue={reducerVal.currentStep.val === 1}>
-          <StepCampaignName onChangeName={onChangeName} name={reducerVal.campaign.name} />
+          <StepCampaignName onChangeName={onChangeName} value={reducerVal.campaign.name} />
         </RenderIf>
         <RenderIf isTrue={reducerVal.currentStep.val === 2}>
-          <StepCommitments campaignName={reducerVal.campaign.name} commitments_file={reducerVal.campaign.commitments_file} onChange={onChangeCommitments} />
+          <StepUploadCommitments campaignName={reducerVal.campaign.name} commitments_file={reducerVal.campaign.commitments_file} onChange={onChangeCommitments} />
         </RenderIf>
         <RenderIf isTrue={reducerVal.currentStep.val === 3}>
-          <FinalPreviewSteps campaign={reducerVal.campaign} />
+          <StepFinalPreview campaign={reducerVal.campaign} />
         </RenderIf>
       </ProgressSteps>
     </div>
-  );
-}
-
-type PropsStepCampaignName = {
-  name: string;
-  onChangeName: (val: { name: string }) => void;
-};
-function StepCampaignName(props: PropsStepCampaignName) {
-  return (
-    <>
-      <div className='step-title'>
-        <h1>Nombre para el partido.</h1>
-      </div>
-      <Input
-        onChange={({ target: { value } }) => {
-          return props.onChangeName({ name: String(value) });
-        }}
-        placeholder=''
-        value={props.name}
-        style={{ maxWidth: 270 }}
-        className='rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto'
-      />
-      <div className='step-instruction'>
-        <p>M&iacute;nimo 4 caracteres.</p>
-      </div>
-    </>
-  );
-}
-
-type PropsStepCommitments = {
-  campaignName: string;
-  onChange: (val: any, id?: number) => void;
-  commitments_file: any;
-};
-
-function StepCommitments(props: PropsStepCommitments) {
-  return (
-    <>
-      <section className='step-title'>
-        <h1>Propuestas del partido.</h1>
-      </section>
-      <section>
-        {props.commitments_file ? (
-          <div className='commitments-file-container'>
-            <div className='commitments-file-wrapper'>
-              <a href={`${REACT_API_URL + props.commitments_file[0].url}`} target='_blank' rel='noopener noreferrer'>
-                {props.commitments_file[0].name}
-              </a>
-              <button className='button-icon-little-danger' onClick={() => props.onChange(null, Number(props.commitments_file[0].id))}>
-                x
-              </button>
-            </div>
-          </div>
-        ) : (
-            <UploadFile url='/upload' onError={err => console.log({ err })} progress={() => null} success={props.onChange} />
-          )}
-      </section>
-    </>
-  );
-}
-
-type PropsFinalPreviewSteps = {
-  campaign: { [key: string]: any };
-};
-
-function FinalPreviewSteps(props: PropsFinalPreviewSteps) {
-  return (
-    <>
-      <div className='step-title'>
-        <h1>Vista previa</h1>
-      </div>
-      <div className='container-preview-steps'>
-        <div className='container-preview-steps-wrapper'>
-          <h1>Nombre para el partido.</h1>
-          <p>{props.campaign.name}</p>
-        </div>
-        <div className='container-preview-steps-wrapper'>
-          <h1>Propuestas del partido.</h1>
-          {props.campaign.commitments_file ? (
-            <div className='commitments-file-container'>
-              <div className='commitments-file-wrapper'>
-                <a href={`${REACT_API_URL + props.campaign.commitments_file[0].url}`} target='_blank' rel='noopener noreferrer'>
-                  {props.campaign.commitments_file[0].name}
-                </a>
-              </div>
-            </div>
-          ) : (
-              <p>(Vac&iacute;o)</p>
-            )}
-        </div>
-      </div>
-    </>
-  );
+  </Modal>
 }

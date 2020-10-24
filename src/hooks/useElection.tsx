@@ -67,7 +67,7 @@ export default function useElection(props: PropsUseElection) {
   );
 
   const getParsedObj = useCallback(
-    function (item: string, arr?: []) {
+    function (item: string, arr?: any[]) {
       if (arr) {
         return parseArrToObjArr(arr);
       }

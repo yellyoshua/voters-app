@@ -3,11 +3,12 @@ import { Form, Formik } from "formik";
 import { Link } from "react-router-dom";
 import Badge from "react-rainbow-components/components/Badge";
 import Button from "react-rainbow-components/components/Button";
+import { TypeElection } from "types/electionTypes";
 import "./index.css";
 
 type PropsCardElection = {
-  election: { [key: string]: any };
-  getParsedObj: (item: string, arr?: []) => any[];
+  election: TypeElection;
+  getParsedObj: (item: string, arr?: any[]) => any[];
   onClick: (id: any) => void;
   onDelete: (id: any) => Promise<any>;
 };
@@ -20,8 +21,6 @@ export default function CardElection(props: PropsCardElection) {
   const candidates = useMemo(() => props.getParsedObj("candidates", props.election.candidates), [props]);
   const voters = useMemo(() => props.getParsedObj("voters", props.election.voters), [props]);
   const tags = useMemo(() => props.getParsedObj("tags", props.election.tags), [props]);
-
-  console.log({ election: props.election, tags });
 
   return <Formik
     initialValues={{}}

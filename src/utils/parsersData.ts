@@ -1,3 +1,11 @@
+export function mapToUnderscore(item: string, _index: number) {
+  return String(item).toLowerCase().split(" ").join("_");
+}
+
+export function toUnderscore(arg: string) {
+  return String(arg).toLowerCase().split(" ").join("_")
+}
+
 export function parseArrToObjArr(arr: any[]) {
   return Array.isArray(arr) ? arr
     .map((arrItem: any[], index: number) => {
@@ -13,7 +21,7 @@ export function parseArrToObjArr(arr: any[]) {
 export function extractFieldArrValuesOf(arr: any[][], field: string) {
   var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
   if (arrContainChilds) {
-    var indexField = arr[0].map(String).findIndex(compareInLowerCase(field));
+    var indexField = arr[0].map(mapToUnderscore).findIndex(compareInLowerCase(toUnderscore(field)));
     return indexField !== -1 ? arr.map(arrItem => {
       return arrItem[indexField];
     }).splice(1) : [];
@@ -22,22 +30,20 @@ export function extractFieldArrValuesOf(arr: any[][], field: string) {
 }
 
 function compareInLowerCase(matchWith: string) {
-  return (arg1: string) => {
-    return String(arg1).toLowerCase() === String(matchWith).toLowerCase()
-  };
+  return (arg1: string) => (arg1 === matchWith);
 }
 
 export function addArrChildFromArr(arr: any[][], field: string, newValue: any) {
   var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
 
   if (arrContainChilds) {
-    let arrFields = arr[0];
+    let arrFields = arr[0].map(mapToUnderscore);
 
-    if (arrFields.findIndex(compareInLowerCase(field)) === -1) {
+    if (arrFields.findIndex(compareInLowerCase(toUnderscore(field))) === -1) {
       arrFields = [...arr[0], field];
     }
 
-    var indexField = arrFields.findIndex(compareInLowerCase(field));
+    var indexField = arrFields.findIndex(compareInLowerCase(toUnderscore(field)));
 
     return [
       arrFields,
@@ -90,11 +96,11 @@ export function rmArrChildFromArr(arr: any[][], field: string, matchValue: strin
   var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
 
   if (arrContainChilds) {
-    var indexField = arr[0].map(String).findIndex(compareInLowerCase(field));
+    var indexField = arr[0].map(mapToUnderscore).findIndex(compareInLowerCase(toUnderscore(field)));
 
     return indexField !== -1 ? arr.filter(arrItem => {
-      const hasMatchWith = compareInLowerCase(matchValue);
-      return !hasMatchWith(arrItem[indexField]);
+      const hasMatchWith = compareInLowerCase(toUnderscore(matchValue));
+      return !hasMatchWith(toUnderscore(arrItem[indexField]));
     }) : [arr];
   }
   return [arr];
@@ -141,9 +147,7 @@ export function parseObjtToArr(obj: { [key: string]: any }, arrKeys: string[]) {
 
 export function arrIndexValidator(arrKeys: string[]) {
   return (objKey: string) => {
-    let indexKeyFound = arrKeys.map(String).findIndex((val, key) => {
-      return Boolean(val === objKey);
-    });
+    let indexKeyFound = arrKeys.map(mapToUnderscore).findIndex(compareInLowerCase(toUnderscore(objKey)));
     return indexKeyFound === -1 ? null : indexKeyFound;
   };
 }
@@ -151,11 +155,10 @@ export function arrIndexValidator(arrKeys: string[]) {
 export function ObjKeyValidator(obj: { [key: string]: any }, key: string | string[]) {
   let indexKeyFound = Object.keys(obj).findIndex(objKey => {
     if (typeof key === "string") return Boolean(objKey === key);
-    return (
-      key.map(String).findIndex(keyVal => {
-        return Boolean(objKey === keyVal);
-      }) !== -1
-    );
+    return key.map(mapToUnderscore).findIndex(keyVal => {
+      const compareWith = compareInLowerCase(objKey);
+      return compareWith(keyVal);
+    }) !== -1;
   });
   return indexKeyFound !== -1;
 }

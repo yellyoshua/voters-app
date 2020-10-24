@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
@@ -22,7 +22,7 @@ const confApi: PropsUseElection = {
   updateUrl: "/elections"
 };
 
-export default function Elections(props: PropsElections) {
+export default memo(function Elections(props: PropsElections) {
   useTitle("Elecciones");
   const {
     api,
@@ -98,4 +98,4 @@ export default function Elections(props: PropsElections) {
       />
     </div>
   );
-}
+});

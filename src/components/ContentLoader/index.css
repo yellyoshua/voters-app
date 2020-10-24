@@ -1,0 +1,18 @@
+.display-content-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 30px;
+}
+.display-content-screen-cover {
+  max-width: 400px;
+  height: auto;
+}
+.display-content-screen-title {
+  padding: 10px 0px;
+  font-size: 1.3rem;
+}
+.display-content-screen-actions {
+}
+.display-content-screen-actions-wrapper {
+}

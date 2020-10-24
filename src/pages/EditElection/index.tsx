@@ -3,15 +3,15 @@ import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 import Tabs from "components/Tabs";
+import ContentLoader from "components/ContentLoader";
+import ModalCreateCampaign from "components/Modals/ModalCreateCampaign";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Button from "react-rainbow-components/components/Button";
-import CreateCampaign from "pages/Elections/CreateCampaign";
-import ContentLoader from "components/ContentLoader";
-import TabSettings from "pages/Elections/EditElection/TabSettings";
-import TabVoters from "pages/Elections/EditElection/TabVoters";
-import TabCandidates from "pages/Elections/EditElection/TabCandidates";
-import TabCampaigns from "pages/Elections/EditElection/TabCampaigns";
-import TabGeneral from "pages/Elections/EditElection/TabGeneral";
+import TabSettings from "pages/EditElection/TabSettings";
+import TabVoters from "pages/EditElection/TabVoters";
+import TabCandidates from "pages/EditElection/TabCandidates";
+import TabCampaigns from "pages/EditElection/TabCampaigns";
+import TabGeneral from "pages/EditElection/TabGeneral";
 import useElection, { PropsUseElection } from "hooks/useElection";
 import TheElectionProvider from "context/TheElectionContext";
 import { resolveValueType } from "utils/properTypes";
@@ -62,24 +62,23 @@ export default memo(function EditElection({ match, staticContext, location, hist
   const isActiveElection = election ? election.status === "active" : false;
 
   if (!election) {
-    return <ContentLoader messageNoData='Elemento no existente' contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={false} />;
+    return <ContentLoader contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={false} />;
   } else if (Object.keys(election).length === 0) {
-    return <ContentLoader messageNoData='Elemento no existente' contentScreen='elections' isError={null} isFetching={false} isNoData={true} />;
+    return <ContentLoader contentScreen='elections' isError={null} isFetching={false} isNoData={true} />;
   }
 
   return (
     <TheElectionProvider id={currentElectionId} mutate={api.mutate} value={election}>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <RenderIf isTrue={isOpenCreateCampaign}>
-        <CreateCampaign
-          slug={editableCampaign}
-          createOrUpdate={updateElection}
-          cancel={() => {
-            setEditableCampaign(null);
-            return openCampaignModal(false);
-          }}
-        />
-      </RenderIf>
+      <ModalCreateCampaign
+        isOpen={isOpenCreateCampaign}
+        slug={editableCampaign}
+        createOrUpdate={updateElection}
+        cancel={() => {
+          setEditableCampaign(null);
+          return openCampaignModal(false);
+        }}
+      />
       <RenderIf isTrue={!isOpenCreateCampaign}>
         <ContentLoader messageNoData='No existe' contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={Boolean(Object.keys(election).length <= 0)}>
           {

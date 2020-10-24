@@ -1,8 +1,13 @@
 import React, { ReactNode, memo } from "react";
 import ElectionsContent from "./ElectionsContent";
-import DisplayError from "./DisplayError";
-import FreelancerCover from "icons/FreelancerCover";
 import { IContentLoaderProps } from "react-content-loader";
+
+import DisplayError from "./DisplayError";
+import DisplayNoData from "./DisplayNoData";
+import DisplayNotFound from "./DisplayNotFound";
+import "./index.css";
+
+type TypeContentShapes = "elections";
 
 type PropsContentLoader = {
   children?: ReactNode;
@@ -10,28 +15,40 @@ type PropsContentLoader = {
   isError: Error | null;
   isNoData: boolean;
   propsContentLoader?: IContentLoaderProps;
-  contentScreen: "elections";
-  messageNoData: string;
+  contentScreen: TypeContentShapes;
+  messageNoData?: string;
 };
 
 export default memo(function ContentLoader(props: PropsContentLoader) {
-  if (!props.isFetching && props.isNoData) {
-    return (
-      <div className='display-content-screen'>
-        <FreelancerCover className='display-content-screen-cover' />
-        <p className='display-content-screen-title'>{props.messageNoData}</p>
-      </div>
-    );
-  } else if (props.isError) {
-    return <DisplayError message={props.isError.message} />;
-  } else if (props.isFetching) {
-    switch (props.contentScreen) {
-      case "elections":
-        return <ElectionsContent {...props.propsContentLoader} />;
-      default:
-        return null;
-    }
-  } else {
-    return <>{props.children}</>;
+  const noData = props.isFetching && props.isNoData;
+  const notFound = props.isError && props.isError.message.includes("404");
+  const error = props.isError && !props.isError.message.includes("404");
+
+  if (noData) {
+    return <DisplayNoData message={props.messageNoData} />;
   }
+  if (notFound) {
+    return <DisplayNotFound />;
+  }
+  if (error) {
+    return <DisplayError />
+  }
+  if (props.isFetching) {
+    return <ContentShapes shape={props.contentScreen} />
+  }
+  return <>{props.children}</>;
 });
+
+type PropsContentShapes = {
+  shape: TypeContentShapes,
+  propsContent?: IContentLoaderProps
+}
+
+function ContentShapes({ shape, propsContent }: PropsContentShapes) {
+  switch (shape) {
+    case "elections":
+      return <ElectionsContent {...propsContent} />;
+    default:
+      return null;
+  }
+}

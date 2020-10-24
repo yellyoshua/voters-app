@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 
-type StatusOptions = "idle" | "pending" | "success" | "error";
+export type StatusOptions = "idle" | "pending" | "success" | "error";
 
 type ExecFunction = (...arg: any[]) => void;
 
