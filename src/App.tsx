@@ -13,16 +13,17 @@ import AppsIcon from "icons/AppsIcon";
 import MailIcon from "icons/MailIcon";
 import BullhornIcon from "icons/BullhornIcon";
 import AppBar from "components/AppBar";
+import SplashScreen from "components/SplashScreen";
 import "./App.css";
 
 type PropsApp = RouteComponentProps & {};
 
-function App(props: PropsApp) {
+function App({ history }: PropsApp) {
   const { isThereUser, isCheckAuth } = useAuth();
 
   const [isSidebarHidden, setSidebarState] = useState<boolean>(true);
   const [selectedItem, selectItem] = useState<string>(() => {
-    return props.history.location.pathname.split("/")[1] || "dashboard";
+    return history.location.pathname.split("/")[1] || "dashboard";
   });
 
   const toogleSidebar = () => setSidebarState(!isSidebarHidden);
@@ -32,9 +33,9 @@ function App(props: PropsApp) {
       if (!isSidebarHidden) {
         setSidebarState(true);
       }
-      return props.history.push(path);
+      return history.push(path);
     },
-    [isSidebarHidden, props.history]
+    [isSidebarHidden, history]
   );
 
   useEffect(
@@ -48,11 +49,7 @@ function App(props: PropsApp) {
   );
 
   if (isCheckAuth) {
-    return (
-      <section className='splash-screen'>
-        <h3>UE GONZU</h3>
-      </section>
-    );
+    return <SplashScreen />;
   } else if (!isThereUser) {
     return <VisitRouterComponent />;
   }

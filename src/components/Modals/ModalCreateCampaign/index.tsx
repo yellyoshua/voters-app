@@ -16,8 +16,12 @@ import StepFinalPreview from "components/Modals/ModalCreateCampaign/stepFilnalPr
 import "./index.css";
 import Modal from "react-rainbow-components/components/Modal";
 
+// [] Step Upload cover image
+// [] Step Upload logo image
+
 type ReducerActionsTypes =
-  | { type: "cmp_commts_text"; payload: string }
+  | { type: "cmp_logo_image"; payload: any }
+  | { type: "cmp_cover_image"; payload: any }
   | { type: "cmp_commts_file"; payload: any }
   | { type: "stp_go"; payload: { isValid: boolean; val: number } }
   | { type: "stp_check"; payload: boolean }
@@ -27,6 +31,10 @@ type ReducerStateType = { campaign: TypeCampaignObj; currentStep: { isValid: boo
 
 const reducer = (state: ReducerStateType, action: ReducerActionsTypes) => {
   switch (action.type) {
+    case "cmp_logo_image":
+      return { ...state, campaign: { ...state.campaign, logo_image: action.payload } };
+    case "cmp_cover_image":
+      return { ...state, campaign: { ...state.campaign, cover_image: action.payload } };
     case "cmp_commts_file":
       return { ...state, campaign: { ...state.campaign, commitments_file: action.payload } };
     case "cmp_name_slug":
