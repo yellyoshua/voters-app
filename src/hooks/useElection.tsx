@@ -2,7 +2,7 @@ import { useCallback, useMemo, useContext } from "react";
 import useSWR from "swr";
 import { TokenContext } from "context/UserContext";
 import useFetch from "hooks/useFetch";
-import { parseArrToObjArr, extractFieldArrValuesOf } from "utils/parsersData";
+import { parseDoubleArrToObjArr, extractFieldArrValuesOf } from "utils/parsersData";
 
 export interface PropsUseElection {
   dataType: "object" | "string" | "number";
@@ -69,9 +69,9 @@ export default function useElection(props: PropsUseElection) {
   const getParsedObj = useCallback(
     function (item: string, arr?: any[]) {
       if (arr) {
-        return parseArrToObjArr(arr);
+        return parseDoubleArrToObjArr(arr);
       }
-      return parseArrToObjArr(Boolean(data) ? data[item] : []);
+      return parseDoubleArrToObjArr(Boolean(data) ? data[item] : []);
     },
     [data]
   );

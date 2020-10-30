@@ -1,11 +1,13 @@
 import React, { useContext, useState } from "react";
 import { TokenContext } from "context/UserContext";
-import useFetch from "hooks/useFetch";
+import PickFile from "components/PickFile";
 import ProgressBar from "react-rainbow-components/components/ProgressBar";
-import FileSelector from "react-rainbow-components/components/FileSelector";
+import useFetch from "hooks/useFetch";
 
 type PropsUploadFile = {
   url: string;
+  fileType: string;
+  accept?: string;
   success: (val: any) => void;
   progress: (val: number) => void | null;
   onError: (val: Error) => void;
@@ -14,15 +16,13 @@ type PropsUploadFile = {
 export default function UploadFile(props: PropsUploadFile) {
   const token = useContext(TokenContext);
 
+  const [error, setError] = useState<Error | null>(null);
   const [prgrss, setPrgrss] = useState<number>(100);
-  const [isDisablePicker, setIsDisablePicker] = useState<boolean>(false);
   const { fetchUploadFile } = useFetch();
 
-  const handlePickFile = async (files: FileList) => {
-    if (files) {
-      setIsDisablePicker(true);
+  const handlePickFileOne = async (file: File | null) => {
+    if (file) {
       try {
-        const file = files[0];
         const data = new FormData();
         data.append("files", file);
         const response = await fetchUploadFile(props.url, token, data, (progress) => {
@@ -36,17 +36,21 @@ export default function UploadFile(props: PropsUploadFile) {
     }
   }
 
-  return <div className="container-file-selector">
 
+  if (error) {
+    return <div className="container-file-selector">
+
+    </div>
+  }
+
+  return <div className="container-file-selector">
     {
       prgrss === 100 ? (
-        <FileSelector
-          disabled={isDisablePicker}
-          onChange={handlePickFile}
-          label="Selector de archivos"
-          placeholder="Subir archivo"
-          bottomHelpText="PDF"
-          accept=".pdf"
+        <PickFile
+          fileType={props.fileType}
+          accept={props.accept}
+          success={handlePickFileOne}
+          onError={setError}
         />
       ) : (
           <ProgressBar value={prgrss} size="x-small" />

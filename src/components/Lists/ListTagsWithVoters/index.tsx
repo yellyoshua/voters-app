@@ -18,7 +18,6 @@ export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters)
   const voters = convertDoubleArrToObjArr<TypeVoterObj>(theElection.voters);
   const tags = convertDoubleArrToObjArr<TypeTagObj>(theElection.tags);
 
-
   useEffect(function () {
     let mounted = true;
 

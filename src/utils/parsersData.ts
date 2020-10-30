@@ -1,27 +1,34 @@
-export function mapToUnderscore(item: string, _index: number) {
-  return String(item).toLowerCase().split(" ").join("_");
+type Obj = { [k: string]: any };
+
+export function mapToUnderscore(item: string, _index?: number) {
+  return String(item).trim().toLowerCase().split(" ").join("_");
 }
 
 export function toUnderscore(arg: string) {
-  return String(arg).toLowerCase().split(" ").join("_")
+  return String(arg).trim().toLowerCase().split(" ").join("_")
 }
 
-export function parseArrToObjArr(arr: any[]) {
-  return Array.isArray(arr) ? arr
-    .map((arrItem: any[], index: number) => {
+export function parseDoubleArrToObjArr<T>(arr: any[][]) {
+  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  if (arrContainChilds) {
+    const arrFields = arr[0];
+    return arr.map((arrItem: any[], index: number) => {
       let obj: any = {};
-      for (let i = 0; i < arr[0].length; ++i) {
-        obj[arr[0][i]] = arrItem[i];
-      }
+
+      arrFields.forEach((field, index) => {
+        obj[field] = arrItem[index];
+      });
+
       return { ...obj, id: index - 1 };
-    })
-    .splice(1) : [];
+    }).splice(1);
+  }
+  return [];
 }
 
 export function extractFieldArrValuesOf(arr: any[][], field: string) {
   var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
   if (arrContainChilds) {
-    var indexField = arr[0].map(mapToUnderscore).findIndex(compareInLowerCase(toUnderscore(field)));
+    var indexField = arr[0].map(mapToUnderscore).findIndex(compareWith(toUnderscore(field)));
     return indexField !== -1 ? arr.map(arrItem => {
       return arrItem[indexField];
     }).splice(1) : [];
@@ -29,21 +36,21 @@ export function extractFieldArrValuesOf(arr: any[][], field: string) {
   return [];
 }
 
-function compareInLowerCase(matchWith: string) {
+function compareWith(matchWith: string) {
   return (arg1: string) => (arg1 === matchWith);
 }
 
 export function addArrChildFromArr(arr: any[][], field: string, newValue: any) {
-  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  var arrContainChilds = Array.isArray(arr) ? true : false;
 
   if (arrContainChilds) {
     let arrFields = arr[0].map(mapToUnderscore);
 
-    if (arrFields.findIndex(compareInLowerCase(toUnderscore(field))) === -1) {
+    if (arrFields.findIndex(compareWith(toUnderscore(field))) === -1) {
       arrFields = [...arr[0], field];
     }
 
-    var indexField = arrFields.findIndex(compareInLowerCase(toUnderscore(field)));
+    var indexField = arrFields.findIndex(compareWith(toUnderscore(field)));
 
     return [
       arrFields,
@@ -56,109 +63,168 @@ export function addArrChildFromArr(arr: any[][], field: string, newValue: any) {
   return [arr];
 }
 
-export function relationObjFieldValue(arg: { [k: string]: any }[], findInTo: { [k: string]: any }[], fieldName: string, extractValueFromField?: string) {
-  return arg.map((argItem) => {
+export function populateObjRef(obj: Obj, populate: Obj, origin: string, fieldPopulate?: string) {
+  let objResult = obj;
+  const popuKeys = Object.keys(populate);
 
-    const value = findInTo.find((into) => {
-      let hasFinded = false;
-      Object.keys(into).forEach((intoKey) => {
-        if (!hasFinded) {
-          return hasFinded = into[intoKey] === argItem[fieldName];
-        }
-      })
-      return hasFinded;
-    });
+  recursiveMap(popuKeys, function (popuField) {
+    const popuValue = populate[popuField];
+    const found = popuValue === obj[origin];
+    if (found) {
 
-    if (extractValueFromField) {
-      return { ...argItem, [fieldName]: value ? value[extractValueFromField] : null };
+      if (fieldPopulate === undefined) {
+        objResult[origin] = popuValue;
+        return popuField;
+      }
+
+      objResult[origin] = populate[fieldPopulate];
+      return popuField;
     }
-
-    return { ...argItem, [fieldName]: value ? value : null }
+    return popuField;
   });
+
+  return objResult;
 }
 
-export function mapParseValuesArr(arr: string[][]) {
-  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
-  if (arrContainChilds) {
-    return arr.map((itemArr) => {
-      return arr[0].map((arrItem, key) => {
-        if (!itemArr[key]) {
-          itemArr[key] = "";
-        }
-        return itemArr[key];
-      })
-    })
-  }
-  return [arr];
+export function populateArrObjRef(objs: Obj[], populates: Obj[], origin: string, fieldPopulate?: string) {
+  return recursiveMap(objs, function (obj) {
+    let newObj = obj;
+    recursiveMap(populates, function (populate) {
+      newObj = populateObjRef(obj, populate, origin, fieldPopulate);
+    });
+    return newObj;
+  });
 }
 
 export function rmArrChildFromArr(arr: any[][], field: string, matchValue: string) {
   var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
 
   if (arrContainChilds) {
-    var indexField = arr[0].map(mapToUnderscore).findIndex(compareInLowerCase(toUnderscore(field)));
+    var indexField = arr[0].map(mapToUnderscore).findIndex(compareWith(toUnderscore(field)));
 
     return indexField !== -1 ? arr.filter(arrItem => {
-      const hasMatchWith = compareInLowerCase(toUnderscore(matchValue));
+      const hasMatchWith = compareWith(toUnderscore(matchValue));
       return !hasMatchWith(toUnderscore(arrItem[indexField]));
     }) : [arr];
   }
   return [arr];
 }
 
-export function parseObjtArrToArr(objs: { [key: string]: any }[], arrKeyValidator: string[]) {
+export function parseObjtArrToDoubleArr(objs: { [key: string]: any }[], arrKeyValidator: string[]) {
   let arr = [arrKeyValidator];
 
-  const ObjKeyValidator = arrIndexValidator(arrKeyValidator);
-
-  for (let i = 0; i < objs.length; i++) {
-    let obj = objs[i];
-
+  recursiveMap(objs, function (obj) {
     if (typeof obj === "object") {
-      let arrChild = [];
-      for (let index = 0; index < Object.keys(obj).length; index++) {
-        let objKey = ObjKeyValidator(Object.keys(obj)[index]);
-        if (typeof objKey === "number") {
-          arrChild[objKey] = obj[Object.keys(obj)[index]];
-        }
-      }
-      arr.push(arrChild);
-    } else {
-      break;
+      arr.push(parseObjtToArr(obj, arrKeyValidator));
     }
-  }
+  });
 
   return arr;
 }
 
-export function parseObjtToArr(obj: { [key: string]: any }, arrKeys: string[]) {
-  const arrObjKeyValidator = arrIndexValidator(arrKeys);
-  let arr = [];
+export function parseObjtToArr<T>(obj: { [key: string]: any }, arrKeys: string[], defaultValue?: number | string) {
   if (typeof obj === "object") {
-    for (let index = 0; index < Object.keys(obj).length; index++) {
-      let objKeyIndex = arrObjKeyValidator(Object.keys(obj)[index]);
+    const arrObjKeyValidator = arrIndexValidator(Object.keys(obj));
+
+    return recursiveMap(arrKeys, function (field) {
+      let objKeyIndex = arrObjKeyValidator(field);
       if (typeof objKeyIndex === "number") {
-        arr[objKeyIndex] = obj[Object.keys(obj)[index]];
+        return obj[field];
+      } else {
+        if (defaultValue === undefined) {
+          return null;
+        }
+        return defaultValue;
       }
-    }
+    });
   }
-  return arr;
+
+  return [];
 }
 
 export function arrIndexValidator(arrKeys: string[]) {
   return (objKey: string) => {
-    let indexKeyFound = arrKeys.map(mapToUnderscore).findIndex(compareInLowerCase(toUnderscore(objKey)));
+    let indexKeyFound = recursiveFindIndex(recursiveMap(arrKeys, mapToUnderscore), compareWith(toUnderscore(objKey)));
     return indexKeyFound === -1 ? null : indexKeyFound;
   };
 }
 
-export function ObjKeyValidator(obj: { [key: string]: any }, key: string | string[]) {
-  let indexKeyFound = Object.keys(obj).findIndex(objKey => {
-    if (typeof key === "string") return Boolean(objKey === key);
-    return key.map(mapToUnderscore).findIndex(keyVal => {
-      const compareWith = compareInLowerCase(objKey);
-      return compareWith(keyVal);
-    }) !== -1;
-  });
-  return indexKeyFound !== -1;
+export function binarySearch(array: number[] | string[], item: number | string) {
+
+  function recurse(min: number, max: number): number {
+
+    if (min > max) {
+      return -1;
+    }
+
+    var middle = Math.floor((min + max) / 2);
+
+    if (array[middle] === item) {
+      return middle;
+    }
+
+    if (array[middle] > item) {
+      return recurse(min, middle - 1);
+    }
+
+    return recurse(middle + 1, max);
+  }
+
+  return recurse(0, array.length - 1);
+}
+
+export function recursiveMap<T>(arr: T[], callback: (val: T) => any): T[] {
+  if (arr.length === 1) {
+    return [callback(arr[0])];
+  } else {
+    return [callback(arr[0])].concat(recursiveMap(arr.slice(1), callback))
+  }
+}
+
+export function recursiveFind<T>(arr: T[], compareFunc: (currElement: T) => boolean): T | null {
+  const arrMin = 0;
+  const arrMax = arr.length;
+
+  function recurse(index: number): T | null {
+    const isEnd = (index + 1) === arrMax;
+    const nextIndex = isEnd ? index : index + 1;
+    const currElement = arr[index];
+    const isFinded = compareFunc(currElement);
+
+    if (isFinded) {
+      return currElement;
+    }
+
+    if (isEnd) {
+      return null;
+    }
+
+    return recurse(nextIndex);
+  }
+
+  return recurse(arrMin);
+}
+
+export function recursiveFindIndex<T>(arr: T[], compareFunc: (currElement: T) => boolean): number {
+  const arrMin = 0;
+  const arrMax = arr.length;
+
+  function recurse(index: number): number {
+    const isEnd = (index + 1) === arrMax;
+    const nextIndex = isEnd ? index : index + 1;
+    const currElement = arr[index];
+    const isFinded = compareFunc(currElement);
+
+    if (isFinded) {
+      return index;
+    }
+
+    if (isEnd) {
+      return -1 as number;
+    }
+
+    return recurse(nextIndex);
+  }
+
+  return recurse(arrMin);
 }

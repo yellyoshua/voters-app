@@ -11,10 +11,11 @@ import { campaignsDataModel, defaultCampaign } from "models/election";
 import { TypeElection, TypeCampaignObj } from "types/electionTypes";
 
 import StepCampaignName from "components/Modals/ModalCreateCampaign/stepNameCampaign";
+import StepUploadLogo from "components/Modals/ModalCreateCampaign/stepUploadLogo";
 import StepUploadCommitments from "components/Modals/ModalCreateCampaign/stepUploadCommitments";
 import StepFinalPreview from "components/Modals/ModalCreateCampaign/stepFilnalPreview";
-import "./index.css";
 import Modal from "react-rainbow-components/components/Modal";
+import "./index.css";
 
 // [] Step Upload cover image
 // [] Step Upload logo image
@@ -96,6 +97,18 @@ export default function ModalCreateCampaign({ isOpen = false, slug, createOrUpda
     }
   };
 
+  const onChangeLogo = async (val: any, fileId?: number) => {
+    dispatch({ type: "cmp_logo_image", payload: val });
+
+    if (!val && fileId) {
+      try {
+        await fetchDelWithToken(`/upload/files/${fileId}`, token);
+      } catch (error) {
+        console.log({ error });
+      }
+    }
+  };
+
   const onChangeName = ({ name }: { name: string }) => {
     dispatch({ type: "cmp_name_slug", payload: { name } });
     const isValid = isCurrentStepValid(1, name.length);
@@ -140,14 +153,17 @@ export default function ModalCreateCampaign({ isOpen = false, slug, createOrUpda
 
   return <Modal title={theElection.name} size='small' isOpen={isOpen} onRequestClose={cancel}>
     <div className='elections-tabs-view-section'>
-      <ProgressSteps cancelSteps={cancel} getCurrentStep={getCurrentStep} onPass={createCampaign} stepNames={["name", "commitments", "review"]} isTheStepValid={reducerVal.currentStep.isValid}>
+      <ProgressSteps cancelSteps={cancel} getCurrentStep={getCurrentStep} onPass={createCampaign} stepNames={["name", "logo", "commitments", "review"]} isTheStepValid={reducerVal.currentStep.isValid}>
         <RenderIf isTrue={reducerVal.currentStep.val === 1}>
           <StepCampaignName onChangeName={onChangeName} value={reducerVal.campaign.name} />
         </RenderIf>
         <RenderIf isTrue={reducerVal.currentStep.val === 2}>
-          <StepUploadCommitments campaignName={reducerVal.campaign.name} commitments_file={reducerVal.campaign.commitments_file} onChange={onChangeCommitments} />
+          <StepUploadLogo campaignName={reducerVal.campaign.name} logo_image={reducerVal.campaign.logo_image} onChange={onChangeLogo} />
         </RenderIf>
         <RenderIf isTrue={reducerVal.currentStep.val === 3}>
+          <StepUploadCommitments campaignName={reducerVal.campaign.name} commitments_file={reducerVal.campaign.commitments_file} onChange={onChangeCommitments} />
+        </RenderIf>
+        <RenderIf isTrue={reducerVal.currentStep.val === 4}>
           <StepFinalPreview campaign={reducerVal.campaign} />
         </RenderIf>
       </ProgressSteps>

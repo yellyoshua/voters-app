@@ -6,7 +6,7 @@ import TableWithPagination from "components/TableWithPagination";
 import useAsync from "hooks/useAsync";
 import excelToJSON from "utils/excelToJSON";
 import { uuidv4 } from "utils/createUID";
-import { parseArrToObjArr, relationObjFieldValue, parseObjtArrToArr, addArrChildFromArr, mapParseValuesArr } from "utils/parsersData";
+import { parseDoubleArrToObjArr, populateArrObjRef, parseObjtArrToDoubleArr, addArrChildFromArr } from "utils/parsersData";
 import { tagsDataModel, votersDataModel } from "models/election";
 
 const createSlug = uuidv4;
@@ -23,10 +23,8 @@ const reducer = (state: ReducerStateType, action: ReducerActionsTypes) => {
       return {
         ...state,
         tags: action.payload.tags,
-        voters: parseArrToObjArr(
-          mapParseValuesArr(
-            parseObjtArrToArr(action.payload.voters, votersDataModel)
-          )
+        voters: parseDoubleArrToObjArr(
+          parseObjtArrToDoubleArr(action.payload.voters, votersDataModel)
         )
       };
     case "clean_fields":
@@ -82,8 +80,8 @@ export default memo(function ModalVoter(props: PropsModalVoter) {
           onClick={() => {
             if (state.voters && state.tags) {
               return asyncUpdateElection({
-                voters: parseObjtArrToArr(state.voters, votersDataModel),
-                tags: parseObjtArrToArr(state.tags, tagsDataModel)
+                voters: parseObjtArrToDoubleArr(state.voters, votersDataModel),
+                tags: parseObjtArrToDoubleArr(state.tags, tagsDataModel)
               });
             }
             return null;
@@ -111,9 +109,9 @@ export default memo(function ModalVoter(props: PropsModalVoter) {
           tags.forEach(({ name, slug }) => {
             if (data[name]) {
               voters.push(
-                ...parseArrToObjArr(
+                parseDoubleArrToObjArr(
                   addArrChildFromArr(
-                    mapParseValuesArr(data[name]),
+                    data[name],
                     "tag_slug",
                     slug
                   )
@@ -131,7 +129,7 @@ export default memo(function ModalVoter(props: PropsModalVoter) {
     {state.tags && state.voters && (
       <TableWithPagination
         keyField="ci"
-        data={relationObjFieldValue(state.voters, state.tags, "tag_slug", "name")}
+        data={populateArrObjRef(state.voters, state.tags, "tag_slug", "name")}
         fields={votersDataModel}
       />
     )}

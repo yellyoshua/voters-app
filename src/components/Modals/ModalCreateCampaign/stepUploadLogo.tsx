@@ -3,28 +3,28 @@ import UploadFile from "components/UploadFile";
 import PreviewFile from "components/UploadFile/PreviewFile";
 import { REACT_API_URL } from "configurations/api";
 
-type PropsStepCommitments = {
+type PropsStepUploadLogo = {
   campaignName: string;
   onChange: (val: any, id?: number) => void;
-  commitments_file: any;
+  logo_image: any;
 };
 
-export default function StepUploadCommitments({ campaignName, commitments_file, onChange }: PropsStepCommitments) {
+export default function stepUploadLogo({ logo_image, onChange }: PropsStepUploadLogo) {
   return (
     <>
       <section className='step-title'>
-        <h1>Propuestas del partido.</h1>
+        <h1>Logo del partido.</h1>
       </section>
       <section>
-        {commitments_file
+        {logo_image
           ? <PreviewFile
-            fileUrl={`${REACT_API_URL + commitments_file[0].url}`}
-            fileName={commitments_file[0].name}
-            onRemoveHandler={() => onChange(null, Number(commitments_file[0].id))}
+            fileUrl={`${REACT_API_URL + logo_image[0].url}`}
+            fileName={logo_image[0].name}
+            onRemoveHandler={() => onChange(null, Number(logo_image[0].id))}
           /> : <UploadFile
             url='/upload'
-            fileType="PDF"
-            accept=".pdf"
+            fileType="Imagen"
+            accept="image/*"
             onError={err => console.log({ err })}
             progress={() => null}
             success={onChange}
