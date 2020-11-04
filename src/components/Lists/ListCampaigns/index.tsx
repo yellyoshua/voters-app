@@ -2,7 +2,7 @@ import React from "react";
 import CardCampaign from "components/Card/CardCampaign";
 import { useTheElection } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
-import { rmArrChildFromArr } from "utils/parsersData";
+import { doubleArrRemoveItem } from "utils/parsersData";
 import { TypeCampaignObj, TypeElection } from "types/electionTypes";
 
 type PropsListCampaigns = {
@@ -26,8 +26,8 @@ export default function ListCampaigns({ updateElection, editCampaign }: PropsLis
           return await updateElection(
             {
               ...theElection,
-              campaigns: rmArrChildFromArr(theElection.campaigns, "slug", slug),
-              candidates: rmArrChildFromArr(theElection.candidates, "campaign_slug", slug)
+              campaigns: doubleArrRemoveItem(theElection.campaigns, "slug", slug),
+              candidates: doubleArrRemoveItem(theElection.candidates, "campaign_slug", slug)
             }
           );
         }}

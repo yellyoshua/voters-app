@@ -6,8 +6,9 @@ import TableWithPagination from "components/TableWithPagination";
 import useAsync from "hooks/useAsync";
 import excelToJSON from "utils/excelToJSON";
 import { uuidv4 } from "utils/createUID";
-import { parseDoubleArrToObjArr, populateArrObjRef, parseObjtArrToDoubleArr, addArrChildFromArr } from "utils/parsersData";
+import { parseDoubleArrToObjArr, populateArrObjRef, parseObjtArrToDoubleArr, doubleArrPushValues } from "utils/parsersData";
 import { tagsDataModel, votersDataModel } from "models/election";
+import { TypeElection } from "types/electionTypes";
 
 const createSlug = uuidv4;
 
@@ -44,7 +45,7 @@ const setReducerInitialState = () => {
 type PropsModalVoter = {
   isOpen: boolean;
   closeModal: () => void;
-  pushData: (data: { [key: string]: any; }) => Promise<any>;
+  pushData: (newElection: TypeElection) => Promise<any>;
 };
 
 export default memo(function ModalVoter(props: PropsModalVoter) {
@@ -98,20 +99,21 @@ export default memo(function ModalVoter(props: PropsModalVoter) {
         if (!file) return dispatch({ type: "clean_fields" });
 
         return excelToJSON(file, (data) => {
+          const excel = data;
           let voters: any[] = [];
-          const tagsNames = Object.keys(data);
+          const tagsNames = Object.keys(excel);
 
           const tags = tagsNames.map(tagName => {
             const slug = createSlug();
             return { name: tagName, slug: slug }
           });
 
-          tags.forEach(({ name, slug }) => {
-            if (data[name]) {
+          tags.forEach(({ name: page, slug }) => {
+            if (excel[page]) {
               voters.push(
                 parseDoubleArrToObjArr(
-                  addArrChildFromArr(
-                    data[name],
+                  doubleArrPushValues(
+                    excel[page],
                     "tag_slug",
                     slug
                   )

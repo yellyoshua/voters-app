@@ -2,30 +2,46 @@ import { useCallback, useMemo, useContext } from "react";
 import useSWR from "swr";
 import { TokenContext } from "context/UserContext";
 import useFetch from "hooks/useFetch";
-import { parseDoubleArrToObjArr, extractFieldArrValuesOf } from "utils/parsersData";
+import { parseDoubleArrToObjArr, doubleArrExtractValues } from "utils/parsersData";
 
 export interface PropsUseElection {
-  dataType: "object" | "string" | "number";
-  dataUrl: string;
-  removeUrl: string;
-  updateUrl: string;
-  createUrl: string;
+  id?: string
 }
 
-export default function useElection(props: PropsUseElection) {
+export interface PropsConfApi {
+  dataUrl: string;
+  createUrl: string;
+  removeUrl: string;
+  updateUrl: string;
+}
+
+const confApi = (id?: string): PropsConfApi => {
+  return {
+    dataUrl: id ? `/elections/${id}` : "/elections/",
+    createUrl: id ? `/elections/${id}` : "/elections/",
+    removeUrl: id ? `/elections/${id}` : "/elections/",
+    updateUrl: id ? `/elections/${id}` : "/elections/"
+  };
+};
+
+const { fetchPutWithToken, fetchPostWithToken, fetchDelWithToken } = useFetch();
+
+export default function useElection({ id }: PropsUseElection) {
+  const props = confApi(id);
   const jwt = useContext(TokenContext);
+
 
   const api = useSWR(() => {
     return jwt ? [props.dataUrl, jwt] : null;
   }, { refreshInterval: 5000 });
-  const { fetchPutWithToken, fetchPostWithToken, fetchDelWithToken } = useFetch();
+
 
   const data = useMemo(() => {
-    if (typeof api.data === props.dataType) {
+    if (typeof api.data === "object") {
       return api.data;
     }
     return null;
-  }, [api.data, props.dataType]);
+  }, [api.data]);
 
   const isFetching = !api.error && !api.data;
   const isFetchError = api.error;
@@ -39,7 +55,7 @@ export default function useElection(props: PropsUseElection) {
         return await api.revalidate();
       }
     },
-    [props.createUrl, fetchPostWithToken, jwt, api]
+    [props.createUrl, jwt, api]
   );
 
   const apiUpdate = useCallback(
@@ -51,7 +67,7 @@ export default function useElection(props: PropsUseElection) {
         return await api.revalidate();
       }
     },
-    [props.updateUrl, fetchPutWithToken, jwt, api]
+    [props.updateUrl, jwt, api]
   );
 
   const apiRemove = useCallback(
@@ -63,7 +79,7 @@ export default function useElection(props: PropsUseElection) {
         return cb();
       }
     },
-    [props.removeUrl, fetchDelWithToken, jwt]
+    [props.removeUrl, jwt]
   );
 
   const getParsedObj = useCallback(
@@ -79,12 +95,14 @@ export default function useElection(props: PropsUseElection) {
   const getValuesField = useCallback(
     function (item: string, field: string, arrId?: number) {
       if (arrId) {
-        return extractFieldArrValuesOf(Boolean(data[arrId]) ? data[arrId][item] : [], field);
+        return doubleArrExtractValues(Boolean(data[arrId]) ? data[arrId][item] : [], field);
       }
-      return extractFieldArrValuesOf(Boolean(data) ? data[item] : [], field);
+      return doubleArrExtractValues(Boolean(data) ? data[item] : [], field);
     },
     [data]
   );
+
+  console.log({ data });
 
   return { apiUpdate, apiRemove, getValuesField, getParsedObj, apiCreate, api, data, isFetching, isFetchError };
 }

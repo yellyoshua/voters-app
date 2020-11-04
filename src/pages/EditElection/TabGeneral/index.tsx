@@ -2,7 +2,7 @@ import React from "react";
 import InputFetch from "components/InputFetch";
 import { useTheElection } from "context/TheElectionContext"
 import useParserData from "hooks/useParserData";
-import { TypeCampaignObj, TypeVoterObj, TypeCandidateObj, TypeTagObj } from "types/electionTypes";
+import { TypeCampaignObj, TypeVoterObj, TypeCandidateObj, TypeTagObj, TypeElectionFunc } from "types/electionTypes";
 import "./index.css";
 
 // [x] Update Election Name
@@ -11,7 +11,7 @@ import "./index.css";
 // [] Button generate report pdf -> moved to path /stats
 
 type PropsTabGeneral = {
-  updateElection: (data: { [key: string]: any }) => Promise<any>;
+  updateElection: (newElection: TypeElectionFunc) => Promise<any>;
 };
 
 const { convertDoubleArrToObjArr } = useParserData();

@@ -41,6 +41,18 @@ export type TypeCandidateObj = {
 
 export type TypeStatusElection = "active" | "closed" | "archived" | "no_active";
 
+export interface TypeElectionFunc {
+  id?: string | number;
+  uid?: string;
+  cover_image?: any;
+  status?: TypeStatusElection;
+  name?: string;
+  voters?: any[];
+  tags?: any[];
+  candidates?: any[];
+  campaigns?: any[];
+}
+
 export interface TypeElection {
   id?: string | number;
   uid: string;

@@ -12,10 +12,10 @@ import TabVoters from "pages/EditElection/TabVoters";
 import TabCandidates from "pages/EditElection/TabCandidates";
 import TabCampaigns from "pages/EditElection/TabCampaigns";
 import TabGeneral from "pages/EditElection/TabGeneral";
-import useElection, { PropsUseElection } from "hooks/useElection";
+import useElection from "hooks/useElection";
 import TheElectionProvider from "context/TheElectionContext";
 import { resolveValueType } from "utils/properTypes";
-import { TypeElection } from "types/electionTypes";
+import { TypeElection, TypeElectionFunc } from "types/electionTypes";
 import "./index.css";
 
 const tabs = [
@@ -26,16 +26,6 @@ const tabs = [
   { id: "configs", name: "Configuraciones" }
 ];
 
-const confApi = (id: string): PropsUseElection => {
-  return {
-    dataType: "object",
-    dataUrl: `/elections/${id}`,
-    createUrl: `/elections/${id}`,
-    removeUrl: `/elections/${id}`,
-    updateUrl: `/elections/${id}`
-  };
-};
-
 type PropsEditElection = RouteComponentProps<{ id: string }> & {};
 
 export default memo(function EditElection({ match, staticContext, location, history }: PropsEditElection) {
@@ -44,7 +34,7 @@ export default memo(function EditElection({ match, staticContext, location, hist
   const [isOpenCreateCampaign, openCampaignModal] = useState<boolean>(false);
   const [editableCampaign, setEditableCampaign] = useState<string | null>(null);
 
-  const { apiRemove, apiUpdate, isFetching, isFetchError, data, api } = useElection(confApi(currentElectionId));
+  const { apiRemove, apiUpdate, isFetching, isFetchError, data, api } = useElection({ id: currentElectionId });
 
   const election = resolveValueType<TypeElection>(data, "object") as TypeElection | null;
 
@@ -58,7 +48,9 @@ export default memo(function EditElection({ match, staticContext, location, hist
     [election, currentElectionId]
   );
 
-  const updateElection = useCallback(apiUpdate, [apiUpdate]);
+  const updateElection = useCallback(async (newElection: TypeElectionFunc) => {
+    await apiUpdate({ ...election, ...newElection });
+  }, [apiUpdate, election]);
   const isActiveElection = election ? election.status === "active" : false;
 
   if (!election) {

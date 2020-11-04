@@ -5,6 +5,7 @@ import RenderIf from "react-rainbow-components/components/RenderIf";
 import ModalVoter from "components/Modals/ModalVoter";
 import ListTagsWithVoters from "components/Lists/ListTagsWithVoters";
 import deferComponentRender from "components/DeferComponentRender";
+import { TypeElection } from "types/electionTypes";
 
 const DeferListTagsWithVoters = deferComponentRender(ListTagsWithVoters);
 
@@ -16,7 +17,7 @@ const DeferListTagsWithVoters = deferComponentRender(ListTagsWithVoters);
 // [] Generate and download plantilla
 
 export type PropsTabVoters = {
-  updateElection: (data: { [key: string]: any; }) => Promise<any>;
+  updateElection: (newElection: TypeElection) => Promise<any>;
 };
 
 export default function TabVoters(props: PropsTabVoters) {

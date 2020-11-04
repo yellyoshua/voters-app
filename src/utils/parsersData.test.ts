@@ -1,36 +1,23 @@
 import {
-  recursiveMap,
+  sortField,
   binarySearch,
-  arrIndexValidator,
+  binarySearchObject,
   parseObjtToArr,
   parseDoubleArrToObjArr,
   parseObjtArrToDoubleArr,
   mapToUnderscore,
   populateArrObjRef,
   populateObjRef,
-  recursiveFind,
-  recursiveFindIndex,
-  addArrChildFromArr,
-  extractFieldArrValuesOf,
-  rmArrChildFromArr,
+  doubleArrPushValues,
+  doubleArrExtractValues,
+  doubleArrRemoveItem,
   toUnderscore
 } from "utils/parsersData";
 
 
 // if("b" in {b: 1,a: 2})  => true!
 
-function multipliByTwo(arg: number) {
-  return arg * 2;
-}
-
 describe("test parsersData", function () {
-  test("recursiveMap", () => {
-    const multipliedByTwo = recursiveMap([1, 2, 3], multipliByTwo);
-    const oneMultipliedByTwo = recursiveMap([1], multipliByTwo);
-
-    expect(multipliedByTwo).toStrictEqual([2, 4, 6]);
-    expect(oneMultipliedByTwo).toStrictEqual([2]);
-  });
 
   test("binarySearch", () => {
     const keyFindedString = binarySearch(["hi", " hola", "hola", " hola "], "hola")
@@ -44,14 +31,17 @@ describe("test parsersData", function () {
     expect(keyNoFindedNumber).toBe(-1);
   });
 
-  test("arrIndexValidator", () => {
-    const objKeyValidator = arrIndexValidator(["b", "d", "a", "c"]);
-    const obj2KeyValidator = arrIndexValidator(["b", "d", "a", "c"]);
-    const existInObj = objKeyValidator("c");
-    const noExistInObj = obj2KeyValidator("f");
+  test("binarySearchObject", () => {
+    const listItems = [
+      { say: "hi" }, { say: "he" }, { say: "fi" },
+      { say: "hu" }, { say: "ai" }, { say: "ao" }
+    ].sort(sortField("say", true));
 
-    expect(existInObj).toBe(3);
-    expect(noExistInObj).toBe(null);
+    const finded = binarySearchObject(listItems, "say", "ai");
+    const noFinded = binarySearchObject(listItems, "say", "ho");
+
+    expect(listItems[finded]).toStrictEqual({ say: "ai" });
+    expect(noFinded).toBe(-1);
   });
 
   test("parseObjtToArr", () => {
@@ -118,32 +108,8 @@ describe("test parsersData", function () {
     expect(resultWithNoDestiny).toStrictEqual({ name: "id", pop: "hi" });
   });
 
-  test("recursiveFind", () => {
-    const hasFinded = recursiveFind([{ name: "yoshua2" }, { name: "yoshua1" }, { name: "yoshua" }], function (element) {
-      return element.name === "yoshua";
-    });
-    const noFinded = recursiveFind([{ name: "yoshua" }, { name: "yoshua" }, { name: "yoshua" }], function (element) {
-      return element.name === "yo";
-    });
-
-    expect(hasFinded).toStrictEqual({ name: "yoshua" });
-    expect(noFinded).toBeNull();
-  });
-
-  test("recursiveFindIndex", () => {
-    const hasFindedIndex = recursiveFindIndex([{ name: "yoshua2" }, { name: "yoshua1" }, { name: "yoshua" }], function (element) {
-      return element.name === "yoshua";
-    });
-    const noFindedIndex = recursiveFindIndex([{ name: "yoshua" }, { name: "yoshua" }, { name: "yoshua" }], function (element) {
-      return element.name === "yo";
-    });
-
-    expect(hasFindedIndex).toBe(2);
-    expect(noFindedIndex).toBe(-1);
-  });
-
-  test("addArrChildFromArr", () => {
-    const result = addArrChildFromArr([
+  test("doubleArrPushValues", () => {
+    const result = doubleArrPushValues([
       ["name", "surname", "ci"],
       ["Yoshua", "Lopez", 11111],
       ["Yoo", "LL", 2222],
@@ -158,14 +124,14 @@ describe("test parsersData", function () {
     ]);
   });
 
-  test("extractFieldArrValuesOf", () => {
-    const result = extractFieldArrValuesOf([
+  test("doubleArrExtractValues", () => {
+    const result = doubleArrExtractValues([
       ["name", "surname", "ci"],
       ["Yoshua", "Lopez", 11111],
       ["Yoo", "LL", 2222],
       ["Yuip", "Lpop", 333]
     ], "name");
-    const noExtractedValues = extractFieldArrValuesOf([
+    const noExtractedValues = doubleArrExtractValues([
       ["name", "surname", "ci"],
       ["Yoshua", "Lopez", 11111],
       ["Yoo", "LL", 2222],
@@ -176,14 +142,14 @@ describe("test parsersData", function () {
     expect(noExtractedValues).toStrictEqual([]);
   });
 
-  test("rmArrChildFromArr", () => {
-    const result = rmArrChildFromArr([
+  test("doubleArrRemoveItem", () => {
+    const result = doubleArrRemoveItem([
       ["name", "surname", "ci"],
       ["Yoshua", "Lopez", 11111],
       ["Yoo", "LL", 2222],
       ["Yuip", "Lpop", 333]
     ], "name", "Yoshua");
-    const withNoRemove = rmArrChildFromArr([
+    const withNoRemove = doubleArrRemoveItem([
       ["name", "surname", "ci"],
       ["Yoshua", "Lopez", 11111],
       ["Yoo", "LL", 2222],

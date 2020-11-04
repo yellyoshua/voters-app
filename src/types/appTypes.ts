@@ -3,5 +3,4 @@ export type TypeSchool = {
   schoolAlias: string;
   schoolAbreviation: string;
   schoolIcon: any;
-  apiUrl: string;
 };

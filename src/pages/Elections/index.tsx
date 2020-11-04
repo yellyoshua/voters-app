@@ -3,7 +3,7 @@ import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 import AddIcon from "icons/AddIcon";
-import useElection, { PropsUseElection } from "hooks/useElection";
+import useElection from "hooks/useElection";
 import ContentLoader from "components/ContentLoader";
 import CardElection from "components/Card/CardElection";
 import ModalCreateElection from "components/Modals/ModalCreateElection";
@@ -13,14 +13,6 @@ import "./index.css";
 const breadcrumbs = [{ name: "Elecciones", pathname: "/elections" }];
 
 type PropsElections = RouteComponentProps & {};
-
-const confApi: PropsUseElection = {
-  dataType: "object",
-  dataUrl: "/elections",
-  createUrl: "/elections",
-  removeUrl: "/elections",
-  updateUrl: "/elections"
-};
 
 export default memo(function Elections(props: PropsElections) {
   useTitle("Elecciones");
@@ -32,7 +24,7 @@ export default memo(function Elections(props: PropsElections) {
     apiCreate,
     apiRemove,
     getParsedObj,
-  } = useElection(confApi);
+  } = useElection({});
 
   const [isOpenCreateElection, openCreateElection] = useState<boolean>(false);
 

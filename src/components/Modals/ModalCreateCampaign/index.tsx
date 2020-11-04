@@ -8,7 +8,7 @@ import useParserData from "hooks/useParserData";
 import useFetch from "hooks/useFetch";
 import { uuidv4 } from "utils/createUID";
 import { campaignsDataModel, defaultCampaign } from "models/election";
-import { TypeElection, TypeCampaignObj } from "types/electionTypes";
+import { TypeCampaignObj, TypeElectionFunc } from "types/electionTypes";
 
 import StepCampaignName from "components/Modals/ModalCreateCampaign/stepNameCampaign";
 import StepUploadLogo from "components/Modals/ModalCreateCampaign/stepUploadLogo";
@@ -59,7 +59,7 @@ const setReducerInitialState = (currentCampaignVal: any, currentStepValid: boole
 type PropsModalCreateCampaign = {
   slug: string | null;
   isOpen: boolean;
-  createOrUpdate: (newElection: TypeElection) => Promise<any>;
+  createOrUpdate: (newElection: TypeElectionFunc) => Promise<any>;
   cancel: () => void;
 };
 const { fetchDelWithToken } = useFetch();
@@ -139,7 +139,6 @@ export default function ModalCreateCampaign({ isOpen = false, slug, createOrUpda
     }
 
     asyncCreateOrUpdate.execute({
-      ...theElection,
       campaigns: convertObjArrToDoubleArr(newCampaigns, campaignsDataModel)
     });
 

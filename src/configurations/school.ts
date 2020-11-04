@@ -1,10 +1,13 @@
 import { TypeSchool } from "types/appTypes";
-import { REACT_API_URL } from "configurations/api";
+import { isProduction } from "configurations/variables";
+import prod_config from "../config.json";
 
-export default {
-  schoolName: "UE. Cardenal González Zumárraga",
-  schoolAlias: "UE. GONZU",
-  schoolAbreviation: "GONZU",
-  schoolIcon: "https://s3-us-east-2.amazonaws.com/gonzu-api-bucket/2020/09/apple-touch-icon-1.png",
-  apiUrl: REACT_API_URL
-} as TypeSchool;
+const default_config: TypeSchool = {
+  "schoolName": "UE. Demo School",
+  "schoolAlias": "UE. DSchool",
+  "schoolAbreviation": "DSchool",
+  "schoolIcon": ""
+}
+
+
+export default isProduction ? default_config : prod_config.school_conf as TypeSchool;

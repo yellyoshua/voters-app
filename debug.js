@@ -87,5 +87,3 @@ function mapToUnderscore(item) {
 }
 
 var e = recursiveMap(["hola mundo a", "hola mundo B"], mapToUnderscore);
-
-console.log({ e });

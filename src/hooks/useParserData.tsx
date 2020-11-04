@@ -1,4 +1,4 @@
-import { parseDoubleArrToObjArr, parseObjtArrToDoubleArr, extractFieldArrValuesOf } from "utils/parsersData";
+import { parseDoubleArrToObjArr, parseObjtArrToDoubleArr, doubleArrExtractValues } from "utils/parsersData";
 
 export default function useParserData() {
   return {
@@ -9,7 +9,7 @@ export default function useParserData() {
 }
 
 function getValuesFromDoubleArray<T>(doubleArray: any[][], fieldToBeExtracted: string) {
-  return extractFieldArrValuesOf(doubleArray, fieldToBeExtracted) as T[];
+  return doubleArrExtractValues<T>(doubleArray, fieldToBeExtracted);
 }
 
 function convertDoubleArrToObjArr<T>(data: any[]) {

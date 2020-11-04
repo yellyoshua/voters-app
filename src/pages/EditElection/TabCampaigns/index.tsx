@@ -1,10 +1,11 @@
 import React from "react";
 import ListCampaigns from "components/Lists/ListCampaigns";
 import AddIcon from "icons/AddIcon";
+import { TypeElection } from "types/electionTypes";
 import "./index.css";
 
 export type PropsTabCampaigns = {
-  updateElection: (data: { [key: string]: any }) => Promise<any>;
+  updateElection: (newElection: TypeElection) => Promise<any>;
   editCampaign: (slug: string | null) => void;
 };
 

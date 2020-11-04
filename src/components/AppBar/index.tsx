@@ -22,7 +22,7 @@ export default React.memo(function AppBar(props: PropsAppBar) {
 
   return (
     <header className='react-rainbow-admin_header rainbow-position_fixed rainbow-flex rainbow-align_center rainbow-p-horizontal_large rainbow-background-color_white'>
-      <img src={school.schoolIcon} alt='gonzu logo' className='react-rainbow-admin_header-logo' />
+      <img src={school.schoolIcon} alt='ue-logo' className='react-rainbow-admin_header-logo' />
       <h2>{school.schoolName}</h2>
       <section className='rainbow-flex rainbow-align_center react-rainbow-admin_header-actions'>
         <ButtonMenu icon={<UserIcon />} assistiveText={`${user && user.username}`} menuAlignment='right' menuSize='small' title={`${user && user.username}`}>
