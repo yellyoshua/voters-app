@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.57058345.chunk.css",
-    "main.js": "/static/js/main.77894c18.chunk.js",
-    "main.js.map": "/static/js/main.77894c18.chunk.js.map",
+    "main.css": "/static/css/main.e91e679c.chunk.css",
+    "main.js": "/static/js/main.3193efec.chunk.js",
+    "main.js.map": "/static/js/main.3193efec.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.449fe5a8.js",
     "runtime-main.js.map": "/static/js/runtime-main.449fe5a8.js.map",
-    "static/js/2.bc49d108.chunk.js": "/static/js/2.bc49d108.chunk.js",
-    "static/js/2.bc49d108.chunk.js.map": "/static/js/2.bc49d108.chunk.js.map",
+    "static/js/2.14628db4.chunk.js": "/static/js/2.14628db4.chunk.js",
+    "static/js/2.14628db4.chunk.js.map": "/static/js/2.14628db4.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.307af6bdee5e904d81e6edc101ed3d24.js": "/precache-manifest.307af6bdee5e904d81e6edc101ed3d24.js",
+    "precache-manifest.d76e81ec4f0456fe14ba465f7ae7b5f5.js": "/precache-manifest.d76e81ec4f0456fe14ba465f7ae7b5f5.js",
     "service-worker.js": "/service-worker.js",
-    "static/css/main.57058345.chunk.css.map": "/static/css/main.57058345.chunk.css.map",
-    "static/js/2.bc49d108.chunk.js.LICENSE.txt": "/static/js/2.bc49d108.chunk.js.LICENSE.txt",
+    "static/css/main.e91e679c.chunk.css.map": "/static/css/main.e91e679c.chunk.css.map",
+    "static/js/2.14628db4.chunk.js.LICENSE.txt": "/static/js/2.14628db4.chunk.js.LICENSE.txt",
     "static/media/Lato-Black.woff": "/static/media/Lato-Black.21c4d25c.woff",
     "static/media/Lato-Black.ttf": "/static/media/Lato-Black.77d35374.ttf",
     "static/media/Lato-Black.woff2": "/static/media/Lato-Black.9ab28490.woff2",
@@ -65,8 +65,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.449fe5a8.js",
-    "static/js/2.bc49d108.chunk.js",
-    "static/css/main.57058345.chunk.css",
-    "static/js/main.77894c18.chunk.js"
+    "static/js/2.14628db4.chunk.js",
+    "static/css/main.e91e679c.chunk.css",
+    "static/js/main.3193efec.chunk.js"
   ]
 }
