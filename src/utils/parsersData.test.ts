@@ -57,17 +57,24 @@ describe("test parsersData", function () {
   });
 
   test("parseDoubleArrToObjArr", () => {
-    const objArr = parseDoubleArrToObjArr([
+    const data = [
       ["name", "surname", "ci"],
       ["Yoshua", "Lopez", 11111],
       ["Yoo", "LL", 2222],
-      ["Yuip", "Lpop", 333],
-    ]);
+      ["Yuip", "Lpop", 333]
+    ];
+    const objArr = parseDoubleArrToObjArr(data);
 
     expect(objArr).toStrictEqual([
       { name: "Yoshua", id: 0, surname: "Lopez", ci: 11111 },
       { name: "Yoo", id: 1, surname: "LL", ci: 2222 },
       { name: "Yuip", id: 2, surname: "Lpop", ci: 333 },
+    ]);
+    expect(data).toStrictEqual([
+      ["name", "surname", "ci"],
+      ["Yoshua", "Lopez", 11111],
+      ["Yoo", "LL", 2222],
+      ["Yuip", "Lpop", 333]
     ]);
   });
 

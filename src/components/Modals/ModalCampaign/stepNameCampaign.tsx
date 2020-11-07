@@ -3,7 +3,7 @@ import Input from "react-rainbow-components/components/Input";
 
 type PropsStepCampaignName = {
   value: string;
-  onChangeName: (arg: { name: string }) => void;
+  onChangeName: (name: string) => void;
 };
 
 export default function StepCampaignName({ value, onChangeName }: PropsStepCampaignName) {
@@ -14,7 +14,7 @@ export default function StepCampaignName({ value, onChangeName }: PropsStepCampa
       </div>
       <Input
         onChange={({ target: { value } }) => {
-          return onChangeName({ name: String(value) });
+          return onChangeName(value);
         }}
         placeholder=''
         value={value}

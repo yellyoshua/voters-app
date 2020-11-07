@@ -1,7 +1,7 @@
 import React from "react";
 import UploadFile from "components/UploadFile";
-import PreviewFile from "components/UploadFile/PreviewFile";
 import { REACT_API_URL } from "configurations/api";
+import PreviewImage from "components/UploadFile/PreviewImage";
 
 type PropsStepUploadLogo = {
   campaignName: string;
@@ -17,7 +17,7 @@ export default function stepUploadLogo({ logo_image, onChange }: PropsStepUpload
       </section>
       <section>
         {logo_image
-          ? <PreviewFile
+          ? <PreviewImage
             fileUrl={`${REACT_API_URL + logo_image[0].url}`}
             fileName={logo_image[0].name}
             onRemoveHandler={() => onChange(null, Number(logo_image[0].id))}

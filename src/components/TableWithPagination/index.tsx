@@ -12,6 +12,11 @@ type PropsTableWithPagination = {
 
 export default function TableWithPagination({ keyField, fields = [], data = [], limit = 5, children }: PropsTableWithPagination) {
 
+  const columns = fields.map((field, key) => (
+    <Column key={key} header={field} field={field} />
+  ));
+
+
   return <div>
     <TableWithBrowserPagination
       minColumnWidth={150}
@@ -19,11 +24,7 @@ export default function TableWithPagination({ keyField, fields = [], data = [], 
       data={data}
       keyField={keyField}
     >
-      {
-        fields.map((field, key) => (
-          <Column key={key} header={field} field={field} />
-        ))
-      }
+      {columns}
       {children}
     </TableWithBrowserPagination>
   </div>

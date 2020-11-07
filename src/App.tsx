@@ -59,7 +59,7 @@ function App({ history }: PropsApp) {
       <RenderIf isTrue={!isSidebarHidden}>
         <div className='react-rainbow-admin-app_backdrop' role='presentation' onClick={toogleSidebar} />
       </RenderIf>
-      <AppBar onToogleSidebar={toogleSidebar} />
+      <AppBar isSidebarHidden={isSidebarHidden} onToogleSidebar={toogleSidebar} />
       <div
         className={
           isSidebarHidden ? "react-rainbow-admin-app_sidebar-container react-rainbow-admin-app_sidebar-container--sidebar-hidden" : "react-rainbow-admin-app_sidebar-container"

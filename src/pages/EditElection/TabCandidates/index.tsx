@@ -1,27 +1,45 @@
-import React from "react";
-import { useTheElection } from "context/TheElectionContext";
-import useParserData from "hooks/useParserData";
-import { TypeCampaignObj } from "types/electionTypes";
+import React, { useCallback, useState } from "react";
+import AddIcon from "icons/AddIcon";
+import ListCandidates from "components/Lists/ListCandidates";
+import { TypeElectionFunc } from "types/electionTypes";
+import ModalCandidate from "components/Modals/ModalCandidate";
 
-type PropsTabCandidates = {};
+type PropsTabCandidates = {
+  updateElection: (election: TypeElectionFunc) => Promise<any>;
+};
 
-const { convertDoubleArrToObjArr } = useParserData();
+export default function TabCandidates({ updateElection }: PropsTabCandidates) {
 
-export default function TabCandidates(_: PropsTabCandidates) {
-  const { theElection } = useTheElection();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [slugIntegrant, setSlugIntegrant] = useState<string | null>(null);
 
-  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
+  const openModal = useCallback((slug: string | null) => {
+    setSlugIntegrant(slug);
+    setModalOpen(true);
+  }, []);
 
-  // const campaignsNames = getValuesFromDoubleArray<string>(theElection.campaigns, "name");
-  // const campaignsSlugs = getValuesFromDoubleArray<string>(theElection.campaigns, "slug");
+  const closeModal = useCallback(() => {
+    setSlugIntegrant(null);
+    setModalOpen(false);
+  }, []);
 
   return <div>
-    <p>Tab candidates</p>
+    <ModalCandidate
+      isOpen={isModalOpen}
+      slug={slugIntegrant}
+      createOrUpdate={updateElection}
+      cancel={closeModal}
+    />
+    <div className='container-election-name breadcrumbs-with-button'>
+      <button onClick={() => openModal(null)} className='btn-right-breadcrumb'>
+        <AddIcon />Agregar Candidato
+      </button>
+    </div>
     <div className='elections-tabs-view-section'>
-      <h1>Names</h1>
-      {campaigns.map((campaign, key) => {
-        return <p key={key}>{campaign.name}</p>
-      })}
+      <ListCandidates
+        editCandidate={openModal}
+        updateElection={updateElection}
+      />
     </div>
   </div>
 }

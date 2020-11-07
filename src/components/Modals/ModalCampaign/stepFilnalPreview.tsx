@@ -1,9 +1,17 @@
 import React from "react";
-import PreviewFile from "components/UploadFile/PreviewFile";
+import PreviewFile, { PreviewNoFile } from "components/UploadFile/PreviewFile";
 import { REACT_API_URL } from "configurations/api";
+import { isProduction } from "configurations/variables";
 import { TypeCampaignObj } from "types/electionTypes";
 
 type PropsStepFinalPreview = { campaign: TypeCampaignObj; };
+
+function resolveUrl(url: string) {
+  if (isProduction) {
+    return url;
+  }
+  return REACT_API_URL + url;
+}
 
 export default function StepFinalPreview({ campaign }: PropsStepFinalPreview) {
   return (
@@ -21,12 +29,13 @@ export default function StepFinalPreview({ campaign }: PropsStepFinalPreview) {
           {campaign.commitments_file
             ? <PreviewFile
               fileName={campaign.commitments_file[0].name}
-              fileUrl={`${REACT_API_URL + campaign.commitments_file[0].url}`}
+              fileUrl={resolveUrl(campaign.commitments_file[0].url)}
               withNoRemove={true}
             />
-            : (
+            : <PreviewNoFile>
               <p>(Vac&iacute;o)</p>
-            )}
+            </PreviewNoFile>
+          }
         </div>
       </div>
     </>

@@ -43,8 +43,8 @@ export default function useElection({ id }: PropsUseElection) {
     return null;
   }, [api.data]);
 
-  const isFetching = !api.error && !api.data;
-  const isFetchError = api.error;
+  const isFetching = useMemo(() => !api.error && !api.data, [api.data, api.error]);
+  const isFetchError = useMemo(() => api.error, [api.error]);
 
   const apiCreate = useCallback(
     async (newData: { [key: string]: any }) => {
@@ -101,8 +101,6 @@ export default function useElection({ id }: PropsUseElection) {
     },
     [data]
   );
-
-  console.log({ data });
 
   return { apiUpdate, apiRemove, getValuesField, getParsedObj, apiCreate, api, data, isFetching, isFetchError };
 }

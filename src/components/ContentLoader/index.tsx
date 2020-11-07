@@ -20,7 +20,7 @@ type PropsContentLoader = {
 };
 
 export default memo(function ContentLoader(props: PropsContentLoader) {
-  const noData = props.isFetching && props.isNoData;
+  const noData = !props.isFetching && props.isNoData;
   const notFound = props.isError && props.isError.message.includes("404");
   const error = props.isError && !props.isError.message.includes("404");
 

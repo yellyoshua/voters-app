@@ -4,7 +4,6 @@ import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 import Tabs from "components/Tabs";
 import ContentLoader from "components/ContentLoader";
-import ModalCreateCampaign from "components/Modals/ModalCreateCampaign";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Button from "react-rainbow-components/components/Button";
 import TabSettings from "pages/EditElection/TabSettings";
@@ -28,11 +27,9 @@ const tabs = [
 
 type PropsEditElection = RouteComponentProps<{ id: string }> & {};
 
-export default memo(function EditElection({ match, staticContext, location, history }: PropsEditElection) {
+export default memo(function EditElection({ match, history }: PropsEditElection) {
   const currentElectionId = useMemo(() => match.params.id, [match]);
   const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [isOpenCreateCampaign, openCampaignModal] = useState<boolean>(false);
-  const [editableCampaign, setEditableCampaign] = useState<string | null>(null);
 
   const { apiRemove, apiUpdate, isFetching, isFetchError, data, api } = useElection({ id: currentElectionId });
 
@@ -62,56 +59,43 @@ export default memo(function EditElection({ match, staticContext, location, hist
   return (
     <TheElectionProvider id={currentElectionId} mutate={api.mutate} value={election}>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <ModalCreateCampaign
-        isOpen={isOpenCreateCampaign}
-        slug={editableCampaign}
-        createOrUpdate={updateElection}
-        cancel={() => {
-          setEditableCampaign(null);
-          return openCampaignModal(false);
-        }}
-      />
-      <RenderIf isTrue={!isOpenCreateCampaign}>
-        <ContentLoader messageNoData='No existe' contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={Boolean(Object.keys(election).length <= 0)}>
-          {
-            <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
-              <RenderIf isTrue={selectedTab === 0}>
-                <TabGeneral updateElection={updateElection} />
-              </RenderIf>
-              <RenderIf isTrue={selectedTab === 1 && !isActiveElection}>
-                <TabCampaigns
-                  updateElection={updateElection}
-                  editCampaign={slug => {
-                    setEditableCampaign(slug);
-                    return openCampaignModal(true);
-                  }}
-                />
-              </RenderIf>
-              <RenderIf isTrue={selectedTab === 2 && !isActiveElection}>
-                <TabVoters updateElection={updateElection} />
-              </RenderIf>
-              <RenderIf isTrue={selectedTab === 3 && !isActiveElection}>
-                <TabCandidates />
-              </RenderIf>
-              <RenderIf isTrue={selectedTab === 4}>
-                <TabSettings updateElection={updateElection} />
-              </RenderIf>
-              <RenderIf isTrue={selectedTab !== 4 && selectedTab !== 0 && isActiveElection}>
-                <p>Desactivado durante las elecciones</p>
-              </RenderIf>
-            </Tabs>
-          }
-          <div className='rainbow-m-top_xx-large rainbow-align-content_center rainbow-flex_wrap'>
-            <Button
-              variant='destructive'
-              label='Borrar Elección'
-              disabled={isActiveElection}
-              className='rainbow-m-horizontal_medium'
-              onClick={() => apiRemove(null, () => history.push("/elections"))}
-            />
-          </div>
-        </ContentLoader>
-      </RenderIf>
+      <ContentLoader messageNoData='No existe' contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={Boolean(Object.keys(election).length <= 0)}>
+        {
+          <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
+            <RenderIf isTrue={selectedTab === 0}>
+              <TabGeneral updateElection={updateElection} />
+            </RenderIf>
+            <RenderIf isTrue={selectedTab === 1 && !isActiveElection}>
+              <TabCampaigns
+                updateElection={updateElection}
+              />
+            </RenderIf>
+            <RenderIf isTrue={selectedTab === 2 && !isActiveElection}>
+              <TabVoters updateElection={updateElection} />
+            </RenderIf>
+            <RenderIf isTrue={selectedTab === 3 && !isActiveElection}>
+              <TabCandidates
+                updateElection={updateElection}
+              />
+            </RenderIf>
+            <RenderIf isTrue={selectedTab === 4}>
+              <TabSettings updateElection={updateElection} />
+            </RenderIf>
+            <RenderIf isTrue={selectedTab !== 4 && selectedTab !== 0 && isActiveElection}>
+              <p>Desactivado durante las elecciones</p>
+            </RenderIf>
+          </Tabs>
+        }
+        <div className='rainbow-m-top_xx-large rainbow-align-content_center rainbow-flex_wrap'>
+          <Button
+            variant='destructive'
+            label='Borrar Elección'
+            disabled={isActiveElection}
+            className='rainbow-m-horizontal_medium'
+            onClick={() => apiRemove(null, () => history.push("/elections"))}
+          />
+        </div>
+      </ContentLoader>
     </TheElectionProvider >
   );
 });

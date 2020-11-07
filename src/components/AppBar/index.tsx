@@ -12,10 +12,11 @@ import { useApp } from "context/AppContext";
 import "./index.css";
 
 type PropsAppBar = {
+  isSidebarHidden: boolean;
   onToogleSidebar: () => void;
 };
 
-export default React.memo(function AppBar(props: PropsAppBar) {
+export default React.memo(function AppBar({ isSidebarHidden, onToogleSidebar }: PropsAppBar) {
   const { removeSession } = useAuth();
   const user = React.useContext(UserContext);
   const { school } = useApp();
@@ -39,7 +40,8 @@ export default React.memo(function AppBar(props: PropsAppBar) {
           <MenuItem label='Cerrar sesión' icon={null} onClick={removeSession} iconPosition='left' />
         </ButtonMenu>
       </section>
-      <ButtonIcon onClick={props.onToogleSidebar} className='react-rainbow-admin_header-hamburger-button' size='large' icon={<MenuIcon />} />
+
+      <ButtonIcon onClick={onToogleSidebar} className='react-rainbow-admin_header-hamburger-button' size='large' icon={<MenuIcon />} />
     </header>
   );
 });

@@ -29,7 +29,6 @@ export default memo(function Elections(props: PropsElections) {
   const [isOpenCreateElection, openCreateElection] = useState<boolean>(false);
 
   const elections: TypeElection[] = Array.isArray(data) ? data : [];
-  const haveElections: boolean = elections ? elections.length === 0 : false;
 
   const handleEditElection = (id: any) => {
     return props.history.push(`/elections/${id}/edit`);
@@ -68,7 +67,7 @@ export default memo(function Elections(props: PropsElections) {
       <ContentLoader
         isFetching={isFetching}
         isError={isFetchError}
-        isNoData={haveElections}
+        isNoData={elections ? elections.length === 0 : false}
         contentScreen='elections'
         messageNoData='Para crear una nueva, ve al botón [Nueva Elección]'>
         <div>

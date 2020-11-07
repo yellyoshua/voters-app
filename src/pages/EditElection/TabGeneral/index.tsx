@@ -2,7 +2,7 @@ import React from "react";
 import InputFetch from "components/InputFetch";
 import { useTheElection } from "context/TheElectionContext"
 import useParserData from "hooks/useParserData";
-import { TypeCampaignObj, TypeVoterObj, TypeCandidateObj, TypeTagObj, TypeElectionFunc } from "types/electionTypes";
+import { TypeCampaignObj, TypeCandidateObj, TypeTagObj, TypeElectionFunc } from "types/electionTypes";
 import "./index.css";
 
 // [x] Update Election Name
@@ -22,7 +22,7 @@ export default function TabGeneral(props: PropsTabGeneral) {
   const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
   const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
   const tags = convertDoubleArrToObjArr<TypeTagObj>(theElection.tags);
-  const voters = convertDoubleArrToObjArr<TypeVoterObj>(theElection.voters);
+  const voters = convertDoubleArrToObjArr<any[]>(theElection.voters.data);
 
   return <div className='elections-tabs-view-section'>
     <div>
@@ -35,7 +35,7 @@ export default function TabGeneral(props: PropsTabGeneral) {
         }}
       />
     </div>
-    <section className="campaign-general-stats-container">
+    <section className="list-items-row">
       <div className="campaign-general-stats-wrapper">
         <p>{voters.length}</p>
         <h1>Votantes</h1>

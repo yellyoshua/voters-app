@@ -8,6 +8,7 @@ export default function ElectionsContent(props: PropsElectionsContent) {
     // viewBox="0 0 auto 500"
     height={300}
     color="red"
+    backgroundColor="rgb(0, 0, 0, 0.34)"
     width="100%"
     speed={2}
     {...props}

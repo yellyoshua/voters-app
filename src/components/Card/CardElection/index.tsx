@@ -16,10 +16,11 @@ type PropsCardElection = {
 export default function CardElection(props: PropsCardElection) {
 
   const id = useMemo(() => props.election.id, [props]);
+  const isActiveElection = useMemo(() => props.election.status === "active", [props]);
 
   const campaigns = useMemo(() => props.getParsedObj("campaigns", props.election.campaigns), [props]);
   const candidates = useMemo(() => props.getParsedObj("candidates", props.election.candidates), [props]);
-  const voters = useMemo(() => props.getParsedObj("voters", props.election.voters), [props]);
+  const voters = useMemo(() => props.getParsedObj("voters", props.election.voters.data), [props]);
   const tags = useMemo(() => props.getParsedObj("tags", props.election.tags), [props]);
 
   return <Formik
@@ -77,7 +78,7 @@ export default function CardElection(props: PropsCardElection) {
                     label="Borrar"
                     variant="destructive"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isActiveElection || isSubmitting}
                   />
                 </div>
               </div>

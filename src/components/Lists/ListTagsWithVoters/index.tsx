@@ -1,10 +1,9 @@
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState, memo, useMemo } from "react";
 import { useTheElection } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
 import ModalPreviewVoter from "components/Modals/ModalPreviewVoter";
 import CardTag from "components/Card/CardTag";
-import { TypeVoterObj, TypeTagObj } from "types/electionTypes";
-import "./index.css";
+import { TypeVoter, TypeTagObj } from "types/electionTypes";
 
 type PropsListTagsWithVoters = {};
 
@@ -13,16 +12,18 @@ const { convertDoubleArrToObjArr } = useParserData();
 export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters) {
   const { theElection } = useTheElection();
   const [isOpenModal, openModal] = useState(false);
-  const [tagKey, setTagKey] = useState<string | null>(null);
+  const [tagKey, setTagKey] = useState<string>("");
   const [tagsWithVoters, setTagsWithVoters] = useState<ObjTagWithVoters>({});
-  const voters = convertDoubleArrToObjArr<TypeVoterObj>(theElection.voters);
+  const voters = useMemo<TypeVoter>(() => theElection.voters, [theElection.voters]);
   const tags = convertDoubleArrToObjArr<TypeTagObj>(theElection.tags);
+
+  console.log({ voters, tagsWithVoters, tagKey })
 
   useEffect(function () {
     let mounted = true;
 
     if (mounted) {
-      buildTagsWithVotersAndPush(tags, voters, setTagsWithVoters);
+      buildTagsWithVotersAndPush(tags, convertDoubleArrToObjArr(voters.data), setTagsWithVoters);
     }
 
     return () => {
@@ -31,14 +32,17 @@ export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div className="list-tags-container">
+  return <div className="list-items-row">
     <ModalPreviewVoter
       isOpen={isOpenModal}
       title={tags.find(tag => tag.slug === tagKey)?.name || ""}
-      voters={tagKey ? tagsWithVoters[tagKey] : []}
+      voters={{
+        data: tagsWithVoters[tagKey] || [],
+        fields: voters.fields
+      }}
       onClose={(state) => {
-        openModal(state);
-        return setTagKey(null);
+        setTagKey("");
+        return openModal(state);
       }}
     />
     {
@@ -58,10 +62,10 @@ export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters)
 });
 
 type ObjTagWithVoters = {
-  [tagSlug: string]: TypeVoterObj[];
+  [tagSlug: string]: any[];
 };
 
-function buildTagsWithVotersAndPush(tags: TypeTagObj[], voters: TypeVoterObj[], cb: (arg: ObjTagWithVoters) => void) {
+function buildTagsWithVotersAndPush(tags: TypeTagObj[], voters: any[], cb: (arg: ObjTagWithVoters) => void) {
   let tagWithVoters: ObjTagWithVoters = {};
 
   tags.forEach(tag => {

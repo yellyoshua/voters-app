@@ -2,12 +2,12 @@ import { useState, useCallback, useEffect } from "react";
 
 export type StatusOptions = "idle" | "pending" | "success" | "error";
 
-type ExecFunction = (...arg: any[]) => void;
+type ExecFunction<T> = (...arg: T[]) => void;
 
 type AsyncFunction = (...arg: any[]) => Promise<any>;
 
 type ReturnUseAsync<T> = {
-  execute: ExecFunction;
+  execute: ExecFunction<T>;
   status: StatusOptions;
   error: Error | null;
   value: T;
@@ -22,7 +22,7 @@ export default function useAsync<T>(asyncFunction: AsyncFunction, immediate: boo
   // handles setting state for pending, value, and error.
   // useCallback ensures the below useEffect is not called
   // on every render, but only if asyncFunction changes.
-  const execute: ExecFunction = useCallback(async (props) => {
+  const execute: ExecFunction<T> = useCallback(async (props) => {
     setStatus('pending');
     setValue(null);
     setError(null);

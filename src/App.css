@@ -160,3 +160,18 @@ textarea:focus {
   margin-left: 20px;
   margin-top: 10px;
 }
+.list-items-col {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+.list-items-row {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 10px;
+}

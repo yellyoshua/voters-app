@@ -9,10 +9,11 @@ export function toUnderscore(arg: string) {
 }
 
 export function parseDoubleArrToObjArr<T>(arr: any[][]) {
-  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  const doubleArr = [...arr];
+  var arrContainChilds = Array.isArray(doubleArr) ? Array.isArray(doubleArr[0]) : false;
   if (arrContainChilds) {
-    const arrFields = arr.shift();
-    return arr.map((arrItem: any[], index: number) => {
+    const arrFields = doubleArr.shift();
+    return doubleArr.map((arrItem: any[], index: number) => {
       let obj: any = {};
 
       arrFields!.forEach((field, index) => {
@@ -26,12 +27,13 @@ export function parseDoubleArrToObjArr<T>(arr: any[][]) {
 }
 
 export function doubleArrExtractValues<T>(arr: any[][], field: string): T[] {
-  var arrContainChilds = Array.isArray(arr) ? Array.isArray(arr[0]) : false;
+  const doubleArr = [...arr];
+  var arrContainChilds = Array.isArray(doubleArr) ? Array.isArray(doubleArr[0]) : false;
   if (arrContainChilds) {
-    const arrFields = arr.shift();
+    const arrFields = doubleArr.shift();
     const itemFound = arrFields!.map(mapToUnderscore).findIndex(compareWith(toUnderscore(field)));
     if (itemFound !== -1) {
-      return arr.map(arrItem => {
+      return doubleArr.map(arrItem => {
         return arrItem[itemFound];
       });
     }
@@ -45,10 +47,11 @@ function compareWith(matchWith: string) {
 }
 
 export function doubleArrPushValues(arr: any[][], field: string, fieldValue: any) {
-  var arrContainChilds = Array.isArray(arr) ? true : false;
+  const doubleArr = [...arr];
+  var arrContainChilds = Array.isArray(doubleArr) ? true : false;
 
   if (arrContainChilds) {
-    let arrFields = arr.shift();
+    let arrFields = doubleArr.shift();
 
 
     if (binarySearch(arrFields!.map(mapToUnderscore).sort(), toUnderscore(field)) === -1) {
@@ -59,7 +62,7 @@ export function doubleArrPushValues(arr: any[][], field: string, fieldValue: any
 
     return [
       arrFields!,
-      ...arr.map((arrItem => {
+      ...doubleArr.map((arrItem => {
         arrItem[itemFound] = fieldValue;
         return arrItem;
       }))
@@ -208,4 +211,18 @@ export function sortField(field: string, DESCENDING: boolean = true) {
       return 0;
     }
   }
+}
+
+export function uniqueArray<T>(arr: T[]): T[] {
+  var hashMap: any = {};
+  var uniqueArr = [];
+
+  for (var i = 0; i < arr.length; i++) {
+    if (!hashMap.hasOwnProperty(arr[i])) {
+      uniqueArr.push(arr[i]);
+      hashMap[arr[i]] = i;
+    }
+  }
+
+  return uniqueArr;
 }
