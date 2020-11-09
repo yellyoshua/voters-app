@@ -2,18 +2,19 @@
   box-shadow: 9px 9px 20px -15px rgb(0, 0, 0.7);
   background: rgb(29, 233, 182);
   padding: 10px;
-  margin: 20px;
+  margin: 5px;
+  max-width: 150px;
   border-radius: 20px;
   cursor: pointer;
   transition: 200ms;
 }
 .card-tag-container:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 .card-tag-title {
   color: rgb(255, 255, 255);
   text-shadow: 1px 1px 3px rgb(0, 0, 0);
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   padding: 10px 0px;
 }
 .card-tag-body-wrapper {

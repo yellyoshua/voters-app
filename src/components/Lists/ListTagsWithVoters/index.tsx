@@ -17,8 +17,6 @@ export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters)
   const voters = useMemo<TypeVoter>(() => theElection.voters, [theElection.voters]);
   const tags = convertDoubleArrToObjArr<TypeTagObj>(theElection.tags);
 
-  console.log({ voters, tagsWithVoters, tagKey })
-
   useEffect(function () {
     let mounted = true;
 
@@ -32,7 +30,7 @@ export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <div className="list-items-row">
+  return <div className="grid-items-row">
     <ModalPreviewVoter
       isOpen={isOpenModal}
       title={tags.find(tag => tag.slug === tagKey)?.name || ""}

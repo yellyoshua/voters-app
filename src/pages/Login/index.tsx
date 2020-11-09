@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
 import useTitle from "react-use/lib/useTitle";
 import { Formik, Form, ErrorMessage, FormikHelpers } from "formik";
@@ -8,7 +8,9 @@ import Spinner from "react-rainbow-components/components/Spinner";
 import Badge from "react-rainbow-components/components/Badge";
 import useAuth from "hooks/useAuth";
 import useFetch from "hooks/useFetch";
+import ListCardLinks from "components/Lists/ListCardLinks";
 import "./index.css";
+import { TypeCardLink } from "types/appTypes";
 
 type PropsLogin = RouteComponentProps;
 
@@ -19,6 +21,30 @@ const login_description = "Si eres administrador de este sitio podrás iniciar s
 
 export default function Login(_: PropsLogin) {
   useTitle("Pantalla de ingreso");
+
+  const cardLinks: TypeCardLink[] = useMemo(() => [
+    {
+      title: "Consulta de datos",
+      cover: "https://servel.cl/wp-content/uploads/2016/11/btn-home-33.jpg",
+      link: "/elecciones",
+      external: false,
+      description: "Conoce tu Circunscripción Electoral y Mesa"
+    },
+    {
+      title: "Ir a votar",
+      cover: "https://servel.cl/wp-content/uploads/2016/05/btn-home-06.jpg",
+      link: "/elecciones",
+      external: false
+    },
+    {
+      title: "Historial de elecciones",
+      cover: "https://servel.cl/wp-content/uploads/2018/03/btn-home-32.png",
+      link: "/elecciones",
+      external: false,
+      description: "Elecciones y resultados desde 2020"
+    }
+  ], []);
+
   const [recoveryPassword, openRecoveryPassword] = useState<boolean>(false);
 
   const { createSession } = useAuth();
@@ -47,10 +73,11 @@ export default function Login(_: PropsLogin) {
         <Breadcrums breadcrumbs={[{ name: "Inicio", pathname: "/" }]} />
       </div>
       <section className="login-screen-layout">
-        <section className="login-screen-section-links">
+        <section className="list-items-col">
           <h1 className="login-screen-section-links-title">Links relacionados</h1>
-          <Link className="login-screen-section-links-link" to="/elecciones">Ir a las elecciones</Link>
-          <Link className="login-screen-section-links-link" to="/elecciones">Ir a votar</Link>
+          <ListCardLinks links={cardLinks} />
+          {/* <Link className="login-screen-section-links-link" to="/elecciones">Ir a las elecciones</Link>
+          <Link className="login-screen-section-links-link" to="/elecciones">Ir a votar</Link> */}
         </section>
         <SectionForms
           className="login-screen-section-form"

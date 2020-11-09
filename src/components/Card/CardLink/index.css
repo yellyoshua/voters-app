@@ -1,0 +1,20 @@
+.card-link-wrapper {
+  margin: 10px;
+}
+.card-link-container {
+  display: block;
+  padding: 10px 20px;
+  background: rgb(50, 38, 56);
+  min-height: 130px;
+  text-decoration: none;
+  color: white;
+  text-align: center;
+  background-size: cover;
+}
+.card-link-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  font-style: normal;
+}
+.card-link-desc {
+}

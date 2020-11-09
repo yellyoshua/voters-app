@@ -141,11 +141,9 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cancel, c
         logo_image={currCampaign.logo_image}
         onChange={(logo, logoId) => {
           if (logoId !== undefined) {
-            console.log("Called");
             setCurrCampaign({ ...currCampaign, logo_image: null });
             return removeFile(logoId);
           }
-          console.log("2Called");
           return setCurrCampaign({ ...currCampaign, logo_image: logo });
         }}
       />

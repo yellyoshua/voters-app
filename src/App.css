@@ -160,6 +160,22 @@ textarea:focus {
   margin-left: 20px;
   margin-top: 10px;
 }
+.grid-items-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+@media (max-width: 750px) {
+  .grid-items-row {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 450px) {
+  .grid-items-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .list-items-col {
   display: flex;
   justify-content: space-between;
