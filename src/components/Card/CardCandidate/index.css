@@ -1,0 +1,7 @@
+.card-candidate {
+  background: mediumvioletred;
+  border-radius: 5px;
+}
+.card-candidate h1 {
+  color: white;
+}

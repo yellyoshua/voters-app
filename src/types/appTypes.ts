@@ -1,17 +1,37 @@
-export type TypeElection = {
-  name: string;
-  campaigns: TypeCampaign[];
+export type TypeCardLink = {
+  cover?: string;
+  link: string;
+  title: string;
+  external: boolean;
+  description?: string
 }
 
-export type TypeProspect = {
-  name: string;
-  surname: string;
-  position: string;
+export type TypeSchool = {
+  schoolName: string;
+  schoolAlias: string;
+  schoolAbreviation: string;
+  schoolIcon: any;
 };
 
-export type TypeCampaign = {
+export interface FileApi {
+  id: string | number;
   name: string;
-  integrants: TypeProspect[];
-  commitments: string;
-  description: string;
+  alternativeText: string | null;
+  caption: string | null;
+  width: number | null;
+  height: number | null;
+  formats: number | null;
+  hash: string;
+  ext: string;
+  mime: string;
+  size: number;
+  url: string;
+  previewUrl: string | null;
+  provider: string;
+  provider_metadata: string | null;
+  created_by: string | null;
+  updated_by: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+  related: any[]
 }

@@ -1,10 +1,12 @@
 import React from "react";
+import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 
-type PropsMessage = RouteComponentProps & { goTo: (pathname: string) => void; };
+type PropsMessage = RouteComponentProps & {};
 
-export default function Message(props: PropsMessage) {
+export default function Message(_: PropsMessage) {
+  useTitle("Mensajes");
 
   const breadcrumbs = [
     { name: "Mensajes", pathname: "/message" }
@@ -12,7 +14,7 @@ export default function Message(props: PropsMessage) {
 
   return (
     <div>
-      <Breadcrumbs breadcrumbs={breadcrumbs} goTo={props.goTo} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       Message Page
     </div>
   )

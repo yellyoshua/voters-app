@@ -1,10 +1,12 @@
 import React from "react";
+import useTitle from "react-use/lib/useTitle";
 import { RouteComponentProps } from "react-router-dom";
 import Breadcrumbs from "components/Breadcrums";
 
-type PropsDashboard = RouteComponentProps & { goTo: (pathname: string) => void; };
+type PropsDashboard = RouteComponentProps & {};
 
-export default function Dashboard(props: PropsDashboard) {
+export default function Dashboard(_: PropsDashboard) {
+  useTitle("Dashboard");
 
   const breadcrumbs = [
     { name: "Dashboard", pathname: "/dashboard" }
@@ -12,7 +14,7 @@ export default function Dashboard(props: PropsDashboard) {
 
   return (
     <div>
-      <Breadcrumbs breadcrumbs={breadcrumbs} goTo={props.goTo} />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       Dashboard page
     </div>
   )

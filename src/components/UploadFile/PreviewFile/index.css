@@ -1,0 +1,14 @@
+.preview-file-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 10px;
+}
+.preview-file-wrapper {
+  display: flex;
+  border: 1px solid rgb(1 182 245);
+  padding: 10px;
+  border-radius: 10px;
+  background: white;
+}

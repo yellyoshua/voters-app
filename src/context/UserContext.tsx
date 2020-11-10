@@ -1,44 +1,28 @@
-import React, { ReactNode } from 'react'
-import useLocalStorage from "hooks/useLocalStorage";
+import React, { ReactNode, Dispatch } from "react";
+import useStickyState from "hooks/useStickyState";
 import { TypeUser } from "types/userTypes";
 
-type TypeUserContext = {
-  setUser: (user: TypeUser) => void;
-  setJWT: (jwt: string | null) => void;
-  user: TypeUser;
-  jwt: string | null;
-  version: string;
-};
+export const TokenContext = React.createContext<string | null>(null);
 
-const Context = React.createContext<TypeUserContext | undefined>(undefined)
+export const TokenActionContext = React.createContext<Dispatch<any>>(() => null);
 
+export const UserContext = React.createContext<TypeUser>(null);
 
-export function UserContextProvider({ children }: { children: ReactNode }) {
-  const [userLocalStorage] = useLocalStorage("user-context");
+export const UserActionsContext = React.createContext<Dispatch<TypeUser>>(() => null);
 
-  const checkLocalUserBucket = () => {
-    if (!userLocalStorage) return null;
-    return userLocalStorage.user;
-  }
+export default function UserContextProvider({ children }: { children: ReactNode }) {
+  const [jwt, updateToken] = useStickyState(null, "_jwt_");
+  const [user, updateUser] = React.useState<TypeUser>(null);
 
-  const CheckLocalJwtBucket = () => {
-    if (!userLocalStorage) return null;
-    return userLocalStorage.jwt;
-  }
-
-  const [user, setUser] = React.useState<TypeUser>(checkLocalUserBucket);
-  const [jwt, setJWT] = React.useState<string | null>(CheckLocalJwtBucket);
-
-  return <Context.Provider value={{
-    user,
-    jwt,
-    setJWT,
-    setUser,
-    version: process.env.CLIENT_VERSION || "v1.0"
-  }}>
-    {children}
-  </Context.Provider>
+  return (
+    <TokenActionContext.Provider value={updateToken}>
+      <UserActionsContext.Provider value={updateUser}>
+        <TokenContext.Provider value={jwt} >
+          <UserContext.Provider value={user}>
+            {children}
+          </UserContext.Provider>
+        </TokenContext.Provider>
+      </UserActionsContext.Provider>
+    </TokenActionContext.Provider>
+  );
 }
-
-
-export default Context

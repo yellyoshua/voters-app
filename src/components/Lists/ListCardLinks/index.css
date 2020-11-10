@@ -1,0 +1,9 @@
+.card-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+@media (max-width: 750px) {
+  .card-links {
+    grid-template-columns: 1fr 1fr;
+  }
+}

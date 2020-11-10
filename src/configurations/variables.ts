@@ -1,0 +1,1 @@
+export const isProduction = String(process.env.NODE_ENV).toLowerCase().includes("production");

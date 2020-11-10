@@ -1,0 +1,24 @@
+.card-campaigns {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.card-campaign {
+  background: rgb(1, 182, 245, 0.55);
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0px;
+}
+.card-campaign-title {
+  padding: 0px 10px !important;
+}
+.card-campaign-title h1 {
+  font-size: 1.3rem;
+}
+.card-campaign-item {
+  margin: 5px;
+  max-width: 230px;
+  text-align: center;
+  background: white;
+  border-radius: 5px;
+  padding: 10px 5px;
+}
