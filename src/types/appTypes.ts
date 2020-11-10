@@ -1,5 +1,5 @@
 export type TypeCardLink = {
-  cover: string;
+  cover?: string;
   link: string;
   title: string;
   external: boolean;
