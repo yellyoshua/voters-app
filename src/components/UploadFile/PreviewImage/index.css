@@ -7,11 +7,14 @@
 }
 .preview-image-wrapper {
   display: flex;
-  border: 1px solid rgb(1 182 245);
+  border: 1px solid rgb(1, 182, 245);
   padding: 10px;
   border-radius: 10px;
   background: white;
 }
 .preview-image-wrapper img {
-  border-radius: 10px;
+  object-fit: contain;
+  background: white;
+  border: 1px solid rgb(1, 182, 245);
+  border-radius: 100%;
 }

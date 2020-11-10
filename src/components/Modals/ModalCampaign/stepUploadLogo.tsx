@@ -2,6 +2,7 @@ import React from "react";
 import UploadFile from "components/UploadFile";
 import { REACT_API_URL } from "configurations/api";
 import PreviewImage from "components/UploadFile/PreviewImage";
+import { FileApi } from "types/appTypes";
 
 type PropsStepUploadLogo = {
   campaignName: string;
@@ -24,10 +25,13 @@ export default function stepUploadLogo({ logo_image, onChange }: PropsStepUpload
           /> : <UploadFile
             url='/upload'
             fileType="Imagen"
-            accept="image/*"
+            accept=".jpg,.png,.jpeg,.gif,.webp,.jp2,.j2k,.jpf,.jpx,.jpm,.mj2"
             onError={err => console.log({ err })}
             progress={() => null}
-            success={onChange}
+            success={(logo: FileApi) => {
+              console.log({ logo });
+              return onChange(logo)
+            }}
           />
         }
       </section>
