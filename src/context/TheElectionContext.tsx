@@ -20,13 +20,13 @@ export const TheElectionIdContext = React.createContext<any>(null);
 
 export default function TheElectionContextProvider(
   { children, id: TheElectionId, value: TheElectionValue, mutate: TheElectionMutate }:
-    { id: any; value: TypeElection; children: ReactNode; mutate: MutateProperties; }
+    { id: any; value: TypeElection; children: ReactNode; mutate?: MutateProperties; }
 ) {
 
   return (
     <TheElectionIdContext.Provider value={TheElectionId}>
       <TheElectionContext.Provider value={TheElectionValue}>
-        <TheElectionMutateContext.Provider value={TheElectionMutate}>
+        <TheElectionMutateContext.Provider value={TheElectionMutate ? TheElectionMutate : null}>
           {children}
         </TheElectionMutateContext.Provider>
       </TheElectionContext.Provider>
