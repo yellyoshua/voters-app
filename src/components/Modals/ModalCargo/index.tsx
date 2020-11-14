@@ -113,7 +113,7 @@ function ContainerModal({ isOpen = false, modalTitle, slug, createOrUpdate, carg
       <div className="list-items-row">
         <Input
           label="Nombre del cargo"
-          placeholder="---"
+          placeholder="eg: Presidente"
           type="text"
           style={{ maxWidth: 230 }}
           className="rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto"

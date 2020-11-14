@@ -4,6 +4,7 @@ import { useDebounce } from "react-use";
 type PropsInputFetch = {
   beforeChange: ((val: any) => void) | null;
   placeholder?: string;
+  className?: string;
   onChange: (val: any) => Promise<any>;
   initialValue: string;
   resolveData: (val: string) => any;
@@ -37,6 +38,7 @@ export default memo(function InputFetch(props: PropsInputFetch) {
   );
 
   return <input
+    className={props.className}
     placeholder={props.placeholder}
     value={inputState}
     onChange={({ target: { value } }) => setInputState(value)}

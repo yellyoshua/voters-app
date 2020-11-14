@@ -80,3 +80,36 @@ export type TypeAuthVote = {
   field: string;
   name: string;
 }
+
+export type TypeElectionStats = {
+  campaigns: {
+    [k: string]: {
+      commitments_file: [FileApi] | null;
+      cover_image: [FileApi] | null;
+      id: number | string;
+      logo_image: [FileApi] | null;
+      name: string;
+      slug: string;
+    }
+  };
+  tags: {
+    [k: string]: {
+      id: number | string;
+      name: string;
+      slug: string;
+    }
+  };
+  theElection: TypeElectionFunc;
+
+  vote_campaigns: string[];
+  vote_campaigns_count: { [k: string]: number | string; };
+  vote_campaigns_uniq: string[];
+  vote_count: number;
+  vote_tags: string[];
+  vote_tags_count: { [k: string]: number | string; };
+  vote_tags_uniq: string[];
+  vote_voters: string[];
+  vote_voters_count: { [k: string]: number | string; };
+  vote_voters_uniq: string[];
+  voters_tags_count: { [k: string]: number | string; };
+}
