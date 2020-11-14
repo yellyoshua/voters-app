@@ -1,45 +1,52 @@
-import {useEffect, useCallback} from "react";
+import { useEffect, useCallback, useMemo, useContext } from "react";
 import useSWR from "swr";
-import useUser from "hooks/useUser";
-import {TypeUser} from "types/userTypes";
+import { TokenContext, TokenActionContext, UserActionsContext } from "context/UserContext";
+import { TypeUser } from "types/userTypes";
 
 export default function useAuth() {
-  const { getSessionToken, updateJwt, updateUser } = useUser();
-  const token = getSessionToken();
-  const { data: user, mutate: mutateUser, error} = useSWR(() => {
+  const token = useContext(TokenContext);
+  const updateToken = useContext(TokenActionContext);
+  const updateUser = useContext(UserActionsContext);
+
+  const { data: user, mutate: mutateUser, error } = useSWR(() => {
     return token ? ["/users/me", token] : null;
-  },{ refreshInterval: 15000});
-  
-  const isCheckAuth = token ? (!user && !error) : false;
-  const isLoggedOut = token ? Boolean(error && error.message.includes("401")) : true;
-  const isThereUser = Boolean(user);
+  }, { refreshInterval: 15000 });
+
+  const isCheckAuth = useMemo(() => token ? (!user && !error) : false, [user, error, token]);
+  const isLoggedOut = useMemo(() => token ? Boolean(error && error.message.includes("401")) : true, [error, token]);
+  const isThereUser = useMemo(() => Boolean(user), [user]);
 
   const removeSession = useCallback(() => {
-    updateJwt(null);
+    updateToken(null);
     updateUser(null);
     return mutateUser(null, true);;
-  },[mutateUser, updateJwt, updateUser]);
+  }, [mutateUser, updateToken, updateUser]);
 
   const createSession = useCallback((session: { jwt: string; user: TypeUser; }) => {
-    updateJwt(session.jwt);
+    updateToken(session.jwt);
     updateUser(session.user);
     return mutateUser(session, true);
-  }, [mutateUser, updateJwt, updateUser]);
+  }, [mutateUser, updateToken, updateUser]);
 
   const updateUserWithFetchUser = useCallback((newUser: TypeUser | null) => {
     updateUser(newUser);
     return null;
-  },[updateUser])
+  }, [updateUser])
 
   useEffect(function () {
     let mounted = true;
-    if(mounted) {
-      updateUserWithFetchUser(user);
+    if (mounted) {
+      if (error) {
+        updateUserWithFetchUser(null);
+      } else {
+        updateUserWithFetchUser(user);
+      }
     }
     return () => {
       mounted = false;
     }
-  },[user, updateUserWithFetchUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, error]);
 
   return {
     createSession, removeSession,

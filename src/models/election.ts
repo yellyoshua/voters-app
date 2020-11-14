@@ -47,4 +47,6 @@ export const defaultElection: TypeElection = {
   tags: [tagsDataModel],
   candidates: [candidatesDataModel],
   campaigns: [campaignsDataModel],
+  first_auth: { active: false, field: "", name: "" },
+  second_auth: { active: false, field: "", name: "" }
 };

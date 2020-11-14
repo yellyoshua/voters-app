@@ -4,6 +4,7 @@ import { Redirect, Switch, Route } from "react-router-dom";
 import DashboardPage from "pages/Dashboard";
 import ElectionsPage from "pages/Elections";
 import EditElectionPage from "pages/EditElection";
+import StatsElection from "pages/StatsElection";
 import AppsPage from "pages/Apps";
 import MessagePage from "pages/Message";
 import FormsPage from "pages/Forms";
@@ -18,6 +19,7 @@ export default function ClientRoutes(_props: PropsClientRoutes) {
       <Route exact path='/dashboard' component={DashboardPage} />
       <Route exact path='/elections' component={ElectionsPage} />
       <Route exact path='/elections/:id/edit' component={EditElectionPage} />
+      <Route exact path='/elections/:id/stats' component={StatsElection(true)} />
       <Route exact path='/apps' component={AppsPage} />
       <Route exact path='/messages' component={MessagePage} />
       <Route exact path='/forms' component={FormsPage} />

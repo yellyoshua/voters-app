@@ -1,0 +1,20 @@
+.container-settings-auth h1 {
+  text-align: center;
+}
+.container-settings-row {
+  padding: 0px !important;
+  justify-content: space-evenly !important;
+}
+.card-settings-auth-input {
+  max-width: 170px;
+}
+.card-radio-group-fields {
+  max-width: 210px;
+  background: rgb(1, 182, 245);
+  border-radius: 10px;
+  padding: 10px;
+  margin: 5px;
+}
+.card-radio-badge {
+  margin: 10px auto;
+}

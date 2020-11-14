@@ -1,30 +1,25 @@
 import React, { useCallback, useMemo, useState } from "react";
-import ButtonGroupPicker from "components/ButtonGroupPicker";
-import { TypeElectionFunc, TypeStatusElection } from "types/electionTypes";
-import { Formik, Form } from "formik";
-import { useTheElection } from "context/TheElectionContext";
+import { useAsyncFn } from "react-use";
 import ModalCargo from "components/Modals/ModalCargo";
-import Button from "react-rainbow-components/components/Button";
 import ListCargos from "components/Lists/ListCargos";
+import Button from "react-rainbow-components/components/Button";
+import SettingsAuth from "components/Sections/SettingsAuth";
+import SettingsStateElection from "components/Sections/SettingsStateElection";
+import { useTheElection } from "context/TheElectionContext";
+import { TypeElectionFunc } from "types/electionTypes";
 
 // [x] Button Star/Stop election votes 
-// [] Create/Remove cargos candidates
+// [x] Create cargos candidates
 
 type PropsTabSettings = {
   updateElection: (newElection: TypeElectionFunc) => Promise<any>
 };
 
-const pickStatusList: { show: string, value: TypeStatusElection }[] = [
-  { show: "Activo", value: "active" },
-  { show: "No activo", value: "no_active" },
-  { show: "Cerrado", value: "closed" }
-];
-
 export default function TabSettings({ updateElection }: PropsTabSettings) {
   const { theElection } = useTheElection();
+  const [stateAsyncUpdate, execAsyncUpdate] = useAsyncFn(updateElection, []);
   const cargos = useMemo(() => theElection.cargos, [theElection.cargos]);
 
-  const [statusPicked, pickStatus] = useState<TypeStatusElection>(theElection.status);
   const [isModalOpen, setModalOpen] = useState(false);
   const [slugCampaign, setSlugCampaign] = useState<string | null>(null);
 
@@ -38,7 +33,6 @@ export default function TabSettings({ updateElection }: PropsTabSettings) {
     setModalOpen(false);
   }, []);
 
-
   return <div>
     <ModalCargo
       isOpen={isModalOpen}
@@ -47,36 +41,10 @@ export default function TabSettings({ updateElection }: PropsTabSettings) {
       slug={slugCampaign}
     />
     <div className='elections-tabs-view-section'>
-      <section>
-        <Formik
-          initialValues={{}}
-          onSubmit={() => {
-            return updateElection({
-              status: statusPicked
-            });
-          }}
-        >
-          {function ({ isSubmitting, submitForm }) {
-            return (
-              <Form>
-                <section>
-                  <ButtonGroupPicker
-                    title="Estado eleccion"
-                    disabled={isSubmitting}
-                    itemPicked={statusPicked}
-                    onPick={(iPicked) => {
-                      pickStatus(iPicked as TypeStatusElection);
-                      return submitForm();
-                    }}
-                    pickList={pickStatusList}
-                  />
-                </section>
-              </Form>
-            )
-          }
-          }
-        </Formik>
-      </section>
+      <SettingsStateElection
+        execAsyncUpdate={execAsyncUpdate}
+        stateAsyncUpdate={stateAsyncUpdate}
+      />
       <section className="list-items-col" style={{ textAlign: "center" }}>
         <div>
           <Button label="Crear cargo" onClick={() => openModal(null)} />
@@ -86,6 +54,10 @@ export default function TabSettings({ updateElection }: PropsTabSettings) {
           editCargo={openModal}
         />
       </section>
+      <SettingsAuth
+        execAsyncUpdate={execAsyncUpdate}
+        stateAsyncUpdate={stateAsyncUpdate}
+      />
     </div>
   </div>
 }

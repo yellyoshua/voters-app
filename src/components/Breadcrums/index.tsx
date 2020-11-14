@@ -8,14 +8,16 @@ type PropsBreadcrumbs = RouteComponentProps & {
     name: string;
     pathname: string;
   }[];
+  className?: string;
 };
 
-function Breadcrumbs({ history, breadcrumbs }: PropsBreadcrumbs) {
+function Breadcrumbs({ history, breadcrumbs, className }: PropsBreadcrumbs) {
   return (
     <div className='rainbow-p-around_large'>
       <BreadcrumbsComponent>
         {breadcrumbs.map((breadcrumb, index) => (
           <BreadcrumbComponent
+            className={className}
             key={index}
             label={breadcrumb.name}
             onClick={() => history.push(breadcrumb.pathname)}

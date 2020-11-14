@@ -7,8 +7,8 @@ import Button from "react-rainbow-components/components/Button";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Spinner from "react-rainbow-components/components/Spinner";
 import Badge from "react-rainbow-components/components/Badge";
-import Breadcrums from "components/Breadcrums";
 import ListCardLinks from "components/Lists/ListCardLinks";
+import Layout from "components/Layout";
 import useAuth from "hooks/useAuth";
 import useFetch from "hooks/useFetch";
 import { TypeCardLink } from "types/appTypes";
@@ -31,21 +31,21 @@ export default function Login(_: PropsLogin) {
     {
       title: "Consulta de datos",
       cover: "https://servel.cl/wp-content/uploads/2016/11/btn-home-33.jpg",
-      link: "/elecciones",
+      link: "/search",
       external: false,
       description: "Conoce los partidos con sus candidatos y propuestas"
     },
     {
       title: "Ir a votar",
       cover: "https://servel.cl/wp-content/uploads/2016/05/btn-home-06.jpg",
-      link: "/elecciones",
+      link: "/votar",
       external: false,
       description: "Vota por tu partido"
     },
     {
       title: "Historial de elecciones",
       cover: "https://servel.cl/wp-content/uploads/2018/03/btn-home-32.png",
-      link: "/elecciones",
+      link: "/historial",
       external: false,
       description: "Elecciones y resultados desde 2020"
     }
@@ -69,10 +69,7 @@ export default function Login(_: PropsLogin) {
   };
 
   return (
-    <div>
-      <div className="container-breadcrums-floated">
-        <Breadcrums breadcrumbs={[{ name: "Inicio", pathname: "/" }]} />
-      </div>
+    <Layout breadcrumbs={[]}>
       <section className="login-screen-layout">
         <section className="list-items-col">
           <h1 className="login-screen-section-links-title">Links relacionados</h1>
@@ -84,7 +81,7 @@ export default function Login(_: PropsLogin) {
           submitRecovery={sendRecoveryRequest}
         />
       </section>
-    </div>
+    </Layout>
   );
 }
 

@@ -30,11 +30,9 @@ export default function useElection({ id }: PropsUseElection) {
   const props = confApi(id);
   const jwt = useContext(TokenContext);
 
-
   const api = useSWR(() => {
     return jwt ? [props.dataUrl, jwt] : null;
-  }, { refreshInterval: 5000 });
-
+  }, { refreshInterval: 15000 });
 
   const data = useMemo(() => {
     if (typeof api.data === "object") {
