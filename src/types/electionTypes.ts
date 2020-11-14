@@ -15,19 +15,6 @@ export type TypeVoter = {
   data: any[];
 }
 
-// export type TypeVoterArr = Array<keyof TypeVoterObj>;
-
-// export type TypeVoterObj = {
-//   name: string;
-//   second_name: string;
-//   surname: string;
-//   second_surname: string;
-//   ci: string;
-//   enrollmentcode: string;
-//   tag_slug: string;
-//   idukay_code: string;
-// };
-
 export type TypeTagArr = Array<keyof TypeTagObj>;
 
 export type TypeTagObj = {
@@ -51,7 +38,7 @@ export type TypeCandidateObj = {
   campaign_slug: string;
 };
 
-export type TypeStatusElection = "active" | "closed" | "archived" | "no_active";
+export type TypeStatusElection = "active" | "closed" | "no_active";
 
 export interface TypeElectionFunc {
   id?: string | number;
@@ -66,6 +53,8 @@ export interface TypeElectionFunc {
   tags?: any[];
   candidates?: any[];
   campaigns?: any[];
+  first_auth?: TypeAuthVote;
+  second_auth?: TypeAuthVote;
 }
 
 export interface TypeElection {
@@ -82,4 +71,12 @@ export interface TypeElection {
   tags: any[];
   candidates: any[];
   campaigns: any[];
+  first_auth: TypeAuthVote;
+  second_auth: TypeAuthVote;
 };
+
+export type TypeAuthVote = {
+  active: boolean;
+  field: string;
+  name: string;
+}

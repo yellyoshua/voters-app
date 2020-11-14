@@ -17,7 +17,11 @@ ReactDOM.render(
   <React.StrictMode>
     <AppContextProvider>
       <UserContextProvider>
-        <SWRConfig value={{ fetcher: fetchGetWithToken }}>
+        <SWRConfig value={{
+          fetcher: fetchGetWithToken,
+          refreshInterval: 15000,
+          revalidateOnReconnect: true
+        }}>
           <BrowserRouter>
             <App />
           </BrowserRouter>

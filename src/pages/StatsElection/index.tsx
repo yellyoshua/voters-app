@@ -34,7 +34,7 @@ export function StatsElection({ isPrivate, match }: PropsStatsElection) {
   const [election, setElection] = useState<TypeElection | null>(null);
 
   useEffect(() => {
-    fetchGetWithoutToken(`/elections/${currentElectionId}`)
+    fetchGetWithoutToken(`/votes/${currentElectionId}/stats`)
       .then((data) => {
         const election = resolveValueType<TypeElection>(data, "object") as TypeElection | null;
         return election;

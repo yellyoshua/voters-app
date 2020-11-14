@@ -16,7 +16,7 @@ import StepUploadCommitments from "components/Modals/ModalCampaign/stepUploadCom
 import "./index.css";
 
 // [] Step Upload cover image
-// [] Step Upload logo image
+// [x] Step Upload logo image
 
 const validators: TypeValidations = {
   name: { length: 4, required: true }
