@@ -1,85 +1,46 @@
-import React, { useRef, useState, useCallback, ReactNode } from "react";
-import { PDFDownloadLink, Document, Page, Image, View } from "@react-pdf/renderer";
-import html2canvas from "html2canvas";
-import Dataset from "react-rainbow-components/components/Dataset";
-import Chart from "react-rainbow-components/components/Chart";
+import React, { useState, ReactNode } from "react";
+import ReactPDF, { PDFDownloadLink } from "@react-pdf/renderer";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Button from "react-rainbow-components/components/Button";
+import { TypeElectionStats } from "types/electionTypes";
+import { useApp } from "context/AppContext";
+import { VotesStatsGeneral, docVotesStatsGeneral } from "reports/VotesStatsGeneral";
 
 type PropsTabStatsGeneral = {
+  stats: TypeElectionStats;
   isPrivate: boolean;
 };
 
-export default function TabStatsGeneral({ isPrivate }: PropsTabStatsGeneral) {
-  const pageRef = useRef<HTMLDivElement | null>(null);
+export default function TabStatsGeneral({ isPrivate, stats }: PropsTabStatsGeneral) {
+  const { school } = useApp();
+
+  function getDocumentRendered() {
+    return docVotesStatsGeneral({ stats, school });
+  }
 
   return <div>
     <RenderIf isTrue={isPrivate}>
-      <SectionGeneratePdf pageRef={pageRef} />
+      <SectionGeneratePdf getDoc={getDocumentRendered} />
     </RenderIf>
-    <div ref={pageRef}>
-      <div style={{ padding: 20 }}>
-        <Chart
-          labels={["One", "Two"]}
-          type="horizontalBar"
-          style={{ maxWidth: 450 }}
-          legendPosition="right"
-          disableCurves
-        >
-          <Dataset title="Data" values={[10, 20]} backgroundColor={['#fe4849', '#ff6837']} />
-        </Chart>
-        <Chart
-          labels={['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']}
-          type="bar"
-          style={{ maxWidth: 250 }}
-          className="rainbow-m-horizontal_xx-large rainbow-m-top_x-large"
-        >
-          <Dataset
-            title="Dataset 1"
-            values={[23, 45, 123, 56, 66, 100, 30, 156]}
-            backgroundColor="#1de9b6"
-            borderColor="#1de9b6"
-          />
-        </Chart>
-      </div>
-    </div>
+    <VotesStatsGeneral stats={stats} />
   </div>
 }
 
 type PropsSectionGeneratePdf = {
-  pageRef: React.MutableRefObject<HTMLDivElement | null>;
+  getDoc: () => React.ReactElement<ReactPDF.DocumentProps>;
 }
 
-function SectionGeneratePdf({ pageRef }: PropsSectionGeneratePdf) {
-  const [isClicked, setIsClicked] = useState(false);
+function SectionGeneratePdf({ getDoc }: PropsSectionGeneratePdf) {
   const [element, setElement] = useState<ReactNode | null>(null);
 
-  const getPdfDownloadLink = (pageRendered: string) => {
-    return <PDFDownloadLink document={
-      <Document onRender={() => {
-        return {};
-      }} title="Estado genernal">
-        <Page >
-          <View>
-            <Image src={pageRendered} />
-          </View>
-        </Page>
-      </Document>
-    }>
+  const getPdfDownloadLink = () => {
+    const element = <PDFDownloadLink document={getDoc()}>
       {({ blob, loading, error, url }) =>
         (loading ? 'Generando documento' : 'Descargar Pdf')
       }
     </PDFDownloadLink>
+    return setElement(element);
   }
-
-  const getScreenshot = useCallback(function getScreenshot() {
-    setIsClicked(true);
-    return html2canvas(pageRef.current as HTMLDivElement)
-      .then((canvas) => canvas.toDataURL('image/png'))
-      .then((screenshot) => {
-        return setElement(getPdfDownloadLink(screenshot));
-      }).finally(() => setIsClicked(false));
-  }, [pageRef]);
 
   if (element) {
     return <React.Fragment>
@@ -87,5 +48,5 @@ function SectionGeneratePdf({ pageRef }: PropsSectionGeneratePdf) {
     </React.Fragment >
   }
 
-  return <Button onClick={getScreenshot} disabled={isClicked} label="Generar PDF" />
+  return <Button onClick={getPdfDownloadLink} label="Generar PDF" />
 }

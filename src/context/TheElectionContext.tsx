@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback, useContext } from "react";
-import { TypeElection } from "types/electionTypes";
+import { TypeElection, TypeElectionFunc } from "types/electionTypes";
 
 type MutateProperties = (data: any, shouldRevalidate?: boolean | undefined) => Promise<any>;
 
@@ -14,13 +14,13 @@ export const useTheElection = () => {
 
 export const TheElectionMutateContext = React.createContext<MutateProperties | null>(null);
 
-export const TheElectionContext = React.createContext<TypeElection | null>(null);
+export const TheElectionContext = React.createContext<TypeElectionFunc | null>(null);
 
 export const TheElectionIdContext = React.createContext<any>(null);
 
 export default function TheElectionContextProvider(
   { children, id: TheElectionId, value: TheElectionValue, mutate: TheElectionMutate }:
-    { id: any; value: TypeElection; children: ReactNode; mutate?: MutateProperties; }
+    { id: any; value: TypeElectionFunc; children: ReactNode; mutate?: MutateProperties; }
 ) {
 
   return (

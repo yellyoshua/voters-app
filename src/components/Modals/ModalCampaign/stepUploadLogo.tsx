@@ -29,7 +29,6 @@ export default function stepUploadLogo({ logo_image, onChange }: PropsStepUpload
             onError={err => console.log({ err })}
             progress={() => null}
             success={(logo: FileApi) => {
-              console.log({ logo });
               return onChange(logo)
             }}
           />

@@ -5,8 +5,10 @@ import Dataset from "react-rainbow-components/components/Dataset";
 import Chart from "react-rainbow-components/components/Chart";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Button from "react-rainbow-components/components/Button";
+import { TypeElectionStats } from "types/electionTypes";
 
 type PropsTabStatsPerTag = {
+  stats: TypeElectionStats;
   isPrivate: boolean;
 };
 

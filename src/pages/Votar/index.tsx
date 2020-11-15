@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Redirect, RouteComponentProps } from "react-router-dom";
-import Layout from "components/Layout";
 import useFetch from "hooks/useFetch";
-import { TypeElectionFunc } from "types/electionTypes";
-import { resolveValueType } from "utils/properTypes";
+import Layout from "components/Layout";
+import SpinnerCentered from "components/SpinnerCentered";
 import ScreenCredentials from "./ScreenCredentials";
 import ScreenElections from "./ScreenElections";
+import { resolveValueType } from "utils/properTypes";
+import { TypeElectionFunc } from "types/electionTypes";
+
 
 type PropsVotar = RouteComponentProps & {};
 
@@ -44,16 +46,11 @@ export default function Votar({ location }: PropsVotar) {
           return elections || [];
         })
         .then(setElections)
-        // .catch(() => {
-        //   setIsLoading(false);
-        // })
         .finally(() => {
           setIsLoading(false);
         });
     }
   }, [id]);
-
-  // Resolve it!!! ->
 
   if (isError) {
     return <Redirect to="/votar" />
@@ -75,6 +72,6 @@ export default function Votar({ location }: PropsVotar) {
   }
 
   return <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>
-    <p>Cargando</p>
+    <SpinnerCentered size="large" />
   </Layout>
 }

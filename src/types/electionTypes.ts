@@ -46,6 +46,7 @@ export interface TypeElectionFunc {
   cover_image?: any;
   status?: TypeStatusElection;
   name?: string;
+  cargos?: TypeCargo[];
   voters?: {
     fields: string[];
     data: any[];
@@ -108,8 +109,7 @@ export type TypeElectionStats = {
   vote_tags: string[];
   vote_tags_count: { [k: string]: number | string; };
   vote_tags_uniq: string[];
-  vote_voters: string[];
-  vote_voters_count: { [k: string]: number | string; };
-  vote_voters_uniq: string[];
+  vote_voters: any[];
+  vote_voters_count: number;
   voters_tags_count: { [k: string]: number | string; };
 }
