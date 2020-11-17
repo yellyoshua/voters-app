@@ -1,14 +1,11 @@
 import React, { useCallback, useState } from "react";
 import AddIcon from "icons/AddIcon";
 import ListCandidates from "components/Lists/ListCandidates";
-import { TypeElectionFunc } from "types/electionTypes";
 import ModalCandidate from "components/Modals/ModalCandidate";
 
-type PropsTabCandidates = {
-  updateElection: (election: TypeElectionFunc) => Promise<any>;
-};
+type PropsTabCandidates = {};
 
-export default function TabCandidates({ updateElection }: PropsTabCandidates) {
+export default function TabCandidates(_: PropsTabCandidates) {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [slugIntegrant, setSlugIntegrant] = useState<string | null>(null);
@@ -27,7 +24,6 @@ export default function TabCandidates({ updateElection }: PropsTabCandidates) {
     <ModalCandidate
       isOpen={isModalOpen}
       slug={slugIntegrant}
-      createOrUpdate={updateElection}
       cancel={closeModal}
     />
     <div className='container-election-name breadcrumbs-with-button'>
@@ -36,10 +32,7 @@ export default function TabCandidates({ updateElection }: PropsTabCandidates) {
       </button>
     </div>
     <div className='elections-tabs-view-section'>
-      <ListCandidates
-        editCandidate={openModal}
-        updateElection={updateElection}
-      />
+      <ListCandidates editCandidate={openModal} />
     </div>
   </div>
 }

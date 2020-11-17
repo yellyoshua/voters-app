@@ -2,14 +2,11 @@ import React, { useCallback, useState } from "react";
 import ListCampaigns from "components/Lists/ListCampaigns";
 import AddIcon from "icons/AddIcon";
 import ModalCampaign from "components/Modals/ModalCampaign";
-import { TypeElectionFunc } from "types/electionTypes";
 import "./index.css";
 
-export type PropsTabCampaigns = {
-  updateElection: (election: TypeElectionFunc) => Promise<any>;
-};
+export type PropsTabCampaigns = {};
 
-export default function TabCampaigns({ updateElection }: PropsTabCampaigns) {
+export default function TabCampaigns(_: PropsTabCampaigns) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [slugCampaign, setSlugCampaign] = useState<string | null>(null);
 
@@ -27,7 +24,6 @@ export default function TabCampaigns({ updateElection }: PropsTabCampaigns) {
     <ModalCampaign
       isOpen={isModalOpen}
       slug={slugCampaign}
-      createOrUpdate={updateElection}
       cancel={closeModal}
     />
     <div className='container-election-name breadcrumbs-with-button'>
@@ -36,10 +32,7 @@ export default function TabCampaigns({ updateElection }: PropsTabCampaigns) {
       </button>
     </div>
     <div className='elections-tabs-view-section'>
-      <ListCampaigns
-        editCampaign={openModal}
-        updateElection={updateElection}
-      />
+      <ListCampaigns editCampaign={openModal} />
     </div>
   </div>;
 }

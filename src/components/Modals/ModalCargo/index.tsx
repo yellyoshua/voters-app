@@ -1,13 +1,12 @@
-import React, { useEffect, memo, useState, useMemo, Fragment } from "react";
+import React, { memo, useState, useMemo, Fragment, useContext } from "react";
+import { TheElectionContext, TheUpdateElectionContext } from "context/TheElectionContext";
+import { TokenContext } from "context/UserContext";
 import Modal from "react-rainbow-components/components/Modal";
 import Button from "react-rainbow-components/components/Button";
 import Input from "react-rainbow-components/components/Input";
-import { useTheElection } from "context/TheElectionContext";
-import useAsync from "hooks/useAsync";
 import { validationMessages, TypeValidations, checkErrors } from "utils/validators";
 import { uuidv4 } from "utils/createUID";
 import { defaultCargo } from "models/election";
-import { TypeCargo, TypeElectionFunc } from "types/electionTypes";
 
 
 const validators: TypeValidations = {
@@ -17,52 +16,36 @@ const validators: TypeValidations = {
 type PropsModalCargo = {
   slug: string | null;
   isOpen: boolean;
-  createOrUpdate: (newElection: TypeElectionFunc) => Promise<any>;
   cancel: () => void;
 };
 
-export default memo(function ModalCargo({ isOpen = false, slug, createOrUpdate, cancel }: PropsModalCargo) {
-  const { theElection } = useTheElection();
-  const cargos = useMemo(() => theElection.cargos, [theElection.cargos]);
+export default memo(function ModalCargo({ isOpen = false, slug, cancel }: PropsModalCargo) {
+  const token = useContext(TokenContext);
 
   const isModalOpen = useMemo(() => isOpen, [isOpen]);
   const candidateSlug = useMemo(() => slug, [slug]);
-  const taskFunction = useMemo(() => createOrUpdate, [createOrUpdate]);
   const cancelFunction = useMemo(() => cancel, [cancel]);
 
   return <Fragment>
     {
       isModalOpen ? <ContainerModal
         isOpen
-        modalTitle="Agregar cargo"
-        cargos={cargos}
+        token={token}
         slug={candidateSlug}
-        createOrUpdate={taskFunction}
         cancel={cancelFunction}
       /> : null
     }
   </Fragment>
 });
 
-function ContainerModal({ isOpen = false, modalTitle, slug, createOrUpdate, cargos, cancel }:
-  PropsModalCargo & { cargos: TypeCargo[], modalTitle: string }) {
-  const asyncCreateOrUpdate = useAsync(createOrUpdate, false);
+function ContainerModal({ isOpen = false, slug, token, cancel }:
+  PropsModalCargo & { token: string | null }) {
+  const theElection = useContext(TheElectionContext)!;
+  const [asyncUpdate, updateElection] = useContext(TheUpdateElectionContext)!;
 
+  const cargos = useMemo(() => theElection.cargos, [theElection.cargos]);
   const theCargo = cargos.find(cargo => cargo.slug === slug) || defaultCargo;
   const [currCargo, setCurrCargo] = useState({ ...theCargo });
-
-  useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      if (asyncCreateOrUpdate.status === "success") {
-        return cancel();
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [asyncCreateOrUpdate.status, cancel]);
-
 
   function cannotSave() {
     const errors = validationMessages(validators, currCargo);
@@ -80,26 +63,26 @@ function ContainerModal({ isOpen = false, modalTitle, slug, createOrUpdate, carg
       crgs.push({ ...currCargo, slug: uuidv4() });
     }
 
-    return asyncCreateOrUpdate.execute({
+    return updateElection({
       cargos: crgs
-    });
+    }, cancel);
   }
 
   return <Modal
-    title={modalTitle}
+    title="Agregar cargo"
     size='small'
     footer={
       <div className='rainbow-align-content_center rainbow-flex_wrap'>
         <Button
           label='Cancelar'
-          disabled={asyncCreateOrUpdate.status !== "idle"}
+          disabled={asyncUpdate.loading}
           onClick={cancel}
           variant='destructive'
           className='rainbow-m-horizontal_medium'
         />
         <Button
           label='Guardar'
-          disabled={cannotSave() || asyncCreateOrUpdate.status !== "idle"}
+          disabled={cannotSave() || asyncUpdate.loading}
           onClick={saveCandidate}
           variant='success'
           className='rainbow-m-horizontal_medium'
@@ -107,7 +90,7 @@ function ContainerModal({ isOpen = false, modalTitle, slug, createOrUpdate, carg
       </div>
     }
     isOpen={isOpen}
-    onRequestClose={asyncCreateOrUpdate.status !== "idle" ? undefined : cancel}
+    onRequestClose={asyncUpdate.loading ? undefined : cancel}
   >
     < div className='elections-tabs-view-section' >
       <div className="list-items-row">

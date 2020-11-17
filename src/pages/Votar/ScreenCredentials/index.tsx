@@ -27,6 +27,9 @@ type ArgCheckFrstAuth = { first_auth: string, value: string } |
 
 type ArgsPostVote = { campaign_slug: string; first_auth: string; second_auth: string; };
 
+const styleAvatar = { width: 110, height: "auto" };
+const { fetchPostWithoutToken } = useFetch();
+
 function checkAuthUser(
   url: string, data: ArgCheckFrstAuth,
   cb: (val: boolean) => any,
@@ -55,9 +58,6 @@ function resolveUrl(url: string) {
   return REACT_API_URL + url;
 }
 
-const styleAvatar = { width: 110, height: "auto" };
-const { fetchPostWithoutToken } = useFetch();
-
 export default memo(function ScreenCredentials({ election }: PropsScreenCredentials) {
   const [isFirstOk, setIsFirstOk] = useState(false);
   const [isSecondOk, setIsSecondOk] = useState(false);
@@ -65,7 +65,7 @@ export default memo(function ScreenCredentials({ election }: PropsScreenCredenti
   const [isRedirect, setRedirect] = useState(false);
 
   const campaigns = useMemo(() => ({ ...election.campaigns } as { [k: string]: TypeCampaignObj }), [election.campaigns]);
-  const candidates = useMemo(() => ({ ...election.candidates } as { [k: string]: TypeCandidateObj }), [election.candidates]);
+  const candidates = useMemo(() => ([...election.candidates || []] as TypeCandidateObj[]), [election.candidates]);
   const cargos = useMemo(() => ({ ...election.cargos } as { [k: string]: TypeCargo }), [election.cargos]);
 
   const [first_auth, setfirst_auth] = useState("");
@@ -231,13 +231,13 @@ type PropsPreviewCampaign = {
   selectedCampaign: string;
   cargos: { [k: string]: TypeCargo };
   campaigns: { [k: string]: TypeCampaignObj };
-  candidates: { [k: string]: TypeCandidateObj };
+  candidates: TypeCandidateObj[];
   postVote: (data: ArgsPostVote) => Promise<any>;
 }
 
 function PreviewCampaign({ campaigns, disabled, postVote, voter_identify, cargos, candidates, selectedCampaign }: PropsPreviewCampaign) {
   const campaign = campaigns[selectedCampaign];
-  const listCandidates = Object.keys(candidates).filter(cnd => cnd === selectedCampaign);
+  const listCandidates = candidates.filter(cnd => cnd.campaign_slug === selectedCampaign);
 
   if (selectedCampaign === "nulo") {
     return <div className="prev-list-selected list-items-col">
@@ -261,8 +261,7 @@ function PreviewCampaign({ campaigns, disabled, postVote, voter_identify, cargos
       <h3>{campaign.name}</h3>
       <div className="prev-list-selected-list-integrants list-items-row">
         {
-          listCandidates.map((slug, index) => {
-            const candidate = candidates[slug];
+          listCandidates.map((candidate, index) => {
             const cargo = cargos[candidate.cargo];
 
             return <div key={index} className="prev-list-selected-integrant list-items-col">

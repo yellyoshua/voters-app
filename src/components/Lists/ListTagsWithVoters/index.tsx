@@ -1,5 +1,5 @@
-import React, { useEffect, useState, memo, useMemo } from "react";
-import { useTheElection } from "context/TheElectionContext";
+import React, { useEffect, useState, memo, useMemo, useContext } from "react";
+import { TheElectionContext } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
 import ModalPreviewVoter from "components/Modals/ModalPreviewVoter";
 import CardTag from "components/Card/CardTag";
@@ -10,7 +10,7 @@ type PropsListTagsWithVoters = {};
 const { convertDoubleArrToObjArr } = useParserData();
 
 export default memo(function ListTagsWithVoters(_props: PropsListTagsWithVoters) {
-  const { theElection } = useTheElection();
+  const theElection = useContext(TheElectionContext)!;
   const [isOpenModal, openModal] = useState(false);
   const [tagKey, setTagKey] = useState<string>("");
   const [tagsWithVoters, setTagsWithVoters] = useState<ObjTagWithVoters>({});

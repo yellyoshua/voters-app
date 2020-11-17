@@ -1,13 +1,12 @@
-import React from "react";
-import { TypeCargo } from "types/electionTypes";
+import React, { useContext, useMemo } from "react";
+import { TheElectionContext } from "context/TheElectionContext";
 import "./index.css";
 
-type PropsListCargos = {
-  cargos: TypeCargo[];
-  editCargo: (slug: string | null) => void;
-}
+type PropsListCargos = { editCargo: (slug: string | null) => void; }
 
-export default function ListCargos({ cargos, editCargo }: PropsListCargos) {
+export default function ListCargos({ editCargo }: PropsListCargos) {
+  const theElection = useContext(TheElectionContext)!;
+  const cargos = useMemo(() => theElection.cargos, [theElection.cargos]);
 
   return <div className="list-items-row cargo-container">
     {

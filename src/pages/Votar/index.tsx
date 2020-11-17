@@ -1,13 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import { Redirect, RouteComponentProps } from "react-router-dom";
+import loadable from "@loadable/component";
 import useFetch from "hooks/useFetch";
 import Layout from "components/Layout";
 import SpinnerCentered from "components/SpinnerCentered";
-import ScreenCredentials from "./ScreenCredentials";
-import ScreenElections from "./ScreenElections";
+// import ScreenCredentials from "./ScreenCredentials";
+// import ScreenElections from "./ScreenElections";
 import { resolveValueType } from "utils/properTypes";
 import { TypeElectionFunc } from "types/electionTypes";
 
+const ScreenCredentials = loadable(() => import("./ScreenCredentials"));
+const ScreenElections = loadable(() => import("./ScreenElections"));
 
 type PropsVotar = RouteComponentProps & {};
 
@@ -57,18 +60,22 @@ export default function Votar({ location }: PropsVotar) {
   }
 
   if (election && !isLoading) {
-    return <Layout breadcrumbs={[
-      { name: "Votar", pathname: "/votar" },
-      { name: election.name as string, pathname: `/votar?id=${election.id}` },
-    ]}>
-      <ScreenCredentials election={election} />
-    </Layout>
+    return <Suspense fallback={<SpinnerCentered size="large" />}>
+      <Layout breadcrumbs={[
+        { name: "Votar", pathname: "/votar" },
+        { name: election.name as string, pathname: `/votar?id=${election.id}` },
+      ]}>
+        <ScreenCredentials election={election} />
+      </Layout>
+    </Suspense>
   }
 
   if (elections && !isLoading) {
-    return <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>
-      <ScreenElections elections={elections} />
-    </Layout>
+    return <Suspense fallback={<SpinnerCentered size="large" />}>
+      <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>
+        <ScreenElections elections={elections} />
+      </Layout>
+    </Suspense>
   }
 
   return <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>

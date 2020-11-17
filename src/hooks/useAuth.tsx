@@ -10,7 +10,11 @@ export default function useAuth() {
 
   const { data: user, mutate: mutateUser, error } = useSWR(() => {
     return token ? ["/users/me", token] : null;
-  }, { refreshInterval: 15000 });
+  }, {
+    refreshInterval: 15000, onError: (err, key, config) => {
+      console.log({ err, key, config });
+    }
+  });
 
   const isCheckAuth = useMemo(() => token ? (!user && !error) : false, [user, error, token]);
   const isLoggedOut = useMemo(() => token ? Boolean(error && error.message.includes("401")) : true, [error, token]);
@@ -37,7 +41,7 @@ export default function useAuth() {
     let mounted = true;
     if (mounted) {
       if (error) {
-        updateUserWithFetchUser(null);
+        removeSession();
       } else {
         updateUserWithFetchUser(user);
       }

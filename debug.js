@@ -7,10 +7,10 @@ const tasks = {
   "[]": "Screen election stats with download option",
   "[]": "Votation dashboard stats",
   "[]": "Preview campaign logo",
-  "[]": "Remove SWR of election",
+  "[x]": "Remove SWR of election",
   "[x]": "Uploaded to firebase hosting",
   "[x]": "Screens votar",
   "[x]": "Lost password & added yup dependency",
-  "[]": "Use lazy components",
+  "[x]": "Use lazy components",
   "[]": "Update react and typescript versions"
 };

@@ -1,21 +1,20 @@
-import React, { useEffect, memo, useState, useMemo, Fragment } from "react";
+import React, { memo, useState, useMemo, Fragment, useContext } from "react";
 import PickFile from "components/PickFile";
 import Modal from "react-rainbow-components/components/Modal";
 import Button from "react-rainbow-components/components/Button";
 import TableWithPagination from "components/TableWithPagination";
-import useAsync from "hooks/useAsync";
 import excelToJSON, { convertSheetsToObjArr } from "utils/excelToJSON";
 import { parseObjtArrToDoubleArr } from "utils/parsersData";
 import { tagsDataModel } from "models/election";
-import { TypeElectionFunc, TypeTagObj, TypeVoter } from "types/electionTypes";
+import { TypeTagObj, TypeVoter } from "types/electionTypes";
+import { TheUpdateElectionContext } from "context/TheElectionContext";
 
 type PropsModalVoter = {
   isOpen: boolean;
   closeModal: () => void;
-  pushData: (newElection: TypeElectionFunc) => Promise<any>;
 };
 
-export default memo(function ModalCargo({ isOpen = false, pushData, closeModal }: PropsModalVoter) {
+export default memo(function ModalCargo({ isOpen = false, closeModal }: PropsModalVoter) {
   const isModalOpen = useMemo(() => isOpen, [isOpen]);
 
   return <Fragment>
@@ -23,24 +22,16 @@ export default memo(function ModalCargo({ isOpen = false, pushData, closeModal }
       isModalOpen ? <ContainerModal
         isOpen
         closeModal={closeModal}
-        pushData={pushData}
       /> : null
     }
   </Fragment>
 });
 
-export function ContainerModal({ closeModal, isOpen, pushData }: PropsModalVoter) {
+export function ContainerModal({ closeModal, isOpen }: PropsModalVoter) {
+  const [asyncUpdate, updateElection] = useContext(TheUpdateElectionContext)!;
+
   const [tags, setTags] = useState<TypeTagObj[] | null>(null);
   const [voters, setVoters] = useState<TypeVoter | null>(null);
-
-  const { execute: asyncUpdateElection, status } = useAsync<TypeElectionFunc>(pushData, false)
-
-  useEffect(() => {
-    if (status === "success" && voters && tags) {
-      return closeModal();
-    }
-    return () => { };
-  }, [status, closeModal, voters, tags]);
 
   return <Modal
     onRequestClose={closeModal}
@@ -50,20 +41,21 @@ export function ContainerModal({ closeModal, isOpen, pushData }: PropsModalVoter
       <div className="rainbow-flex rainbow-justify_spread">
         <Button
           label="Cancelar"
+          disabled={asyncUpdate.loading}
           onClick={closeModal}
           variant="destructive"
         />
         <Button
-          disabled={(!tags && !voters) || status === "pending"}
+          disabled={(!tags && !voters) || asyncUpdate.loading}
           onClick={() => {
             if (voters && tags) {
-              return asyncUpdateElection({
+              return updateElection({
                 voters: {
                   data: parseObjtArrToDoubleArr(voters.data, voters.fields),
                   fields: voters.fields
                 },
                 tags: parseObjtArrToDoubleArr(tags, tagsDataModel)
-              });
+              }, closeModal);
             }
             return null;
           }}

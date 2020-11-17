@@ -1,7 +1,6 @@
 import React from "react";
-import { Document, Page, Image, View, Text, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, StyleSheet } from "@react-pdf/renderer";
 import Avatar from "react-rainbow-components/components/Avatar";
-import { useTheElection } from "context/TheElectionContext";
 import { useApp } from "context/AppContext";
 import { TypeElectionStats } from "types/electionTypes";
 // import docStyles from "reports/VotesStatsGeneral/styles";
@@ -27,7 +26,6 @@ function getStats(stats: TypeElectionStats) {
 }
 
 export function VotesStatsGeneral({ stats }: PropsVotesStatsGeneral) {
-  const { theElection } = useTheElection();
   const { school: { schoolIcon, schoolName } } = useApp();
 
   const { campaigns, tags, totalCampaigns, totalTags, totalVotes, votesRestantes } = getStats(stats);
@@ -40,7 +38,7 @@ export function VotesStatsGeneral({ stats }: PropsVotesStatsGeneral) {
         title={schoolName}
       />
       <p>{schoolName}</p>
-      <h1>{theElection.name}</h1>
+      <h1>{stats.theElection.name}</h1>
     </div>
     <section className="list-items-row">
       <div className="campaign-general-stats-wrapper">
@@ -100,7 +98,7 @@ const styles = StyleSheet.create({
 })
 
 export function docVotesStatsGeneral({ stats, school: { schoolIcon } }: PropsDocVotesStatsGeneral) {
-  const { totalVotes } = getStats(stats);
+  // const { totalVotes } = getStats(stats);
 
   return <Document onRender={() => {
     return {};

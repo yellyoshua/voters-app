@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import LoginPage from "pages/Login";
 import VotarPage from "pages/Votar";
-import NotFoundPage from "pages/NotFoundPage";
+import NotFoundPage from "pages/NotFoundPage"
 
 type PropsVisitRoutes = {};
 

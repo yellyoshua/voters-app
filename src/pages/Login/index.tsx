@@ -7,6 +7,9 @@ import Button from "react-rainbow-components/components/Button";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Spinner from "react-rainbow-components/components/Spinner";
 import Badge from "react-rainbow-components/components/Badge";
+import presentVote from "icons/images/present-vote.jpg";
+import introducingVote from "icons/images/introducing-vote.jpg";
+import voteInUrna from "icons/images/vote-in-urna.jpeg";
 import ListCardLinks from "components/Lists/ListCardLinks";
 import Layout from "components/Layout";
 import useAuth from "hooks/useAuth";
@@ -30,21 +33,21 @@ export default function Login(_: PropsLogin) {
   const cardLinks: TypeCardLink[] = useMemo(() => [
     {
       title: "Consulta de datos",
-      cover: "https://servel.cl/wp-content/uploads/2016/11/btn-home-33.jpg",
+      cover: presentVote,
       link: "/search",
       external: false,
       description: "Conoce los partidos con sus candidatos y propuestas"
     },
     {
       title: "Ir a votar",
-      cover: "https://servel.cl/wp-content/uploads/2016/05/btn-home-06.jpg",
+      cover: introducingVote,
       link: "/votar",
       external: false,
       description: "Vota por tu partido"
     },
     {
       title: "Historial de elecciones",
-      cover: "https://servel.cl/wp-content/uploads/2018/03/btn-home-32.png",
+      cover: voteInUrna,
       link: "/historial",
       external: false,
       description: "Elecciones y resultados desde 2020"

@@ -8,7 +8,6 @@ import useFetch from "hooks/useFetch";
 import Tabs from "components/Tabs";
 import Breadcrumbs from "components/Breadcrums";
 import RenderIf from "react-rainbow-components/components/RenderIf";
-import TheElectionProvider from "context/TheElectionContext";
 import TabStatsGeneral from "./TabStatsGeneral";
 
 const tabs = [
@@ -52,7 +51,7 @@ export function StatsElection({ isPrivate, match }: PropsStatsElection) {
     return <Breadcrumbs breadcrumbs={breadcrumbs} />;
   }
 
-  return <TheElectionProvider id={currentElectionId} value={election.theElection}>
+  return <div>
     <Breadcrumbs breadcrumbs={breadcrumbs} />
     <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
       <RenderIf isTrue={selectedTab === 0}>
@@ -62,5 +61,5 @@ export function StatsElection({ isPrivate, match }: PropsStatsElection) {
         <TabStatsPerTag stats={election} isPrivate={isPrivate} />
       </RenderIf>
     </Tabs>
-  </TheElectionProvider>
+  </div>
 }

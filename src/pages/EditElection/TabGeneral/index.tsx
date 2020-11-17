@@ -1,8 +1,8 @@
-import React from "react";
-import InputFetch from "components/InputFetch";
-import { useTheElection } from "context/TheElectionContext"
+import React, { useContext } from "react";
+import { TheElectionContext, TheUpdateElectionContext } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
-import { TypeCampaignObj, TypeCandidateObj, TypeTagObj, TypeElectionFunc } from "types/electionTypes";
+import InputFetch from "components/InputFetch";
+import { TypeCampaignObj, TypeCandidateObj, TypeTagObj } from "types/electionTypes";
 import "./index.css";
 
 // [x] Update Election Name
@@ -10,14 +10,13 @@ import "./index.css";
 // [] Show graph stats election -> moved to path /stats
 // [] Button generate report pdf -> moved to path /stats
 
-type PropsTabGeneral = {
-  updateElection: (newElection: TypeElectionFunc) => Promise<any>;
-};
+type PropsTabGeneral = {};
 
 const { convertDoubleArrToObjArr } = useParserData();
 
-export default function TabGeneral(props: PropsTabGeneral) {
-  const { theElection, mutateTheElectionWith } = useTheElection();
+export default function TabGeneral(_: PropsTabGeneral) {
+  const theElection = useContext(TheElectionContext)!;
+  const [, updateElection] = useContext(TheUpdateElectionContext)!;
 
   const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
   const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
@@ -28,8 +27,10 @@ export default function TabGeneral(props: PropsTabGeneral) {
     <div>
       <InputFetch
         initialValue={theElection.name}
-        beforeChange={mutateTheElectionWith}
-        onChange={props.updateElection}
+        beforeChange={null}
+        onChange={(data) => {
+          return updateElection(data, () => { });
+        }}
         resolveData={name => {
           return { ...theElection, name }
         }}
