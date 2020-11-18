@@ -10,12 +10,13 @@ import Badge from "react-rainbow-components/components/Badge";
 import Avatar from "react-rainbow-components/components/Avatar";
 import crayonImageSettings from "icons/images/crayon-image-settings.png";
 import cherryImage600 from "icons/images/cherry-660.png";
-import urbanLine319 from "icons/images/urban-line-319.png";
 import hugoSuccess from "icons/images/hugo-success-1.png";
 import bermudaListIsEmpty from "icons/images/bermuda-list-is-empty.png";
+import _ from "underscore";
 import { isProduction } from "configurations/variables";
 import { REACT_API_URL } from "configurations/api";
 import { TypeCampaignObj, TypeCandidateObj, TypeCargo, TypeElectionFunc } from "types/electionTypes";
+import { FileApi } from "types/appTypes";
 import "./index.css";
 
 type PropsScreenCredentials = {
@@ -27,7 +28,7 @@ type ArgCheckFrstAuth = { first_auth: string, value: string } |
 
 type ArgsPostVote = { campaign_slug: string; first_auth: string; second_auth: string; };
 
-const styleAvatar = { width: 110, height: "auto" };
+const styleAvatar = { width: 110, height: 110 };
 const { fetchPostWithoutToken } = useFetch();
 
 function checkAuthUser(
@@ -217,10 +218,6 @@ export default memo(function ScreenCredentials({ election }: PropsScreenCredenti
           </VisualPickerOption>
         })
       }
-      <VisualPickerOption name="nulo" disabled={asyncPostVote.loading}>
-        <Avatar style={styleAvatar} assistiveText="Nulo" title="Nulo" size="large" src={urbanLine319} />
-        <h4>Nulo</h4>
-      </VisualPickerOption>
     </VisualPicker>
   </div>
 });
@@ -239,23 +236,12 @@ function PreviewCampaign({ campaigns, disabled, postVote, voter_identify, cargos
   const campaign = campaigns[selectedCampaign];
   const listCandidates = candidates.filter(cnd => cnd.campaign_slug === selectedCampaign);
 
-  if (selectedCampaign === "nulo") {
-    return <div className="prev-list-selected list-items-col">
-      <p style={{ padding: 10 }}>Has seleccionado</p>
-      <h3>Nulo</h3>
-      <div className="prev-list-selected-vote">
-        <Button onClick={() => {
-          const { first_auth, second_auth } = voter_identify;
-          return postVote({
-            campaign_slug: selectedCampaign,
-            first_auth, second_auth
-          });
-        }} label="Votar" variant="destructive" disabled={disabled} />
-      </div>
-    </div>
-  }
+  const setFullName = _.template("<%= names %> <%= surnames %>");
+
 
   if (campaign) {
+    const commitments_file: FileApi[] = campaign.commitments_file ? campaign.commitments_file : [];
+    const commitments_link = commitments_file[0] ? commitments_file[0].url : null;
     return <div className="prev-list-selected list-items-col">
       <p>Has seleccionado</p>
       <h3>{campaign.name}</h3>
@@ -265,7 +251,14 @@ function PreviewCampaign({ campaigns, disabled, postVote, voter_identify, cargos
             const cargo = cargos[candidate.cargo];
 
             return <div key={index} className="prev-list-selected-integrant list-items-col">
-              <p>{candidate.names.split(" ")[0]} {candidate.surnames.split(" ")[0]}</p>
+              <Avatar
+                size="large"
+                style={{ width: 70, height: 70 }}
+                src={resolveUrl(candidate.avatar?.url || "")}
+                title={setFullName(candidate)}
+                assistiveText={setFullName(candidate)}
+              />
+              <p>{setFullName(candidate)}</p>
               <Badge
                 variant="success"
                 label={cargo.alias}
@@ -274,7 +267,7 @@ function PreviewCampaign({ campaigns, disabled, postVote, voter_identify, cargos
           })
         }
       </div>
-      <div className="prev-list-selected-vote">
+      <div className="prev-list-selected-vote list-items-row">
         <Button onClick={() => {
           const { first_auth, second_auth } = voter_identify;
           return postVote({
@@ -282,6 +275,9 @@ function PreviewCampaign({ campaigns, disabled, postVote, voter_identify, cargos
             first_auth, second_auth
           });
         }} label="Votar" variant="destructive" disabled={disabled} />
+        {commitments_link ? <a target='_blank' rel='noopener noreferrer' href={resolveUrl(commitments_link)}>
+          <Button label="Ver propuestas" variant="brand" />
+        </a> : <Button label="Ver propuestas" variant="brand" disabled={true} />}
       </div>
     </div>
   }

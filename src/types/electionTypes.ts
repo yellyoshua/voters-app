@@ -1,5 +1,7 @@
 import { FileApi } from "types/appTypes";
 
+type Obj<T> = { [k: string]: T };
+
 export type TypeCampaignArr = Array<keyof TypeCampaignObj>;
 
 export type TypeCampaignObj = {
@@ -12,15 +14,8 @@ export type TypeCampaignObj = {
 
 export type TypeVoter = {
   fields: string[];
-  data: any[];
+  data: Obj<any[]>;
 }
-
-export type TypeTagArr = Array<keyof TypeTagObj>;
-
-export type TypeTagObj = {
-  name: string;
-  slug: string;
-};
 
 export type TypeCargo = {
   slug: string;
@@ -35,6 +30,7 @@ export type TypeCandidateObj = {
   surnames: string;
   cargo: string;
   course: string;
+  avatar: FileApi | null;
   campaign_slug: string;
 };
 
@@ -47,11 +43,8 @@ export interface TypeElectionFunc {
   status?: TypeStatusElection;
   name?: string;
   cargos?: TypeCargo[];
-  voters?: {
-    fields: string[];
-    data: any[];
-  };
-  tags?: any[];
+  voters?: TypeVoter;
+  tags?: string[];
   candidates?: any[];
   campaigns?: any[];
   first_auth?: TypeAuthVote;
@@ -65,11 +58,8 @@ export interface TypeElection {
   status: TypeStatusElection;
   name: string;
   cargos: TypeCargo[];
-  voters: {
-    fields: string[];
-    data: any[];
-  };
-  tags: any[];
+  voters: TypeVoter;
+  tags: string[];
   candidates: any[];
   campaigns: any[];
   first_auth: TypeAuthVote;
@@ -83,33 +73,20 @@ export type TypeAuthVote = {
 }
 
 export type TypeElectionStats = {
-  campaigns: {
-    [k: string]: {
-      commitments_file: [FileApi] | null;
-      cover_image: [FileApi] | null;
-      id: number | string;
-      logo_image: [FileApi] | null;
-      name: string;
-      slug: string;
-    }
+  id: string | number;
+  name: string;
+  candidates: string[];
+  uid: string;
+  status: TypeStatusElection;
+  cargos: TypeCargo[];
+  first_auth: TypeAuthVote;
+  second_auth: TypeAuthVote;
+  tags: string[];
+  campaigns: Obj<TypeCampaignObj>;
+  total_votes: number;
+  count_per_tag: Obj<number>;
+  votes_group: {
+    count_by_tag: Obj<number>,
+    count_by_campaign: Obj<number>
   };
-  tags: {
-    [k: string]: {
-      id: number | string;
-      name: string;
-      slug: string;
-    }
-  };
-  theElection: TypeElectionFunc;
-
-  vote_campaigns: string[];
-  vote_campaigns_count: { [k: string]: number | string; };
-  vote_campaigns_uniq: string[];
-  vote_count: number;
-  vote_tags: string[];
-  vote_tags_count: { [k: string]: number | string; };
-  vote_tags_uniq: string[];
-  vote_voters: any[];
-  vote_voters_count: number;
-  voters_tags_count: { [k: string]: number | string; };
 }

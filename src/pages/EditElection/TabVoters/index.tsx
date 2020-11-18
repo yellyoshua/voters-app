@@ -7,7 +7,7 @@ import deferComponentRender from "components/DeferComponentRender";
 
 const DeferListTagsWithVoters = deferComponentRender(ListTagsWithVoters);
 
-// [-] Create/Edit Tags
+// [x] Tags generate on every Excel upload
 // [x] Modal upload Voters
 // [x] "Modal create Tags" -> Voters create tags
 // [] Generate and download plantilla
@@ -24,11 +24,6 @@ export default function TabVoters(_: PropsTabVoters) {
     />
     <RenderIf isTrue={!isOpenModalVoter}>
       <div className='breadcrumbs-with-button'>
-        <Button
-          label="Descargar plantilla"
-          onClick={() => { }}
-          variant="neutral"
-        />
         <Button
           label="Subir / Actualizar votantes"
           onClick={() => openModalVoter(true)}

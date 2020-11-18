@@ -3,13 +3,11 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin: 20px 10px;
+  margin: 0px auto;
 }
 .preview-image-wrapper {
   display: flex;
-  border: 1px solid rgb(1, 182, 245);
-  padding: 10px;
-  border-radius: 10px;
+  position: relative;
   background: white;
 }
 .preview-image-wrapper img {
@@ -17,4 +15,12 @@
   background: white;
   border: 1px solid rgb(1, 182, 245);
   border-radius: 100%;
+}
+.preview-image-btn-remove {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin-right: 10px !important;
+  margin-bottom: 10px !important;
+  font-size: 1.3rem;
 }

@@ -40,11 +40,11 @@ export function StatsElection({ isPrivate, match }: PropsStatsElection) {
       }).then(setElection)
   }, [currentElectionId]);
 
-  useTitle(election ? election.theElection.name || ". . ." : ". . .");
+  useTitle(election ? election.name || ". . ." : ". . .");
 
   const breadcrumbs = useMemo(() => [
     { name: "Elecciones", pathname: "/elections" },
-    { name: election ? election.theElection.name || ". . ." : ". . .", pathname: `/elections/${currentElectionId}` }
+    { name: election ? election.name || ". . ." : ". . .", pathname: `/elections/${currentElectionId}` }
   ], [election, currentElectionId]);
 
   if (!election) {

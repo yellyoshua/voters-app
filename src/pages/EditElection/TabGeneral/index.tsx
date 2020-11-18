@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { TheElectionContext, TheUpdateElectionContext } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
 import InputFetch from "components/InputFetch";
-import { TypeCampaignObj, TypeCandidateObj, TypeTagObj } from "types/electionTypes";
+import { TypeCampaignObj, TypeCandidateObj } from "types/electionTypes";
 import "./index.css";
 
 // [x] Update Election Name
@@ -10,18 +10,16 @@ import "./index.css";
 // [] Show graph stats election -> moved to path /stats
 // [] Button generate report pdf -> moved to path /stats
 
-type PropsTabGeneral = {};
-
 const { convertDoubleArrToObjArr } = useParserData();
 
-export default function TabGeneral(_: PropsTabGeneral) {
+export default function TabGeneral() {
   const theElection = useContext(TheElectionContext)!;
   const [, updateElection] = useContext(TheUpdateElectionContext)!;
 
   const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
   const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
-  const tags = convertDoubleArrToObjArr<TypeTagObj>(theElection.tags);
-  const voters = convertDoubleArrToObjArr<any[]>(theElection.voters.data);
+  const tags = useMemo(() => theElection.tags, [theElection.tags]);
+  const voters = useMemo(() => theElection.voters, [theElection.voters]);
 
   return <div className='elections-tabs-view-section'>
     <div>
@@ -38,7 +36,9 @@ export default function TabGeneral(_: PropsTabGeneral) {
     </div>
     <section className="list-items-row">
       <div className="campaign-general-stats-wrapper">
-        <p>{voters.length}</p>
+        <p>{tags.length > 0 ? tags.map(t => voters.data[t].length).reduce((prev, curr) => {
+          return prev + curr;
+        }, 0) : 0}</p>
         <h1>Votantes</h1>
       </div>
       <div className="campaign-general-stats-wrapper">

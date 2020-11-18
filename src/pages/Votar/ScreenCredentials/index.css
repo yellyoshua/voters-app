@@ -32,7 +32,7 @@
 }
 .prev-list-selected {
   align-items: center;
-  padding: 5px 0px !important;
+  padding: 5px 5px !important;
   border-radius: 5px;
   background: rgb(34, 52, 135);
 }
@@ -55,12 +55,18 @@
   align-items: center;
   background: white;
   border-radius: 5px;
-  margin: 0px 5px;
+  margin: 5px;
 }
 .prev-list-selected-integrant p {
+  max-width: 175px;
+  word-break: break-all;
   color: black;
   font-weight: bold;
 }
 .prev-list-selected-vote {
   margin: 10px;
+}
+.prev-list-selected-vote button,
+.prev-list-selected-vote a {
+  margin: 0px 10px;
 }

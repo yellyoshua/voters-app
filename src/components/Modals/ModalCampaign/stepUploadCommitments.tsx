@@ -18,27 +18,25 @@ function resolveUrl(url: string) {
 }
 
 export default function StepUploadCommitments({ campaignName, commitments_file, onChange }: PropsStepCommitments) {
-  return (
-    <>
-      <section className='step-title'>
-        <h1>Propuestas del partido.</h1>
-      </section>
-      <section>
-        {commitments_file
-          ? <PreviewFile
-            fileUrl={`${resolveUrl(commitments_file[0].url)}`}
-            fileName={commitments_file[0].name}
-            onRemoveHandler={() => onChange(null, Number(commitments_file[0].id))}
-          /> : <UploadFile
-            url='/upload'
-            fileType="PDF"
-            accept=".pdf"
-            onError={err => console.log({ err })}
-            progress={() => null}
-            success={onChange}
-          />
-        }
-      </section>
-    </>
-  );
+  return <div>
+    <section className='step-title'>
+      <h1>Propuestas del partido.</h1>
+    </section>
+    <section>
+      {commitments_file
+        ? <PreviewFile
+          fileUrl={`${resolveUrl(commitments_file[0].url)}`}
+          fileName={commitments_file[0].name}
+          onRemoveHandler={() => onChange(null, Number(commitments_file[0].id))}
+        /> : <UploadFile
+          url='/upload'
+          fileType="PDF"
+          accept=".pdf"
+          onError={err => console.log({ err })}
+          progress={() => null}
+          success={onChange}
+        />
+      }
+    </section>
+  </div>
 }

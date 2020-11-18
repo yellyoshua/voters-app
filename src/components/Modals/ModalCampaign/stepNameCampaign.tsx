@@ -7,23 +7,21 @@ type PropsStepCampaignName = {
 };
 
 export default function StepCampaignName({ value, onChangeName }: PropsStepCampaignName) {
-  return (
-    <>
-      <div className='step-title'>
-        <h1>Nombre para el partido.</h1>
-      </div>
-      <Input
-        onChange={({ target: { value } }) => {
-          return onChangeName(value);
-        }}
-        placeholder=''
-        value={value}
-        style={{ maxWidth: 270 }}
-        className='rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto'
-      />
-      <div className='step-instruction'>
-        <p>M&iacute;nimo 4 caracteres.</p>
-      </div>
-    </>
-  );
+  return <div>
+    <div className='step-title'>
+      <h1>Nombre para el partido.</h1>
+    </div>
+    <Input
+      onChange={({ target: { value } }) => {
+        return onChangeName(value);
+      }}
+      placeholder=''
+      value={value}
+      style={{ maxWidth: 270 }}
+      className='rainbow-m-vertical_x-large rainbow-p-horizontal_medium rainbow-m_auto'
+    />
+    <div className='step-instruction'>
+      <p>M&iacute;nimo 4 caracteres.</p>
+    </div>
+  </div>
 }

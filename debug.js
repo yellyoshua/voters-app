@@ -4,13 +4,14 @@ const tasks = {
   "[x]": "Election conf cargos CRUD",
   "[x]": "Election conf fields auth votation",
   "[x]": "Upload Campaign logo",
-  "[]": "Screen election stats with download option",
-  "[]": "Votation dashboard stats",
-  "[]": "Preview campaign logo",
   "[x]": "Remove SWR of election",
   "[x]": "Uploaded to firebase hosting",
   "[x]": "Screens votar",
   "[x]": "Lost password & added yup dependency",
   "[x]": "Use lazy components",
+  "[x]": "Preview campaign logo",
+  "[x]": "Test excel",
+  "[]": "Screen election stats with download option",
+  "[]": "Votation dashboard stats",
   "[]": "Update react and typescript versions"
 };

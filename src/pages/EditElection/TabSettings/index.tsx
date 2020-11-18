@@ -1,16 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { memo, useCallback, useState } from "react";
 import Button from "react-rainbow-components/components/Button";
 import ModalCargo from "components/Modals/ModalCargo";
 import ListCargos from "components/Lists/ListCargos";
 import SettingsAuth from "components/Sections/SettingsAuth";
 import SettingsStateElection from "components/Sections/SettingsStateElection";
 
-// [x] Button Star/Stop election votes 
-// [x] Create cargos candidates
-
-type PropsTabSettings = {};
-
-export default function TabSettings(_: PropsTabSettings) {
+function TabSettings() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [slugCampaign, setSlugCampaign] = useState<string | null>(null);
 
@@ -43,3 +38,4 @@ export default function TabSettings(_: PropsTabSettings) {
     </div>
   </div>
 }
+export default memo(TabSettings);

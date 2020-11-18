@@ -110,13 +110,13 @@ function ContainerModal({ isOpen = false, slug, token, cancel }:
     isOpen={isOpen}
     onRequestClose={asyncUpdate.loading ? undefined : cancel}
   >
-    < div className='elections-tabs-view-section' >
-      <StepCampaignName
-        onChangeName={(name) => {
-          return setCurrCampaign({ ...currCampaign, name });
-        }}
-        value={currCampaign.name}
-      />
+    <StepCampaignName
+      onChangeName={(name) => {
+        return setCurrCampaign({ ...currCampaign, name });
+      }}
+      value={currCampaign.name}
+    />
+    < div className='elections-tabs-view-section list-items-row' style={{ justifyContent: "center" }} >
       <StepUploadLogo
         campaignName={currCampaign.name}
         logo_image={currCampaign.logo_image}

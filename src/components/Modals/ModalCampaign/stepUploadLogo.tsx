@@ -19,29 +19,27 @@ function resolveUrl(url: string) {
 }
 
 export default function stepUploadLogo({ logo_image, onChange }: PropsStepUploadLogo) {
-  return (
-    <>
-      <section className='step-title'>
-        <h1>Logo del partido.</h1>
-      </section>
-      <section>
-        {logo_image
-          ? <PreviewImage
-            fileUrl={resolveUrl(logo_image[0].url)}
-            fileName={logo_image[0].name}
-            onRemoveHandler={() => onChange(null, Number(logo_image[0].id))}
-          /> : <UploadFile
-            url='/upload'
-            fileType="Imagen"
-            accept=".jpg,.png,.jpeg,.gif,.webp,.jp2,.j2k,.jpf,.jpx,.jpm,.mj2"
-            onError={err => console.log({ err })}
-            progress={() => null}
-            success={(logo: FileApi) => {
-              return onChange(logo)
-            }}
-          />
-        }
-      </section>
-    </>
-  );
+  return <div>
+    <section className='step-title'>
+      <h1>Logo del partido.</h1>
+    </section>
+    <section>
+      {logo_image
+        ? <PreviewImage
+          fileUrl={resolveUrl(logo_image[0].url)}
+          fileName={logo_image[0].name}
+          onRemoveHandler={() => onChange(null, Number(logo_image[0].id))}
+        /> : <UploadFile
+          url='/upload'
+          fileType="Imagen"
+          accept=".jpg,.png,.jpeg,.gif,.webp,.jp2,.j2k,.jpf,.jpx,.jpm,.mj2"
+          onError={err => console.log({ err })}
+          progress={() => null}
+          success={(logo: FileApi) => {
+            return onChange(logo)
+          }}
+        />
+      }
+    </section>
+  </div>
 }
