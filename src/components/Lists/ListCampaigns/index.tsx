@@ -1,19 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import CardCampaign from "components/Card/CardCampaign";
-import { useTheElection } from "context/TheElectionContext";
+import { TheElectionContext, TheUpdateElectionContext } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
 import { doubleArrRemoveItem } from "utils/parsersData";
-import { TypeCampaignObj, TypeCandidateObj, TypeElectionFunc } from "types/electionTypes";
+import { TypeCampaignObj, TypeCandidateObj } from "types/electionTypes";
 
 type PropsListCampaigns = {
-  updateElection: (data: TypeElectionFunc) => Promise<any>;
   editCampaign: (slug: string | null) => void;
 };
 
 const { convertDoubleArrToObjArr } = useParserData();
+export default function ListCampaigns({ editCampaign }: PropsListCampaigns) {
+  const theElection = useContext(TheElectionContext)!;
+  const [, updateElection] = useContext(TheUpdateElectionContext)!;
 
-export default function ListCampaigns({ updateElection, editCampaign }: PropsListCampaigns) {
-  const { theElection } = useTheElection();
   const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
   const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
 
@@ -34,7 +34,7 @@ export default function ListCampaigns({ updateElection, editCampaign }: PropsLis
             {
               campaigns: doubleArrRemoveItem(theElection.campaigns, "slug", slug),
               candidates: doubleArrRemoveItem(theElection.candidates, "campaign_slug", slug)
-            }
+            }, () => { }
           );
         }}
       />

@@ -15,7 +15,7 @@ export default memo(function InputFetch(props: PropsInputFetch) {
 
   const [, cancelDebounceRequest] = useDebounce(
     async () => {
-      if (inputState) {
+      if (inputState !== props.initialValue) {
         const data = props.resolveData(inputState);
         try {
           await props.onChange(data);
@@ -27,7 +27,7 @@ export default memo(function InputFetch(props: PropsInputFetch) {
       return null;
     },
     800,
-    [inputState]
+    [inputState, props.initialValue]
   );
 
   useEffect(

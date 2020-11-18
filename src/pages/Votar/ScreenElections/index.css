@@ -1,0 +1,46 @@
+.container-school-detail {
+  align-items: center;
+}
+.container-school-detail h1 {
+  font-size: 1.2rem;
+  padding: 10px;
+  background: darkred;
+  color: wheat;
+}
+.container-screen-election-title {
+  font-size: 1.3rem;
+  text-align: center;
+}
+.container-screen-election-desc {
+  font-size: 1rem;
+  text-align: center;
+}
+.container-elections-select {
+  align-items: center;
+}
+.container-elections-select h2 {
+  font-size: 1rem;
+  text-align: center;
+  padding: 10px;
+  background: rgb(255, 73, 0);
+  color: white;
+}
+.container-item-election {
+  max-width: 280px;
+  text-align: center;
+}
+.container-item-election a {
+  padding: 20px 10px;
+  line-height: 4rem;
+  font-size: 1.2rem;
+  color: white;
+  text-decoration: none;
+  background: rgb(6, 28, 63);
+  border-radius: 10px;
+  box-shadow: 3px 8px 10px -3px rgb(0, 0, 0, 0.5);
+  border: 2px solid rgb(1, 182, 245);
+}
+.container-item-election a:hover {
+  transform: scale(0.95);
+  transition: 0.3s;
+}

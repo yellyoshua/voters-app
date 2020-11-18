@@ -1,13 +1,10 @@
-import { TypeTagArr, TypeCandidateArr, TypeElection, TypeCampaignArr, TypeCampaignObj, TypeCandidateObj, TypeCargo } from "types/electionTypes";
+import { TypeCandidateArr, TypeElection, TypeCampaignArr, TypeCampaignObj, TypeCandidateObj, TypeCargo } from "types/electionTypes";
 
 // export const votersDataModel: TypeVoterArr =
 //   ["name", "second_name", "surname", "second_surname", "ci", "enrollmentcode", "tag_slug", "idukay_code"];
 
-export const tagsDataModel: TypeTagArr =
-  ["name", "slug"];
-
 export const candidatesDataModel: TypeCandidateArr =
-  ["slug", "names", "surnames", "cargo", "course", "campaign_slug"];
+  ["slug", "names", "surnames", "cargo", "course", "campaign_slug", "avatar"];
 
 export const campaignsDataModel: TypeCampaignArr =
   ["name", "slug", "cover_image", "logo_image", "commitments_file"];
@@ -31,6 +28,7 @@ export const defaultCandidate: TypeCandidateObj = {
   surnames: "",
   course: "",
   cargo: "",
+  avatar: null,
   campaign_slug: ""
 }
 
@@ -42,9 +40,9 @@ export const defaultElection: TypeElection = {
   cargos: [],
   voters: {
     fields: [],
-    data: []
+    data: {}
   },
-  tags: [tagsDataModel],
+  tags: [],
   candidates: [candidatesDataModel],
   campaigns: [campaignsDataModel],
   first_auth: { active: false, field: "", name: "" },

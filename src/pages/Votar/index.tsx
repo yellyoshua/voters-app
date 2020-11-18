@@ -1,11 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, Suspense } from "react";
 import { Redirect, RouteComponentProps } from "react-router-dom";
-import Layout from "components/Layout";
+import loadable from "@loadable/component";
 import useFetch from "hooks/useFetch";
-import { TypeElectionFunc } from "types/electionTypes";
+import Layout from "components/Layout";
+import SpinnerCentered from "components/SpinnerCentered";
+// import ScreenCredentials from "./ScreenCredentials";
+// import ScreenElections from "./ScreenElections";
 import { resolveValueType } from "utils/properTypes";
-import ScreenCredentials from "./ScreenCredentials";
-import ScreenElections from "./ScreenElections";
+import { TypeElectionFunc } from "types/electionTypes";
+
+const ScreenCredentials = loadable(() => import("./ScreenCredentials"));
+const ScreenElections = loadable(() => import("./ScreenElections"));
 
 type PropsVotar = RouteComponentProps & {};
 
@@ -44,37 +49,36 @@ export default function Votar({ location }: PropsVotar) {
           return elections || [];
         })
         .then(setElections)
-        // .catch(() => {
-        //   setIsLoading(false);
-        // })
         .finally(() => {
           setIsLoading(false);
         });
     }
   }, [id]);
 
-  // Resolve it!!! ->
-
   if (isError) {
     return <Redirect to="/votar" />
   }
 
   if (election && !isLoading) {
-    return <Layout breadcrumbs={[
-      { name: "Votar", pathname: "/votar" },
-      { name: election.name as string, pathname: `/votar?id=${election.id}` },
-    ]}>
-      <ScreenCredentials election={election} />
-    </Layout>
+    return <Suspense fallback={<SpinnerCentered size="large" />}>
+      <Layout breadcrumbs={[
+        { name: "Votar", pathname: "/votar" },
+        { name: election.name as string, pathname: `/votar?id=${election.id}` },
+      ]}>
+        <ScreenCredentials election={election} />
+      </Layout>
+    </Suspense>
   }
 
   if (elections && !isLoading) {
-    return <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>
-      <ScreenElections elections={elections} />
-    </Layout>
+    return <Suspense fallback={<SpinnerCentered size="large" />}>
+      <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>
+        <ScreenElections elections={elections} />
+      </Layout>
+    </Suspense>
   }
 
   return <Layout breadcrumbs={[{ name: "Votar", pathname: "/votar" }]}>
-    <p>Cargando</p>
+    <SpinnerCentered size="large" />
   </Layout>
 }

@@ -1,7 +1,20 @@
 .card-candidate {
-  background: mediumvioletred;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  background: rgb(21, 89, 199);
   border-radius: 5px;
+  padding: 5px 10px;
+}
+@media (max-width: 545px) {
+  .card-candidate {
+    display: flex !important;
+  }
+}
+.card-candidate-avatar-fname {
+  justify-content: center;
 }
 .card-candidate h1 {
+  font-size: 1.1rem;
+  padding: 0px 5px;
   color: white;
 }

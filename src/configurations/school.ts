@@ -10,4 +10,4 @@ const default_config: TypeSchool = {
 }
 
 
-export default isProduction ? default_config : prod_config.school_conf as TypeSchool;
+export default isProduction ? prod_config.school_conf as TypeSchool : default_config;

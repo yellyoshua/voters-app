@@ -1,18 +1,17 @@
-import React, { useContext, useEffect, memo, useState, useMemo, Fragment } from "react";
-import Modal from "react-rainbow-components/components/Modal";
-import Button from "react-rainbow-components/components/Button";
+import React, { useContext, memo, useState, useMemo, Fragment } from "react";
 import { TokenContext } from "context/UserContext";
-import { useTheElection } from "context/TheElectionContext";
-import useAsync from "hooks/useAsync";
+import { TheElectionContext, TheUpdateElectionContext } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
 import useFetch from "hooks/useFetch";
-import { uuidv4 } from "utils/createUID";
-import { validationMessages, TypeValidations, checkErrors } from "utils/validators";
 import { campaignsDataModel, defaultCampaign } from "models/election";
-import { TypeCampaignObj, TypeElectionFunc } from "types/electionTypes";
+import Modal from "react-rainbow-components/components/Modal";
+import Button from "react-rainbow-components/components/Button";
 import StepCampaignName from "components/Modals/ModalCampaign/stepNameCampaign";
 import StepUploadLogo from "components/Modals/ModalCampaign/stepUploadLogo";
 import StepUploadCommitments from "components/Modals/ModalCampaign/stepUploadCommitments";
+import { validationMessages, TypeValidations, checkErrors } from "utils/validators";
+import { uuidv4 } from "utils/createUID";
+import { TypeCampaignObj } from "types/electionTypes";
 import "./index.css";
 
 // [] Step Upload cover image
@@ -25,41 +24,35 @@ const validators: TypeValidations = {
 type PropsModalCampaign = {
   slug: string | null;
   isOpen: boolean;
-  createOrUpdate: (newElection: TypeElectionFunc) => Promise<any>;
   cancel: () => void;
 };
 const { fetchDelWithToken } = useFetch();
 const { convertDoubleArrToObjArr, convertObjArrToDoubleArr } = useParserData();
 
-export default memo(function ModalCampaign({ isOpen = false, slug, createOrUpdate, cancel }: PropsModalCampaign) {
-
+export default memo(function ModalCampaign({ isOpen = false, slug, cancel }: PropsModalCampaign) {
   const token = useContext(TokenContext);
-  const { theElection } = useTheElection();
-  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
 
   const isModalOpen = useMemo(() => isOpen, [isOpen]);
   const campaignSlug = useMemo(() => slug, [slug]);
-  const taskFunction = useMemo(() => createOrUpdate, [createOrUpdate]);
   const cancelFunction = useMemo(() => cancel, [cancel]);
 
   return <Fragment>
     {
       isModalOpen ? <ContainerModal
         isOpen
-        modalTitle={theElection.name}
-        campaigns={campaigns}
         token={token}
         slug={campaignSlug}
-        createOrUpdate={taskFunction}
         cancel={cancelFunction}
       /> : null
     }
   </Fragment>
 });
 
-function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cancel, campaigns, modalTitle }:
-  PropsModalCampaign & { token: string | null, campaigns: TypeCampaignObj[], modalTitle: string }) {
-  const asyncCreateOrUpdate = useAsync(createOrUpdate, false);
+function ContainerModal({ isOpen = false, slug, token, cancel }:
+  PropsModalCampaign & { token: string | null }) {
+  const theElection = useContext(TheElectionContext)!;
+  const [asyncUpdate, updateElection] = useContext(TheUpdateElectionContext)!;
+  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
 
   const theCampaign = campaigns.find(campaign => campaign.slug === slug) || defaultCampaign;
   const [currCampaign, setCurrCampaign] = useState(theCampaign);
@@ -72,18 +65,6 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cancel, c
     }
   }
 
-  useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      if (asyncCreateOrUpdate.status === "success") {
-        return cancel();
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [asyncCreateOrUpdate.status, cancel]);
-
   const createCampaign = () => {
     let cmps = [...campaigns];
     const cmpIndex = cmps.findIndex(cmp => cmp.slug === currCampaign.slug);
@@ -94,9 +75,9 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cancel, c
       cmps.push({ ...currCampaign, slug: uuidv4() });
     }
 
-    return asyncCreateOrUpdate.execute({
+    return updateElection({
       campaigns: convertObjArrToDoubleArr(cmps, campaignsDataModel)
-    });
+    }, cancel);
   };
 
   function cannotSave() {
@@ -106,20 +87,20 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cancel, c
   }
 
   return <Modal
-    title={modalTitle}
+    title={theElection.name}
     size='small'
     footer={
       <div className='rainbow-align-content_center rainbow-flex_wrap'>
         <Button
           label='Cancelar'
-          disabled={asyncCreateOrUpdate.status !== "idle"}
+          disabled={asyncUpdate.loading}
           onClick={cancel}
           variant='destructive'
           className='rainbow-m-horizontal_medium'
         />
         <Button
           label='Guardar'
-          disabled={cannotSave() || asyncCreateOrUpdate.status !== "idle"}
+          disabled={cannotSave() || asyncUpdate.loading}
           onClick={createCampaign}
           variant='success'
           className='rainbow-m-horizontal_medium'
@@ -127,15 +108,15 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cancel, c
       </div>
     }
     isOpen={isOpen}
-    onRequestClose={asyncCreateOrUpdate.status !== "idle" ? undefined : cancel}
+    onRequestClose={asyncUpdate.loading ? undefined : cancel}
   >
-    < div className='elections-tabs-view-section' >
-      <StepCampaignName
-        onChangeName={(name) => {
-          return setCurrCampaign({ ...currCampaign, name });
-        }}
-        value={currCampaign.name}
-      />
+    <StepCampaignName
+      onChangeName={(name) => {
+        return setCurrCampaign({ ...currCampaign, name });
+      }}
+      value={currCampaign.name}
+    />
+    < div className='elections-tabs-view-section list-items-row' style={{ justifyContent: "center" }} >
       <StepUploadLogo
         campaignName={currCampaign.name}
         logo_image={currCampaign.logo_image}

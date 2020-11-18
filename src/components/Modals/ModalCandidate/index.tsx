@@ -1,15 +1,14 @@
-import React, { useContext, useEffect, memo, useState, useMemo, Fragment } from "react";
+import React, { useContext, memo, useState, useMemo, Fragment } from "react";
 import Modal from "react-rainbow-components/components/Modal";
 import Button from "react-rainbow-components/components/Button";
 import FormCandidate from "components/Modals/ModalCandidate/FormCandidate";
 import { TokenContext } from "context/UserContext";
-import { useTheElection } from "context/TheElectionContext";
-import useAsync from "hooks/useAsync";
+import { TheElectionContext, TheUpdateElectionContext } from "context/TheElectionContext";
 import useParserData from "hooks/useParserData";
 import { validationMessages, TypeValidations, checkErrors } from "utils/validators";
 import { uuidv4 } from "utils/createUID";
 import { candidatesDataModel, defaultCandidate } from "models/election";
-import { TypeCampaignObj, TypeCandidateObj, TypeCargo, TypeElectionFunc } from "types/electionTypes";
+import { TypeCampaignObj, TypeCandidateObj } from "types/electionTypes";
 import "./index.css";
 
 const validators: TypeValidations = {
@@ -23,62 +22,40 @@ const validators: TypeValidations = {
 type PropsModalCandidate = {
   slug: string | null;
   isOpen: boolean;
-  createOrUpdate: (newElection: TypeElectionFunc) => Promise<any>;
   cancel: () => void;
 };
 const { convertDoubleArrToObjArr, convertObjArrToDoubleArr } = useParserData();
 
-export default memo(function ModalCampaign({ isOpen = false, slug, createOrUpdate, cancel }: PropsModalCandidate) {
-
+export default memo(function ModalCampaign({ isOpen = false, slug, cancel }: PropsModalCandidate) {
   const token = useContext(TokenContext);
-  const { theElection } = useTheElection();
-
-  const cargos = useMemo(() => theElection.cargos, [theElection.cargos]);
-  const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
-  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
 
   const isModalOpen = useMemo(() => isOpen, [isOpen]);
   const candidateSlug = useMemo(() => slug, [slug]);
-  const taskFunction = useMemo(() => createOrUpdate, [createOrUpdate]);
   const cancelFunction = useMemo(() => cancel, [cancel]);
 
   return <Fragment>
     {
       isModalOpen ? <ContainerModal
         isOpen
-        modalTitle="Candidato"
-        candidates={candidates}
-        campaigns={campaigns}
-        cargos={cargos}
         token={token}
         slug={candidateSlug}
-        createOrUpdate={taskFunction}
         cancel={cancelFunction}
       /> : null
     }
   </Fragment>
 });
 
-function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cargos, cancel, candidates, campaigns, modalTitle }:
-  PropsModalCandidate & {
-    cargos: TypeCargo[], token: string | null, candidates: TypeCandidateObj[], campaigns: TypeCampaignObj[], modalTitle: string
-  }) {
-  const asyncCreateOrUpdate = useAsync(createOrUpdate, false);
+function ContainerModal({ isOpen = false, slug, token, cancel }:
+  PropsModalCandidate & { token: string | null }) {
+  const theElection = useContext(TheElectionContext)!;
+  const [asyncUpdate, updateElection] = useContext(TheUpdateElectionContext)!;
+
+  const cargos = useMemo(() => theElection.cargos, [theElection.cargos]);
+  const candidates = convertDoubleArrToObjArr<TypeCandidateObj>(theElection.candidates);
+  const campaigns = convertDoubleArrToObjArr<TypeCampaignObj>(theElection.campaigns);
 
   const theCandidate = candidates.find(cndt => cndt.slug === slug) || defaultCandidate;
   const [currCandidate, setCurrCandidate] = useState({ ...theCandidate });
-
-  useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      if (asyncCreateOrUpdate.status === "success") {
-        return cancel();
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [asyncCreateOrUpdate.status, cancel]);
 
 
   function cannotSave() {
@@ -97,26 +74,26 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cargos, c
       cndts.push({ ...currCandidate, slug: uuidv4() });
     }
 
-    return asyncCreateOrUpdate.execute({
+    return updateElection({
       candidates: convertObjArrToDoubleArr(cndts, candidatesDataModel)
-    });
+    }, cancel);
   }
 
   return <Modal
-    title={modalTitle}
+    title="Candidato"
     size='small'
     footer={
       <div className='rainbow-align-content_center rainbow-flex_wrap'>
         <Button
           label='Cancelar'
-          disabled={asyncCreateOrUpdate.status !== "idle"}
+          disabled={asyncUpdate.loading}
           onClick={cancel}
           variant='destructive'
           className='rainbow-m-horizontal_medium'
         />
         <Button
           label='Guardar'
-          disabled={cannotSave() || asyncCreateOrUpdate.status !== "idle"}
+          disabled={cannotSave() || asyncUpdate.loading}
           onClick={saveCandidate}
           variant='success'
           className='rainbow-m-horizontal_medium'
@@ -124,7 +101,7 @@ function ContainerModal({ isOpen = false, slug, createOrUpdate, token, cargos, c
       </div>
     }
     isOpen={isOpen}
-    onRequestClose={asyncCreateOrUpdate.status !== "idle" ? undefined : cancel}
+    onRequestClose={asyncUpdate.loading ? undefined : cancel}
   >
     < div className='elections-tabs-view-section' >
       <FormCandidate

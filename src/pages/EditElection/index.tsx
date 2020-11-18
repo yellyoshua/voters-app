@@ -1,21 +1,27 @@
-import React, { useState, memo, useMemo, useCallback } from "react";
-import useTitle from "react-use/lib/useTitle";
+import React, { useState, memo, useMemo, useEffect, useContext, Suspense, Fragment } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import loadable from "@loadable/component";
+import SpinnerCentered from "components/SpinnerCentered";
+import useTitle from "react-use/lib/useTitle";
+import useAsyncFn from "react-use/lib/useAsyncFn";
+import useFetch from "hooks/useFetch";
+import TheElectionProvider, { TheElectionContext } from "context/TheElectionContext";
+import { TokenContext } from "context/UserContext";
 import Breadcrumbs from "components/Breadcrums";
 import Tabs from "components/Tabs";
+import Spinner from "react-rainbow-components/components/Spinner";
 import ContentLoader from "components/ContentLoader";
 import RenderIf from "react-rainbow-components/components/RenderIf";
-import Button from "react-rainbow-components/components/Button";
-import TabSettings from "pages/EditElection/TabSettings";
-import TabVoters from "pages/EditElection/TabVoters";
-import TabCandidates from "pages/EditElection/TabCandidates";
-import TabCampaigns from "pages/EditElection/TabCampaigns";
-import TabGeneral from "pages/EditElection/TabGeneral";
-import useElection from "hooks/useElection";
-import TheElectionProvider from "context/TheElectionContext";
+import _ from "underscore";
 import { resolveValueType } from "utils/properTypes";
-import { TypeElection, TypeElectionFunc } from "types/electionTypes";
+import { TypeElection } from "types/electionTypes";
 import "./index.css";
+
+const TabSettings = loadable(() => import("pages/EditElection/TabSettings"));
+const TabVoters = loadable(() => import("pages/EditElection/TabVoters"));
+const TabCandidates = loadable(() => import("pages/EditElection/TabCandidates"));
+const TabCampaigns = loadable(() => import("pages/EditElection/TabCampaigns"));
+const TabGeneral = loadable(() => import("pages/EditElection/TabGeneral"));
 
 const tabs = [
   { id: "general", name: "General" },
@@ -27,75 +33,90 @@ const tabs = [
 
 type PropsEditElection = RouteComponentProps<{ id: string }> & {};
 
-export default memo(function EditElection({ match, history }: PropsEditElection) {
-  const currentElectionId = useMemo(() => match.params.id, [match]);
+const { fetchGetWithToken } = useFetch();
+export default memo(function EditElection({ match }: PropsEditElection) {
+  const token = useContext(TokenContext);
+  const [election, setElection] = useState<TypeElection | null>(null);
+  const [isFetchError, setIsFetchError] = useState<Error | null>(null);
   const [selectedTab, setSelectedTab] = useState<number>(0);
 
-  const { apiRemove, apiUpdate, isFetching, isFetchError, data, api } = useElection({ id: currentElectionId });
+  const currentElectionId = useMemo(() => match.params.id, [match]);
 
-  const election = resolveValueType<TypeElection>(data, "object") as TypeElection | null;
+  const [, execAsyncFetch] = useAsyncFn(async () => {
+    return fetchGetWithToken(`/elections/${currentElectionId}`, token || "")
+      .then(data => {
+        const election = resolveValueType<TypeElection>(data, "object") as TypeElection | null;
+        return election;
+      }).then(setElection)
+      .catch(() => setIsFetchError(new Error("Elección no encontrada")));
+  }, [token, currentElectionId]);
 
   useTitle(election ? election.name : ". . .");
 
-  const breadcrumbs = useMemo(
-    () => [
-      { name: "Elecciones", pathname: "/elections" },
-      { name: election ? election.name : "...", pathname: `/elections/${currentElectionId}` }
-    ],
-    [election, currentElectionId]
-  );
+  useEffect(() => {
+    let mounted = true;
+    if (mounted) {
+      execAsyncFetch();
+    }
+    return () => {
+      mounted = false;
+    }
+  }, [execAsyncFetch]);
 
-  const updateElection = useCallback(async (newElection: TypeElectionFunc) => {
-    await apiUpdate({ ...election, ...newElection });
-  }, [apiUpdate, election]);
-  const isActiveElection = election ? election.status === "active" : false;
+  if (isFetchError) {
+    return <p>Error al obtener los datos!</p>
+  }
+
 
   if (!election) {
-    return <ContentLoader contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={false} />;
-  } else if (Object.keys(election).length === 0) {
+    return <SpinnerCentered size="large" />;
+  } else if (_.isEmpty(election)) {
     return <ContentLoader contentScreen='elections' isError={null} isFetching={false} isNoData={true} />;
   }
 
   return (
-    <TheElectionProvider id={currentElectionId} mutate={api.mutate} value={election}>
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <ContentLoader messageNoData='No existe' contentScreen='elections' isError={isFetchError} isFetching={isFetching} isNoData={Boolean(Object.keys(election).length <= 0)}>
-        {
-          <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
-            <RenderIf isTrue={selectedTab === 0}>
-              <TabGeneral updateElection={updateElection} />
-            </RenderIf>
-            <RenderIf isTrue={selectedTab === 1 && !isActiveElection}>
-              <TabCampaigns
-                updateElection={updateElection}
-              />
-            </RenderIf>
-            <RenderIf isTrue={selectedTab === 2 && !isActiveElection}>
-              <TabVoters updateElection={updateElection} />
-            </RenderIf>
-            <RenderIf isTrue={selectedTab === 3 && !isActiveElection}>
-              <TabCandidates
-                updateElection={updateElection}
-              />
-            </RenderIf>
-            <RenderIf isTrue={selectedTab === 4}>
-              <TabSettings updateElection={updateElection} />
-            </RenderIf>
-            <RenderIf isTrue={selectedTab !== 4 && selectedTab !== 0 && isActiveElection}>
-              <p>Desactivado durante las elecciones</p>
-            </RenderIf>
-          </Tabs>
-        }
-        <div className='rainbow-m-top_xx-large rainbow-align-content_center rainbow-flex_wrap'>
-          <Button
-            variant='destructive'
-            label='Borrar Elección'
-            disabled={isActiveElection}
-            className='rainbow-m-horizontal_medium'
-            onClick={() => apiRemove(null, () => history.push("/elections"))}
-          />
-        </div>
-      </ContentLoader>
+    <TheElectionProvider id={currentElectionId} value={election}>
+      <TheElectionContext.Consumer>
+        {election => {
+          const isActiveElection = election ? election.status === "active" : false;
+          return <Fragment>
+            <Breadcrumbs breadcrumbs={[
+              { name: "Elecciones", pathname: "/elections" },
+              { name: election ? election.name : "...", pathname: `/elections/${currentElectionId}` }
+            ]} />
+            <Tabs initialTab={selectedTab} onSelectTab={setSelectedTab} tabs={tabs}>
+              <RenderIf isTrue={selectedTab === 0}>
+                <Suspense fallback={<Spinner size="large" />}>
+                  <TabGeneral />
+                </Suspense>
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 1 && !isActiveElection}>
+                <Suspense fallback={<Spinner size="large" />}>
+                  <TabCampaigns />
+                </Suspense>
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 2 && !isActiveElection}>
+                <Suspense fallback={<Spinner size="large" />}>
+                  <TabVoters />
+                </Suspense>
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 3 && !isActiveElection}>
+                <Suspense fallback={<Spinner size="large" />}>
+                  <TabCandidates />
+                </Suspense>
+              </RenderIf>
+              <RenderIf isTrue={selectedTab === 4}>
+                <Suspense fallback={<Spinner size="large" />}>
+                  <TabSettings />
+                </Suspense>
+              </RenderIf>
+              <RenderIf isTrue={selectedTab !== 4 && selectedTab !== 0 && isActiveElection}>
+                <p>Desactivado durante las elecciones</p>
+              </RenderIf>
+            </Tabs>
+          </Fragment>
+        }}
+      </TheElectionContext.Consumer>
     </TheElectionProvider >
   );
 });

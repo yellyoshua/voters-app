@@ -1,0 +1,72 @@
+.wrapper-card-credential {
+  align-items: center;
+}
+.wrapper-card-credential h1 {
+  font-size: 1.7rem;
+  max-width: 300px;
+  text-align: center;
+}
+.custom-is-voted-background {
+  background: linear-gradient(120deg, rgb(0, 255, 255), rgb(227, 119, 255)) !important;
+}
+.container-card-credential {
+  max-width: 300px;
+  margin-top: 20px;
+  padding: 40px;
+  background: linear-gradient(120deg, rgb(0, 255, 255), rgb(255, 233, 119));
+  border-radius: 5px;
+  text-align: center;
+}
+/*  linear-gradient(120deg, rgb(0, 255, 255), rgb(227, 119, 255)); */
+.container-card-credential img {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+}
+.container-card-credential h1 {
+  color: black;
+  font-size: 1.7rem;
+}
+.container-card-credential-m3 {
+  margin-top: 20px;
+}
+.prev-list-selected {
+  align-items: center;
+  padding: 5px 5px !important;
+  border-radius: 5px;
+  background: rgb(34, 52, 135);
+}
+.prev-list-selected p {
+  font-size: 1rem;
+  color: white;
+  text-align: center;
+  margin: 0px !important;
+}
+.prev-list-selected h3 {
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+}
+.prev-list-selected-list-integrants {
+  padding: 0px !important;
+  justify-content: center !important;
+}
+.prev-list-selected-integrant {
+  align-items: center;
+  background: white;
+  border-radius: 5px;
+  margin: 5px;
+}
+.prev-list-selected-integrant p {
+  max-width: 175px;
+  word-break: break-all;
+  color: black;
+  font-weight: bold;
+}
+.prev-list-selected-vote {
+  margin: 10px;
+}
+.prev-list-selected-vote button,
+.prev-list-selected-vote a {
+  margin: 0px 10px;
+}

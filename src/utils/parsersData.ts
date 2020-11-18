@@ -8,7 +8,7 @@ export function toUnderscore(arg: string) {
   return String(arg).trim().toLowerCase().split(" ").join("_")
 }
 
-export function parseDoubleArrToObjArr<T>(arr: any[][]) {
+export function parseDoubleArrToObjArr<T>(arr: any[][]): T[] {
   const doubleArr = [...arr];
   var arrContainChilds = Array.isArray(doubleArr) ? Array.isArray(doubleArr[0]) : false;
   if (arrContainChilds) {

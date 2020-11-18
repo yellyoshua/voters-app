@@ -20,8 +20,8 @@ export default function CardElection(props: PropsCardElection) {
 
   const campaigns = useMemo(() => props.getParsedObj("campaigns", props.election.campaigns), [props]);
   const candidates = useMemo(() => props.getParsedObj("candidates", props.election.candidates), [props]);
-  const voters = useMemo(() => props.getParsedObj("voters", props.election.voters.data), [props]);
-  const tags = useMemo(() => props.getParsedObj("tags", props.election.tags), [props]);
+  const voters = useMemo(() => props.election.voters, [props]);
+  const tags = useMemo(() => props.election.tags, [props]);
 
   return <Formik
     initialValues={{}}
@@ -46,7 +46,9 @@ export default function CardElection(props: PropsCardElection) {
             </div>
             <div className="card-election-pod-g-stats">
               <div className="card-election-pod-g-stats-minicard">
-                <p>{voters.length}</p>
+                <p>{tags.length > 0 ? tags.map(t => voters.data[t].length).reduce((prev, curr) => {
+                  return prev + curr;
+                }, 0) : 0}</p>
                 <h3>Votantes</h3>
               </div>
               <div className="card-election-pod-g-stats-minicard">

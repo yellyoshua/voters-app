@@ -2,7 +2,7 @@ import axios from "axios";
 
 const headersAuth = (token: string) => ({ Authorization: `Bearer ${token}` });
 
-export default function userFetch() {
+export default function useFetch() {
   const fetchGetWithToken = async (url: string, token: string) => {
     return await axios.get(url, { headers: headersAuth(token) }).then(data => data.data);
   };
