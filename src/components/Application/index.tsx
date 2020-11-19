@@ -53,7 +53,12 @@ function Application({ children, history }: PropsApplication) {
         isSidebarHidden ? "react-rainbow-admin-app_sidebar-container react-rainbow-admin-app_sidebar-container--sidebar-hidden" : "react-rainbow-admin-app_sidebar-container"
       }>
       <Sidebar className='react-rainbow-admin-app_sidebar' selectedItem={selectedItem} onSelect={handleOnSelect}>
-        <SidebarItem className='react-rainbow-admin-app_sidebar-item' icon={null} name='dashboard' label='Dashboard' onClick={() => goTo("/dashboard")} />
+        <SidebarItem
+          className='react-rainbow-admin-app_sidebar-item'
+          icon={<AppsIcon color={selectedItem === "apps" ? "black" : "rgba(164,167,181,1)"} />}
+          name='dashboard'
+          label='Dashboard'
+          onClick={() => goTo("/dashboard")} />
         <SidebarItem
           className='react-rainbow-admin-app_sidebar-item'
           icon={<BullhornIcon color={selectedItem === "elections" ? "black" : "rgba(164,167,181,1)"} />}
@@ -61,7 +66,7 @@ function Application({ children, history }: PropsApplication) {
           label='Elecciones'
           onClick={() => goTo("/elections")}
         />
-        <SidebarItem
+        {/* <SidebarItem
           className='react-rainbow-admin-app_sidebar-item'
           icon={<AppsIcon color={selectedItem === "apps" ? "black" : "rgba(164,167,181,1)"} />}
           name='apps'
@@ -81,7 +86,7 @@ function Application({ children, history }: PropsApplication) {
           name='forms'
           label='Formularios'
           onClick={() => goTo("/forms")}
-        />
+        /> */}
       </Sidebar>
       <RenderIf isTrue={!isSidebarHidden}>
         <div className='react-rainbow-admin-app_sidebar-back-button-container'>

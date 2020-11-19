@@ -11,8 +11,7 @@ import RenderIf from "react-rainbow-components/components/RenderIf";
 import TabStatsGeneral from "./TabStatsGeneral";
 
 const tabs = [
-  { id: "gen_stats", name: "Estadisticas Generales" },
-  { id: "tags_stats", name: "Estadisticas por Etiquetas" },
+  { id: "gen_stats", name: "Estadisticas Generales" }
 ];
 
 type PropsStatsElection = RouteComponentProps<{ id: string }> & {

@@ -31,27 +31,27 @@ export default function Login(_: PropsLogin) {
   useTitle("Pantalla de ingreso");
 
   const cardLinks: TypeCardLink[] = useMemo(() => [
-    {
-      title: "Consulta de datos",
-      cover: presentVote,
-      link: "/search",
-      external: false,
-      description: "Conoce los partidos con sus candidatos y propuestas"
-    },
+    // {
+    //   title: "Consulta de datos",
+    //   cover: presentVote,
+    //   link: "/search",
+    //   external: false,
+    //   description: "Conoce los partidos con sus candidatos y propuestas"
+    // },
     {
       title: "Ir a votar",
       cover: introducingVote,
       link: "/votar",
       external: false,
-      description: "Vota por tu partido"
+      description: "Participar en el proceso electoral para eleccion de consejo estudiantil"
     },
-    {
-      title: "Historial de elecciones",
-      cover: voteInUrna,
-      link: "/historial",
-      external: false,
-      description: "Elecciones y resultados desde 2020"
-    }
+    // {
+    //   title: "Historial de elecciones",
+    //   cover: voteInUrna,
+    //   link: "/historial",
+    //   external: false,
+    //   description: "Elecciones y resultados desde 2020"
+    // }
   ], []);
 
   const sendLoginRequest: TypeFormikSubmit<{ identifier: "", password: "" }> = async ({ identifier, password }, { setFieldError }) => {

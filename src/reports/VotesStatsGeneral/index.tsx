@@ -18,12 +18,13 @@ function getStats(stats: TypeElectionStats) {
   const totalTags = stats.tags.length;
   const totalCampaigns = Object.keys(stats.campaigns).length;
   const totalVotes = stats.total_votes;
-  const votesRestantes = Object.keys(stats.count_per_tag).map((t) => {
+  const totalParticipants = Object.keys(stats.count_per_tag).map((t) => {
     return stats.count_per_tag[t];
-  }).reduce((p, c) => p + c, 0) - totalVotes;
+  }).reduce((p, c) => p + c, 0);
+  const votesRestantes = totalParticipants - totalVotes;
   return {
     tags, campaigns, totalTags, totalCampaigns,
-    totalVotes, votesRestantes
+    totalVotes, votesRestantes, totalParticipants
   }
 }
 
@@ -96,6 +97,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: 'center'
   },
+  subtitle: {
+    fontSize: 20,
+    textAlign: 'center'
+  },
   author: {
     fontSize: 12,
     textAlign: 'center',
@@ -104,21 +109,102 @@ const styles = StyleSheet.create({
 });
 
 export function HeaderSection({ header, author }: { header: string, title?: string, author: string }) {
-  return <View>
+  return <View fixed>
     <Text style={styles["header"]}>{header}</Text>
     <Text style={styles["title"]}>Reporte general votaciones</Text>
     <Text style={styles["author"]} fixed>{author}</Text>
   </View>
 }
 
+export function ListCardDataStats({ list }: {
+  list: { count: number, title: string, color?: string, backgroundColor?: string }[]
+}) {
+  return <View style={{ flex: 1, flexDirection: "row", flexWrap: "wrap" }}>
+    {
+      list.map(({ count, title, color, backgroundColor }) => (
+        <View style={{ flex: 1, alignItems: "center", flexDirection: "column", padding: 10, margin: 10, backgroundColor, justifyContent: "center", maxHeight: 130, minWidth: 130, borderRadius: 5 }}>
+          <Text style={{ color, fontSize: 17 }}>{count}</Text>
+          <Text style={{ color, fontSize: 15 }}>{title}</Text>
+        </View>
+      ))
+    }
+  </View>
+}
+
 export function docVotesStatsGeneral({ stats, school: { schoolIcon } }: PropsDocVotesStatsGeneral) {
-  // const { totalVotes } = getStats(stats);
+  const { totalVotes, votesRestantes, totalParticipants, campaigns } = getStats(stats);
+
+  const list_general = [
+    {
+      count: totalVotes, title: "Votaron", color: "white", backgroundColor: "black",
+    },
+    {
+      count: votesRestantes, title: "No votaron", color: "white", backgroundColor: "red",
+    },
+    {
+      count: totalParticipants, title: "Total participantes", color: "white", backgroundColor: "green",
+    }
+  ];
+
+  const per_campaign = campaigns.map(campaign => {
+    return {
+      count: stats.votes_group.count_by_campaign[campaign] || 0,
+      title: stats.campaigns[campaign].name, color: "white", backgroundColor: "black",
+    }
+  })
 
   return <Document title="Estado genernal">
     <Page size="A4" wrap style={styles["body"]}>
-      <Text style={styles["header"]}>{stats.name}</Text>
-      <Text style={styles["title"]}>Reporte general votaciones</Text>
-      <Text style={styles["author"]} fixed>{school.schoolName}</Text>
+      <HeaderSection header={school.schoolName} author={stats.name} />
+      <Text style={styles["subtitle"]}>Estado votaciones</Text>
+      <ListCardDataStats list={list_general} />
+      <Text style={styles["subtitle"]}>Estado listas participantes</Text>
+      <ListCardDataStats list={per_campaign} />
     </Page>
   </Document>
 }
+
+
+/* <View style={[styles["tableRow"], styles["tableRowHeader"]]}>
+  <View style={[styles["wrapper"], styles["text"]]}>
+    <View style={[styles["wrapper"], styles["text"]]}>
+      <Text style={styles["text"]}>Name</Text>
+      <Text style={styles["text"]}>LasName</Text>
+    </View>
+  </View>
+  <View style={[styles["wrapper"], styles["text"]]}>
+    <View style={[styles["wrapper"], styles["text"]]}>
+      <Text style={styles["text"]}>Name</Text>
+      <Text style={styles["text"]}>LasName</Text>
+    </View>
+  </View>
+</View>
+
+StyleSheet.create({
+  tableRow: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    width: "100%",
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderBottom: "2px solid #e0e0e0",
+    paddingTop: 5
+  },
+  tableRowHeader: {
+    backgroundColor: "#FFEEDB",
+    paddingTop: 8,
+    paddingBottom: 8
+  },
+  wrapper: {
+    flex: 1,
+    flexDirection: "row",
+    flexGrow: 0,
+  },
+  text: {
+    flexGrow: 1,
+    textOverflow: "ellipsis",
+    paddingRight: 20,
+    width: 180
+  }
+}) */

@@ -8,7 +8,7 @@ type PropsCardLinks = {
 }
 
 export default function ListCardLinks({ links }: PropsCardLinks) {
-  return <div className="card-links">
+  return <div className="card-links list-items-row">
     {
       links.map((props, index) => (
         <CardLink {...props} key={index} />
