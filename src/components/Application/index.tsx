@@ -2,8 +2,6 @@ import React, { useEffect, useState, useCallback, memo, ReactNode } from "react"
 import { RouteComponentProps, withRouter } from "react-router-dom";
 import AppsIcon from "icons/AppsIcon";
 import BullhornIcon from "icons/BullhornIcon";
-import FormIcon from "icons/FormIcon";
-import MailIcon from "icons/MailIcon";
 import ButtonIcon from "react-rainbow-components/components/ButtonIcon";
 import RainbowApp from "react-rainbow-components/components/Application";
 import RenderIf from "react-rainbow-components/components/RenderIf";
@@ -66,27 +64,6 @@ function Application({ children, history }: PropsApplication) {
           label='Elecciones'
           onClick={() => goTo("/elections")}
         />
-        {/* <SidebarItem
-          className='react-rainbow-admin-app_sidebar-item'
-          icon={<AppsIcon color={selectedItem === "apps" ? "black" : "rgba(164,167,181,1)"} />}
-          name='apps'
-          label='Aplicaciones'
-          onClick={() => goTo("/apps")}
-        />
-        <SidebarItem
-          className='react-rainbow-admin-app_sidebar-item'
-          icon={<MailIcon color={selectedItem === "messages" ? "black" : "rgba(164,167,181,1)"} />}
-          name='messages'
-          label='Mensajes'
-          onClick={() => goTo("/messages")}
-        />
-        <SidebarItem
-          className='react-rainbow-admin-app_sidebar-item'
-          icon={<FormIcon color={selectedItem === "forms" ? "black" : "rgba(164,167,181,1)"} />}
-          name='forms'
-          label='Formularios'
-          onClick={() => goTo("/forms")}
-        /> */}
       </Sidebar>
       <RenderIf isTrue={!isSidebarHidden}>
         <div className='react-rainbow-admin-app_sidebar-back-button-container'>

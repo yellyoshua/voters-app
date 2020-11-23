@@ -7,9 +7,8 @@ import Button from "react-rainbow-components/components/Button";
 import RenderIf from "react-rainbow-components/components/RenderIf";
 import Spinner from "react-rainbow-components/components/Spinner";
 import Badge from "react-rainbow-components/components/Badge";
-import presentVote from "icons/images/present-vote.jpg";
-import introducingVote from "icons/images/introducing-vote.jpg";
-import voteInUrna from "icons/images/vote-in-urna.jpeg";
+// import introducingVote from "icons/images/introducing-vote.jpg";
+// import voteHere from "icons/images/vote-here.jpeg";
 import ListCardLinks from "components/Lists/ListCardLinks";
 import Layout from "components/Layout";
 import useAuth from "hooks/useAuth";
@@ -21,7 +20,7 @@ type PropsLogin = RouteComponentProps;
 
 type TypeFormikSubmit<Values> = (values: Values, formikHelpers: FormikHelpers<Values>) => void | Promise<any>;
 
-const login_title = "APP Elecciones Estudiantiles";
+const login_title = "Elecciones Estudiantiles";
 const login_description = "Sólo si eres administrador de este sitio";
 
 export default function Login(_: PropsLogin) {
@@ -40,7 +39,6 @@ export default function Login(_: PropsLogin) {
     // },
     {
       title: "Ir a votar",
-      cover: introducingVote,
       link: "/votar",
       external: false,
       description: "Participar en el proceso electoral para eleccion de consejo estudiantil"

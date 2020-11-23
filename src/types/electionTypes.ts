@@ -89,4 +89,5 @@ export type TypeElectionStats = {
     count_by_tag: Obj<number>,
     count_by_campaign: Obj<number>
   };
+  voters_fields: string[];
 }

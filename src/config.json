@@ -6,6 +6,7 @@
     "schoolIcon": "https://s3-us-east-2.amazonaws.com/gonzu-api-bucket/2020/09/apple-touch-icon-1.png"
   },
   "api": {
-    "endpoint": "https://api.gonzu.edu.ec"
+    "endpoint": "https://api.gonzu.edu.ec",
+    "pdf_convertor": "http://conversor.gonzu.edu.ec/convert?auth=arachnys-weaver&url="
   }
 }

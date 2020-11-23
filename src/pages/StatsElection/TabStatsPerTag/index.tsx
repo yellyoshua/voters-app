@@ -1,93 +1,68 @@
-import React, { useRef, useState, useCallback, ReactNode } from "react";
-import { PDFDownloadLink, Document, Page, Image, View } from "@react-pdf/renderer";
-import html2canvas from "html2canvas";
-import Dataset from "react-rainbow-components/components/Dataset";
-import Chart from "react-rainbow-components/components/Chart";
-import RenderIf from "react-rainbow-components/components/RenderIf";
+import React, { useState, useCallback, ReactNode, useMemo } from "react";
 import Button from "react-rainbow-components/components/Button";
 import { TypeElectionStats } from "types/electionTypes";
+import { useApp } from "context/AppContext";
+import { API_PDF, REACT_API_URL } from "configurations/api";
 
 type PropsTabStatsPerTag = {
   stats: TypeElectionStats;
   isPrivate: boolean;
 };
 
-export default function TabStatsPerTag({ isPrivate }: PropsTabStatsPerTag) {
-  const pageRef = useRef<HTMLDivElement | null>(null);
+export default function TabStatsPerTag({ stats }: PropsTabStatsPerTag) {
+  const id = useMemo(() => stats.id, [stats.id]);
+
+  if (stats.tags.length === 0) {
+    return <div>No Tags!</div>
+  }
 
   return <div>
-    <RenderIf isTrue={isPrivate}>
-      <SectionGeneratePdf pageRef={pageRef} />
-    </RenderIf>
-    <div ref={pageRef}>
-      <div style={{ padding: 20 }}>
-        <Chart
-          labels={["One", "Two"]}
-          type="horizontalBar"
-          style={{ maxWidth: 450 }}
-          legendPosition="right"
-          disableCurves
-        >
-          <Dataset title="Data" values={[10, 20]} backgroundColor={['#fe4849', '#ff6837']} />
-        </Chart>
-        <Chart
-          labels={['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']}
-          type="bar"
-          style={{ maxWidth: 250 }}
-          className="rainbow-m-horizontal_xx-large rainbow-m-top_x-large"
-        >
-          <Dataset
-            title="Dataset 1"
-            values={[23, 45, 123, 56, 66, 100, 30, 156]}
-            backgroundColor="#1de9b6"
-            borderColor="#1de9b6"
-          />
-        </Chart>
-      </div>
+    <div className="list-items-row">
+      {stats.tags.map((tag, index) => (
+        <ContainerTag key={index} tag={tag}>
+          <SectionGeneratePdf id={id} tag={tag} />
+        </ContainerTag>
+      ))}
     </div>
   </div>
 }
 
-type PropsSectionGeneratePdf = {
-  pageRef: React.MutableRefObject<HTMLDivElement | null>;
+type PropsContainerTag = {
+  tag: string;
+  children?: ReactNode;
+};
+
+function ContainerTag({ children, tag }: PropsContainerTag) {
+  return <div className="list-items-row">
+    <h1>{tag}</h1>
+    {children}
+  </div>
 }
 
-function SectionGeneratePdf({ pageRef }: PropsSectionGeneratePdf) {
-  const [isClicked, setIsClicked] = useState(false);
-  const [element, setElement] = useState<ReactNode | null>(null);
+type PropsSectionGeneratePdf = {
+  id: number | string;
+  tag: string;
+}
 
-  const getPdfDownloadLink = (pageRendered: string) => {
-    return <PDFDownloadLink document={
-      <Document onRender={() => {
-        return {};
-      }} title="Estado Voters">
-        <Page >
-          <View>
-            <Image src={pageRendered} />
-          </View>
-        </Page>
-      </Document>
-    }>
-      {({ blob, loading, error, url }) =>
-        (loading ? 'Generando documento' : 'Descargar Pdf')
-      }
-    </PDFDownloadLink>
-  }
+function SectionGeneratePdf({ id, tag }: PropsSectionGeneratePdf) {
+  const { school } = useApp();
+  const [pdfLink, setPdfLink] = useState<string | null>(null);
 
-  const getScreenshot = useCallback(function getScreenshot() {
-    setIsClicked(true);
-    return html2canvas(pageRef.current as HTMLDivElement)
-      .then((canvas) => canvas.toDataURL('image/png'))
-      .then((screenshot) => {
-        return setElement(getPdfDownloadLink(screenshot));
-      }).finally(() => setIsClicked(false));
-  }, [pageRef]);
+  const loadPDFLink = useCallback(() => {
+    const query = `schoolname=${school.schoolName}&schoolicon=${school.schoolIcon}`;
+    const props = `?fields=ci,name,second_name,surname&tag=${tag}&${query}`;
+    const html = `${REACT_API_URL}/votes/${id}/report_per_tag${props}`
+    const url = `${API_PDF}${encodeURIComponent(html)}`;
+    return setPdfLink(url);
+  }, [school, id, tag]);
 
-  if (element) {
+  if (pdfLink) {
     return <React.Fragment>
-      {element}
+      <a download={`reporte-votos-general-${id}`} href={pdfLink} target='_blank' rel='noopener noreferrer'>
+        <Button variant="success" label="Descargar reporte" />
+      </a>
     </React.Fragment >
   }
 
-  return <Button onClick={getScreenshot} disabled={isClicked} label="Generar PDF" />
+  return <Button onClick={loadPDFLink} label="Generar reporte" />
 }
